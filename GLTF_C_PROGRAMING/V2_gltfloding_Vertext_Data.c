@@ -76,4 +76,14 @@ int main()
         printf("FAILED TO OPEN scene.gltf\n");
         return -1;
     }
+
+    cJSON* gltf = cJSON_Parse(gltfText);
+    if(!gltf)
+    {
+        printf("JSON parse error\n");
+        return -1;
+    }
+
+    // Find Position & normals accessors
+    cJSON* mesh = cJSON_GetArrayItem(cJSON_GetObjectItem(gltf, "meshes"), 0)
 }
