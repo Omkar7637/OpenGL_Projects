@@ -55,4 +55,25 @@ void get_accessor_data(cJSON* gltf, int accessorIndex, uint8_t* binData, float**
     *outCount = cJSON_GetObjectItem(accessor, "count") ->valueint;
 
     cJSON* bufferViews = cJSON_GetArrayItem(gltf, "bufferViews");
+    cJSON* bufferView = cJSON_GetArrayItem(bufferViews, bufferViewIndex);
+
+    int byteOffset = 0;
+    cJSON* offsetItem = cJSON_GetObjectItem(bufferView, "byteOffset");
+    if(offsetItem)
+    {
+        byteOffset = offsetItem->valueint;
+    }
+
+    *outData = (float*)(binData + byteOffset);
+}
+
+int main()
+{
+    // Load GLTF JSON
+    char* gltfText = read_text_file("scene.gltf");
+    if(!gltfText)
+    {
+        printf("FAILED TO OPEN scene.gltf\n");
+        return -1;
+    }
 }
