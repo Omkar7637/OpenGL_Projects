@@ -14,6 +14,10 @@ var shaderProgramObject = null;
 
 var vao = null;
 var vbo = null;
+
+var angle_pyramid = 0.0;
+
+
 var mvpMatrixUniform;
 
 var perspectiveProjectionMatrix;
@@ -30,7 +34,7 @@ var requestAnimationFrame =
 function main()
 {
     // Get Canvas aplya engine kdun magnar jo tayar kely HTML mdhe jo engine aplyala milvun denar ahe js file mdhe 
-    canvas = document.getElementById("AMC");
+    canvas = document.getElementById("SAG");
     if(canvas == null)
         console.log("Getting Canvas Failed !!!\n");
     else
@@ -101,9 +105,9 @@ function toggleFullscreen()
     // If not fullscreen
     if(fullscreen_element == null)
     {
-        if(canvas.requestFullscreen)
+        if(canvas.requestFullScreen)
         {
-            canvas.requestFullscreen();
+            canvas.requestFullScreen();
         }
         else if(canvas.webkitRequestFullscreen)
         {
@@ -113,17 +117,17 @@ function toggleFullscreen()
         {
             canvas.mozRequestFullScreen();
         }
-        else if(canvas.msRequestFullscreen)
+        else if(canvas.msRequestFullScreen)
         {
-            canvas.msRequestFullscreen();
+            canvas.msRequestFullScreen();
         }
         bFullscreen = true;
     }
     else    // if already fullscreen
     {
-        if(document.exitFullscreen)
+        if(document.exitFullScreen)
         {
-            document.exitFullscreen();
+            document.exitFullScreen();
         }
         else if(document.webkitExitFullscreen)
         {
@@ -133,9 +137,9 @@ function toggleFullscreen()
         {
             document.mozCancelFullScreen();
         }
-        else if(document.msExitFullscreen)
+        else if(document.msExitFullScreen)
         {
-            document.msExitFullscreen();
+            document.msExitFullScreen();
         }
         bFullscreen = false;
     }
@@ -243,25 +247,44 @@ function initialize() {
     mvpMatrixUniform = gl.getUniformLocation(shaderProgramObject, "uMVPMatrix");
 
     // Geomatry attribute array declaration
-    var trianglePosition = new Float32Array([
+
+    var pyramid_position = new Float32Array([
         0.0, 1.0, 0.0,
-        -1.0, -1.0, 0.0,
-        1.0, -1.0, 0.0
+        -1.0, -1.0, 1.0,
+        1.0, -1.0, 1.0,
+
+        // right
+        0.0, 1.0, 0.0,
+        1.0, -1.0, 1.0,
+        1.0, -1.0, -1.0,
+
+        // back
+        0.0, 1.0, 0.0,
+        1.0, -1.0, -1.0,
+        -1.0, -1.0, -1.0,
+
+        // left
+        0.0, 1.0, 0.0,
+        -1.0, -1.0, -1.0,
+        -1.0, -1.0, 1.0
     ]);
 
+    // For Triangle
+
     // Vao
-    vao = gl.createVertexArray();
+    vao= gl.createVertexArray();
     gl.bindVertexArray(vao);
 
     // VBO
     vbo = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-    gl.bufferData(gl.ARRAY_BUFFER, trianglePosition, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, pyramid_position, gl.STATIC_DRAW);
     gl.vertexAttribPointer(vertexAttributeEnum.AMC_ATTRIBUTE_POSITION, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vertexAttributeEnum.AMC_ATTRIBUTE_POSITION);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
     gl.bindVertexArray(null);
+
 
     // Depth Initialization
     gl.clearDepth(1.0);
@@ -311,13 +334,28 @@ function display()
     var modelViewMatrix = mat4.create();
     var modelViewProjectionMatrix = mat4.create();
 
-    mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -3.0]);
+    var translateMatrix = mat4.create();
+    var rotationMatrix = mat4.create();
+
+    mat4.identity(modelViewMatrix);
+    mat4.identity(modelViewProjectionMatrix);
+
+    mat4.identity(translateMatrix);
+    mat4.identity(rotationMatrix);
+
+    mat4.translate(translateMatrix, translateMatrix, [0.0, 0.0, -6.0]);
+    mat4.rotate(rotationMatrix, rotationMatrix, angle_pyramid, [0.0, 1.0, 0.0]);
+
+    //mat4.translate(modelViewMatrix, modelViewMatrix, [-1.5, 0.0, -4.0]);
+    mat4.multiply(modelViewMatrix, translateMatrix, rotationMatrix);
     mat4.multiply(modelViewProjectionMatrix, perspectiveProjectionMatrix, modelViewMatrix);
 
     gl.uniformMatrix4fv(mvpMatrixUniform, false, modelViewProjectionMatrix);
 
     gl.bindVertexArray(vao);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    gl.drawArrays(gl.TRIANGLES, 0, 12);
+
     gl.bindVertexArray(null);
 
     gl.useProgram(null);
@@ -331,6 +369,11 @@ function display()
 function update()
 {
     //Code
+    angle_pyramid = angle_pyramid + 0.003;
+    if (angle_pyramid >= 360.0)
+    {
+        angle_pyramid = angle_pyramid - 360.0;
+    }
 }
 
 function uninitialize()
@@ -357,6 +400,7 @@ function uninitialize()
         gl.deleteBuffer(vbo);
         vbo = null;
     }
+    
     if (vao) {
         gl.deleteVertexArray(vao);
         vao = null;

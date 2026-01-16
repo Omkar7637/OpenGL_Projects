@@ -7,13 +7,21 @@ var canvas_original_height;
 // WebGL related variables
 const vertexAttributeEnum =
 {
-    AMC_ATTRIBUTE_POSITION:0
+    AMC_ATTRIBUTE_POSITION: 0,
+    AMC_ATTRIBUTE_COLOR:1
 };
 
 var shaderProgramObject = null;
 
 var vao = null;
-var vbo = null;
+var vbo_position = null;
+var vbo_color = null;
+
+var angle_cube_X = 0.0;
+var angle_cube_Y = 0.0;
+var angle_cube_Z = 0.0;
+
+
 var mvpMatrixUniform;
 
 var perspectiveProjectionMatrix;
@@ -30,7 +38,7 @@ var requestAnimationFrame =
 function main()
 {
     // Get Canvas aplya engine kdun magnar jo tayar kely HTML mdhe jo engine aplyala milvun denar ahe js file mdhe 
-    canvas = document.getElementById("AMC");
+    canvas = document.getElementById("SAG");
     if(canvas == null)
         console.log("Getting Canvas Failed !!!\n");
     else
@@ -101,9 +109,9 @@ function toggleFullscreen()
     // If not fullscreen
     if(fullscreen_element == null)
     {
-        if(canvas.requestFullscreen)
+        if(canvas.requestFullScreen)
         {
-            canvas.requestFullscreen();
+            canvas.requestFullScreen();
         }
         else if(canvas.webkitRequestFullscreen)
         {
@@ -113,17 +121,17 @@ function toggleFullscreen()
         {
             canvas.mozRequestFullScreen();
         }
-        else if(canvas.msRequestFullscreen)
+        else if(canvas.msRequestFullScreen)
         {
-            canvas.msRequestFullscreen();
+            canvas.msRequestFullScreen();
         }
         bFullscreen = true;
     }
     else    // if already fullscreen
     {
-        if(document.exitFullscreen)
+        if(document.exitFullScreen)
         {
-            document.exitFullscreen();
+            document.exitFullScreen();
         }
         else if(document.webkitExitFullscreen)
         {
@@ -133,9 +141,9 @@ function toggleFullscreen()
         {
             document.mozCancelFullScreen();
         }
-        else if(document.msExitFullscreen)
+        else if(document.msExitFullScreen)
         {
-            document.msExitFullscreen();
+            document.msExitFullScreen();
         }
         bFullscreen = false;
     }
@@ -160,10 +168,13 @@ function initialize() {
             "#version 300 es" +
             "\n" +
             "in vec4 aPosition;" +
+            "in vec4 aColor;" +
             "uniform mat4 uMVPMatrix;" +
+            "out vec4 oColor;" +
             "void main(void)" +
             "{" +
-            "gl_Position= uMVPMatrix*aPosition;" +
+            "gl_Position=uMVPMatrix*aPosition;" +
+            "oColor=aColor;" +
             "}"
         );
 
@@ -191,10 +202,11 @@ function initialize() {
             "#version 300 es" +
             "\n" +
             "precision highp float;" +
+            "in vec4 oColor;" +
             "out vec4 FragColor;" +
             "void main(void)" +
             "{" +
-            "FragColor=vec4(1.0f, 1.0f, 1.0f, 1.0f);" +
+            "FragColor=oColor;" +
             "}"
         );
 
@@ -224,6 +236,7 @@ function initialize() {
 
     // pre-linking binding
     gl.bindAttribLocation(shaderProgramObject, vertexAttributeEnum.AMC_ATTRIBUTE_POSITION, "aPosition");
+    gl.bindAttribLocation(shaderProgramObject, vertexAttributeEnum.AMC_ATTRIBUTE_COLOR, "aColor");
 
     // Linking
     gl.linkProgram(shaderProgramObject);
@@ -243,25 +256,103 @@ function initialize() {
     mvpMatrixUniform = gl.getUniformLocation(shaderProgramObject, "uMVPMatrix");
 
     // Geomatry attribute array declaration
-    var trianglePosition = new Float32Array([
-        0.0, 1.0, 0.0,
-        -1.0, -1.0, 0.0,
-        1.0, -1.0, 0.0
+
+    var cube_position = new Float32Array([
+        // top
+        1.0, 1.0, -1.0,
+        -1.0, 1.0, -1.0,
+        -1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0,
+
+        // bottom
+        1.0, -1.0, -1.0,
+        -1.0, -1.0, -1.0,
+        -1.0, -1.0, 1.0,
+        1.0, -1.0, 1.0,
+
+        // front
+        1.0, 1.0, 1.0,
+        -1.0, 1.0, 1.0,
+        -1.0, -1.0, 1.0,
+        1.0, -1.0, 1.0,
+
+        // back
+        1.0, 1.0, -1.0,
+        -1.0, 1.0, -1.0,
+        -1.0, -1.0, -1.0,
+        1.0, -1.0, -1.0,
+
+        // right
+        1.0, 1.0, -1.0,
+        1.0, 1.0, 1.0,
+        1.0, -1.0, 1.0,
+        1.0, -1.0, -1.0,
+
+        // left
+        -1.0, 1.0, 1.0,
+        -1.0, 1.0, -1.0,
+        -1.0, -1.0, -1.0,
+        -1.0, -1.0, 1.0,
     ]);
 
+    var cube_color = new Float32Array([
+        0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0,
+
+        1.0, 0.5, 0.0,
+        1.0, 0.5, 0.0,
+        1.0, 0.5, 0.0,
+        1.0, 0.5, 0.0,
+
+        1.0, 0.0, 0.0,
+        1.0, 0.0, 0.0,
+        1.0, 0.0, 0.0,
+        1.0, 0.0, 0.0,
+
+        1.0, 1.0, 0.0,
+        1.0, 1.0, 0.0,
+        1.0, 1.0, 0.0,
+        1.0, 1.0, 0.0,
+
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 1.0,
+        0.0, 0.0, 1.0,
+
+        1.0, 0.0, 1.0,
+        1.0, 0.0, 1.0,
+        1.0, 0.0, 1.0,
+        1.0, 0.0, 1.0
+    ]);
+
+    // For Triangle
+
     // Vao
-    vao = gl.createVertexArray();
+    vao= gl.createVertexArray();
     gl.bindVertexArray(vao);
 
-    // VBO
-    vbo = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-    gl.bufferData(gl.ARRAY_BUFFER, trianglePosition, gl.STATIC_DRAW);
+    // VBO for position
+    vbo_position = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo_position);
+    gl.bufferData(gl.ARRAY_BUFFER, cube_position, gl.STATIC_DRAW);
     gl.vertexAttribPointer(vertexAttributeEnum.AMC_ATTRIBUTE_POSITION, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vertexAttributeEnum.AMC_ATTRIBUTE_POSITION);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
+    //gl.bindVertexArray(null);
+
+    // VBO for Color
+    vbo_color = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo_color);
+    gl.bufferData(gl.ARRAY_BUFFER, cube_color, gl.STATIC_DRAW);
+    gl.vertexAttribPointer(vertexAttributeEnum.AMC_ATTRIBUTE_COLOR, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vertexAttributeEnum.AMC_ATTRIBUTE_COLOR);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
     gl.bindVertexArray(null);
+
 
     // Depth Initialization
     gl.clearDepth(1.0);
@@ -271,7 +362,7 @@ function initialize() {
 
     // Set clear color
     // 1st WebGL API
-    gl.clearColor(0.0, 0.0, 1.0, 1.0);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     // initialize projection matrix
     // first time we are using func of min.js
@@ -311,13 +402,48 @@ function display()
     var modelViewMatrix = mat4.create();
     var modelViewProjectionMatrix = mat4.create();
 
-    mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -3.0]);
+    var translateMatrix = mat4.create();
+    var rotationMatrix = mat4.create();
+
+    var rotationMatrix_X = mat4.create();
+    var rotationMatrix_Y = mat4.create();
+    var rotationMatrix_Z = mat4.create();
+
+    mat4.identity(modelViewMatrix);
+    mat4.identity(modelViewProjectionMatrix);
+
+    mat4.identity(translateMatrix);
+    mat4.identity(rotationMatrix);
+
+    mat4.identity(rotationMatrix_X);
+    mat4.identity(rotationMatrix_Y);
+    mat4.identity(rotationMatrix_Z);
+
+    mat4.translate(translateMatrix, translateMatrix, [0.0, 0.0, -6.0]);
+
+    mat4.rotate(rotationMatrix_X, rotationMatrix_X, angle_cube_X, [1.0, 0.0, 0.0]);
+    mat4.rotate(rotationMatrix_Y, rotationMatrix_Y, angle_cube_Y, [0.0, 1.0, 0.0]);
+    mat4.rotate(rotationMatrix_Z, rotationMatrix_Z, angle_cube_Z, [0.0, 0.0, 1.0]);
+
+    mat4.multiply(rotationMatrix, rotationMatrix_X, rotationMatrix_Y);
+    mat4.multiply(rotationMatrix, rotationMatrix, rotationMatrix_Z);
+
+
+    //mat4.translate(modelViewMatrix, modelViewMatrix, [-1.5, 0.0, -4.0]);
+    mat4.multiply(modelViewMatrix, translateMatrix, rotationMatrix);
     mat4.multiply(modelViewProjectionMatrix, perspectiveProjectionMatrix, modelViewMatrix);
 
     gl.uniformMatrix4fv(mvpMatrixUniform, false, modelViewProjectionMatrix);
 
     gl.bindVertexArray(vao);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 4, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 8, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 12, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 16, 4);
+    gl.drawArrays(gl.TRIANGLE_FAN, 20, 4);
+
     gl.bindVertexArray(null);
 
     gl.useProgram(null);
@@ -331,6 +457,22 @@ function display()
 function update()
 {
     //Code
+    angle_cube_X = angle_cube_X - 0.002;
+    angle_cube_Y = angle_cube_Y - 0.003;
+    angle_cube_Z = angle_cube_Z - 0.004;
+
+    if (angle_cube_X <= 0.0)
+    {
+        angle_cube_X = angle_cube_X + 360.0;
+    }
+    if (angle_cube_Y <= 0.0)
+    {
+        angle_cube_Y = angle_cube_Y + 360.0;
+    }
+    if (angle_cube_Z <= 0.0)
+    {
+        angle_cube_Z = angle_cube_Z + 360.0;
+    }
 }
 
 function uninitialize()
@@ -353,10 +495,16 @@ function uninitialize()
         shaderProgramObject = null;
     }
 
-    if (vbo) {
-        gl.deleteBuffer(vbo);
-        vbo = null;
+
+    if (vbo_color) {
+        gl.deleteBuffer(vbo_color);
+        vbo_color = null;
     }
+    if (vbo_position) {
+        gl.deleteBuffer(vbo_position);
+        vbo_position = null;
+    }
+    
     if (vao) {
         gl.deleteVertexArray(vao);
         vao = null;

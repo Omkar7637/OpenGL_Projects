@@ -7,13 +7,23 @@ var canvas_original_height;
 // WebGL related variables
 const vertexAttributeEnum =
 {
-    AMC_ATTRIBUTE_POSITION:0
+    AMC_ATTRIBUTE_POSITION: 0,
+    AMC_ATTRIBUTE_COLOR:1
 };
 
 var shaderProgramObject = null;
 
-var vao = null;
-var vbo = null;
+var vao_triangle = null;
+var vbo_triangle_position = null;
+var vbo_triangle_color = null;
+
+var vao_rectangle = null;
+var vbo_rectangle_position = null;
+var vbo_rectangle_color = null;
+
+var angle_triangle = 0.0;
+var angle_rectangle = 0.0;
+
 var mvpMatrixUniform;
 
 var perspectiveProjectionMatrix;
@@ -101,9 +111,9 @@ function toggleFullscreen()
     // If not fullscreen
     if(fullscreen_element == null)
     {
-        if(canvas.requestFullscreen)
+        if(canvas.requestFullScreen)
         {
-            canvas.requestFullscreen();
+            canvas.requestFullScreen();
         }
         else if(canvas.webkitRequestFullscreen)
         {
@@ -113,9 +123,9 @@ function toggleFullscreen()
         {
             canvas.mozRequestFullScreen();
         }
-        else if(canvas.msRequestFullscreen)
+        else if(canvas.msRequestFullScreen)
         {
-            canvas.msRequestFullscreen();
+            canvas.msRequestFullScreen();
         }
         bFullscreen = true;
     }
@@ -123,7 +133,7 @@ function toggleFullscreen()
     {
         if(document.exitFullscreen)
         {
-            document.exitFullscreen();
+            document.exitFullScreen();
         }
         else if(document.webkitExitFullscreen)
         {
@@ -135,7 +145,7 @@ function toggleFullscreen()
         }
         else if(document.msExitFullscreen)
         {
-            document.msExitFullscreen();
+            document.msExitFullScreen();
         }
         bFullscreen = false;
     }
@@ -160,10 +170,13 @@ function initialize() {
             "#version 300 es" +
             "\n" +
             "in vec4 aPosition;" +
+            "in vec4 aColor;" +
             "uniform mat4 uMVPMatrix;" +
+            "out vec4 oColor;" +
             "void main(void)" +
             "{" +
             "gl_Position= uMVPMatrix*aPosition;" +
+            "oColor = aColor;" +
             "}"
         );
 
@@ -191,10 +204,11 @@ function initialize() {
             "#version 300 es" +
             "\n" +
             "precision highp float;" +
+            "in vec4 oColor;" +
             "out vec4 FragColor;" +
             "void main(void)" +
             "{" +
-            "FragColor=vec4(1.0f, 1.0f, 1.0f, 1.0f);" +
+            "FragColor=oColor;" +
             "}"
         );
 
@@ -224,6 +238,8 @@ function initialize() {
 
     // pre-linking binding
     gl.bindAttribLocation(shaderProgramObject, vertexAttributeEnum.AMC_ATTRIBUTE_POSITION, "aPosition");
+    gl.bindAttribLocation(shaderProgramObject, vertexAttributeEnum.AMC_ATTRIBUTE_COLOR, "aColor");
+
 
     // Linking
     gl.linkProgram(shaderProgramObject);
@@ -243,22 +259,80 @@ function initialize() {
     mvpMatrixUniform = gl.getUniformLocation(shaderProgramObject, "uMVPMatrix");
 
     // Geomatry attribute array declaration
-    var trianglePosition = new Float32Array([
+
+    var triangle_position = new Float32Array([
         0.0, 1.0, 0.0,
         -1.0, -1.0, 0.0,
         1.0, -1.0, 0.0
     ]);
 
+    var triangle_color = new Float32Array([
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+    ]);
+
+    var rectangle_position = new Float32Array([
+        -1.0, -1.0, 0.0,
+        -1.0, 1.0, 0.0,
+        1.0, 1.0, 0.0,
+        1.0, -1.0, 0.0
+    ]);
+
+
+    var rectangle_color = new Float32Array([
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        1.0, 1.0, 0.0
+    ]);
+
+
+
+
+    // For Triangle
+
     // Vao
-    vao = gl.createVertexArray();
-    gl.bindVertexArray(vao);
+    vao_triangle = gl.createVertexArray();
+    gl.bindVertexArray(vao_triangle);
 
     // VBO
-    vbo = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-    gl.bufferData(gl.ARRAY_BUFFER, trianglePosition, gl.STATIC_DRAW);
+    vbo_triangle_position = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo_triangle_position);
+    gl.bufferData(gl.ARRAY_BUFFER, triangle_position, gl.STATIC_DRAW);
     gl.vertexAttribPointer(vertexAttributeEnum.AMC_ATTRIBUTE_POSITION, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vertexAttributeEnum.AMC_ATTRIBUTE_POSITION);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+    vbo_triangle_color = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo_triangle_color);
+    gl.bufferData(gl.ARRAY_BUFFER, triangle_color, gl.STATIC_DRAW);
+    gl.vertexAttribPointer(vertexAttributeEnum.AMC_ATTRIBUTE_COLOR, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vertexAttributeEnum.AMC_ATTRIBUTE_COLOR);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+    gl.bindVertexArray(null);
+
+
+    // For Rectangle
+
+    // Vao
+    vao_rectangle = gl.createVertexArray();
+    gl.bindVertexArray(vao_rectangle);
+
+    // VBO
+    vbo_rectangle_position = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo_rectangle_position);
+    gl.bufferData(gl.ARRAY_BUFFER, rectangle_position, gl.STATIC_DRAW);
+    gl.vertexAttribPointer(vertexAttributeEnum.AMC_ATTRIBUTE_POSITION, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vertexAttributeEnum.AMC_ATTRIBUTE_POSITION);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+    vbo_rectangle_color = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo_rectangle_color);
+    gl.bufferData(gl.ARRAY_BUFFER, rectangle_color, gl.STATIC_DRAW);
+    gl.vertexAttribPointer(vertexAttributeEnum.AMC_ATTRIBUTE_COLOR, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(vertexAttributeEnum.AMC_ATTRIBUTE_COLOR);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
     gl.bindVertexArray(null);
@@ -271,7 +345,7 @@ function initialize() {
 
     // Set clear color
     // 1st WebGL API
-    gl.clearColor(0.0, 0.0, 1.0, 1.0);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
     // initialize projection matrix
     // first time we are using func of min.js
@@ -311,13 +385,48 @@ function display()
     var modelViewMatrix = mat4.create();
     var modelViewProjectionMatrix = mat4.create();
 
-    mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -3.0]);
+    var translateMatrix = mat4.create();
+    var rotationMatrix = mat4.create();
+
+    mat4.identity(modelViewMatrix);
+    mat4.identity(modelViewProjectionMatrix);
+
+    mat4.identity(translateMatrix);
+    mat4.identity(rotationMatrix);
+
+    mat4.translate(translateMatrix, translateMatrix, [-1.5, 0.0, -4.0]);
+    mat4.rotate(rotationMatrix, rotationMatrix, angle_triangle, [0.0, 1.0, 0.0]);
+
+    //mat4.translate(modelViewMatrix, modelViewMatrix, [-1.5, 0.0, -4.0]);
+    mat4.multiply(modelViewMatrix, translateMatrix, rotationMatrix);
     mat4.multiply(modelViewProjectionMatrix, perspectiveProjectionMatrix, modelViewMatrix);
 
     gl.uniformMatrix4fv(mvpMatrixUniform, false, modelViewProjectionMatrix);
 
-    gl.bindVertexArray(vao);
+    gl.bindVertexArray(vao_triangle);
+
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    gl.bindVertexArray(null);
+
+    mat4.identity(modelViewMatrix);
+    mat4.identity(modelViewProjectionMatrix);
+
+    mat4.identity(translateMatrix);
+    mat4.identity(rotationMatrix);
+
+    mat4.translate(translateMatrix, translateMatrix, [1.5, 0.0, -4.0]);
+    mat4.rotate(rotationMatrix, rotationMatrix, angle_rectangle, [0.0, 1.0, 0.0]);
+
+    //mat4.translate(modelViewMatrix, modelViewMatrix, [-1.5, 0.0, -4.0]);
+    mat4.multiply(modelViewMatrix, translateMatrix, rotationMatrix);
+    mat4.multiply(modelViewProjectionMatrix, perspectiveProjectionMatrix, modelViewMatrix);
+
+
+    gl.uniformMatrix4fv(mvpMatrixUniform, false, modelViewProjectionMatrix);
+
+    gl.bindVertexArray(vao_rectangle);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
     gl.bindVertexArray(null);
 
     gl.useProgram(null);
@@ -331,6 +440,17 @@ function display()
 function update()
 {
     //Code
+    angle_triangle = angle_triangle + 0.01;
+    if (angle_triangle >= 360.0)
+    {
+        angle_triangle = angle_triangle - 360.0;
+    }
+
+    angle_rectangle = angle_rectangle - 0.01;
+    if (angle_rectangle <= 0.0)
+    {
+        angle_rectangle = angle_rectangle + 360.0;
+    }
 }
 
 function uninitialize()
@@ -353,13 +473,29 @@ function uninitialize()
         shaderProgramObject = null;
     }
 
-    if (vbo) {
-        gl.deleteBuffer(vbo);
-        vbo = null;
+    if (vbo_rectangle_position) {
+        gl.deleteBuffer(vbo_rectangle_position);
+        vbo_rectangle_position = null;
     }
-    if (vao) {
-        gl.deleteVertexArray(vao);
-        vao = null;
+    if (vbo_rectangle_color) {
+        gl.deleteBuffer(vbo_rectangle_color);
+        vbo_rectangle_color = null;
+    }
+    if (vao_rectangle) {
+        gl.deleteVertexArray(vao_rectangle);
+        vao_rectangle = null;
+    }
+    if (vbo_triangle_position) {
+        gl.deleteBuffer(vbo_triangle_position);
+        vbo_triangle_position = null;
+    }
+    if (vbo_triangle_color) {
+        gl.deleteBuffer(vbo_triangle_color);
+        vbo_triangle_color = null;
+    }
+    if (vao_triangle) {
+        gl.deleteVertexArray(vao_triangle);
+        vao_triangle = null;
     }
    // window.close();
 }
