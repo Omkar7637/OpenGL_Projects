@@ -1,0 +1,75 @@
+///////////////////////////////
+ Date: 13-01-2026
+///////////////////////////////
+
+-> PHASE 1. Custom Win32 Window + OpenGL Context (Foundation)
+- Win32 Window Creation 
+- Message Loop
+- WGL OpenGL context
+- Double buffering
+- Clean Shutdown
+
+Folder
+Engine/
+    |-- src/
+    |   |-- Win32Window.cpp
+    |   |-- Win32Window.h
+    |   |-- main.cpp
+    |
+    |-- build
+
+// Developed a custom Win32-based OpenGL windowing system withpur third-part libraries.
+
+-> PHASE 2. Modern OpenGL Initialization (Core Profile)
+- OpenGL Core Profile
+- Function loading (GLFW / GLAD)
+- VAO / VBP
+- Shader compilation system
+- (Not Fixed pipeline)
+
+-> PHASE 3. Math + Camera System 
+- Vector & matrix Math (GLM)
+- Prespective projection
+- FPS Camera
+- Keyboard + Mouse input
+
+-> PHASE 4. Model Loader (OBJ) 
+- OBJ file parser
+- Vertex buffers from model data
+- Transform system
+
+-> PHASE 5. Lighting System
+- Phong / Blinn-phong Lighting
+- Directional Lighting
+- Point light
+- Material system
+
+-> PHASE 6. Shadow maping 
+- Depth framebuffer
+- Light-space matrices
+- shadow acne & bias 
+- Real-time shadows
+
+-> PHASE 7. Physics-Based Simulation
+- Physics demos:
+    - Gravity
+    - Rigid bosy motion
+    - Collision detection (AABB)
+    - Time-Step itegration
+
+-> PHASE 8. Engine polish
+- FPS Counter
+- Scene loading
+- Code cleanup
+- Engine-style folder structure
+
+-> PHASE 9. README + Video
+- Engine architecture diagram
+- Freature list
+- Build instruction
+- Screenshots
+- DEMO VIDEO    
+    - Camera movement
+    - Lighting changes
+    - Physics motion
+    - shadows

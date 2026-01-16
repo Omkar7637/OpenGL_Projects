@@ -1,28 +1,8 @@
-# Archives
-*.zip
-*.7z
-*.rar
-
-# Windows binaries
 *.exe
-*.dll
-*.obj
-*.lib
-*.exp
-*.ilk
-*.pdb
-
-# Visual Studio
-.vs/
+build/
+x64/
 Debug/
 Release/
-x64/
-Win32/
-
-# Build artifacts
-build/
-out/
-
-# OS junk
-.DS_Store
-Thumbs.db
+.vs/
+*.zip 
+V2_ModelLoading_GLTF_glb.zip WebGL.zip glew-2.3.0-win32 (1).zip glew-2.3.0-win32.zip

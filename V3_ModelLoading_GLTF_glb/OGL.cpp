@@ -1,0 +1,1213 @@
+// Win32 headers
+#include<windows.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include"vmath.h" // matrix and transformation related things
+using namespace vmath;
+
+// OpenGL related header Files 
+#include<gl/glew.h> // This header files must be included before GL.h
+#include<gl/GL.h>
+
+// Custom header file
+#include"OGL.h"
+#include "ModelLoader.h"
+
+
+
+// OpenGL related Libraries
+#pragma comment(lib, "glew32.lib")
+#pragma comment(lib, "opengl32.lib")
+
+// Micros
+#define WIN_WIDTH 800
+#define WIN_HEIGHT 600
+
+// Global Function decalrations
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+// Gloabl variable declartions
+// Variables related with fullscreen
+BOOL gbFullScreen = FALSE;
+HWND ghwnd = NULL;
+DWORD dwStyle;
+WINDOWPLACEMENT wpPrev;
+
+// Variables related to File I/O
+char gszLogFileName[] = "Log.txt";
+FILE *gpFile = NULL;
+
+// Active window related variable
+BOOL gbActiveWindow = FALSE;
+
+// Exit key pressed related
+BOOL gbEscKeyIsPressed = FALSE;
+
+// OpenGL related global variables
+HDC ghdc = NULL; // handle to device context
+HGLRC ghrc = NULL; 
+
+// Shader related variables
+GLuint shaderProgramObject = 0;
+enum 
+{
+	AMC_ATTRIBUTE_POSITION = 0,
+	AMC_ATTRIBUTE_COLOR,
+	AMC_ATTRIBUTE_TEXCOORD,
+};
+
+GLuint vao = 0;
+GLuint vao_pyramid = 0;
+GLuint vao_cube = 0;
+GLuint vbo_position_pyramid = 0;
+GLuint vbo_position_cube = 0;
+GLuint vbo_position = 0;
+GLuint vbo_TexCoord_pyramid = 0;
+// GLuint vbo_TexCoord = 0;
+GLuint vbo_TexCoord_cube = 0;
+GLuint vbo_color = 0;
+
+
+
+
+mat4 presepectiveProjectionMatrix; // matrix 4x4
+
+// For texture
+GLuint textureStone = 0;
+GLuint textureKundali = 0;
+GLuint textureSamplerUniform = 0; // texture uniform
+
+// Here we have broken down mvpMatrix into modelview and projection matix
+
+
+mat4 perspectiveProjectionMatrix; // matrix 4x4
+
+GLfloat angleCube = 0.0f;
+GLfloat speed_angle = 0.0f;
+
+GLuint uMVPUniform = 0;
+GLuint uModelUniform = 0;
+GLuint uTextureUniform = 0;
+GLuint uTexture = 0;
+
+GLuint uLightDirUniform = 0;
+GLuint uLightColorUniform = 0;
+GLuint uViewPosUniform = 0;
+GLuint uEnvMapUniform = 0;
+GLuint uIsGlassUniform = 0;
+
+
+
+//////////gltf///////////
+
+ModelLoader gModel;
+float gAnimTime = 0.0f;
+
+
+// ================= CAMERA =================
+vec3 cameraPos   = vec3(0.0f, 0.0f, 5.0f);
+vec3 cameraFront = vec3(0.0f, 0.0f, -1.0f);
+vec3 cameraUp    = vec3(0.0f, 1.0f, 0.0f);
+
+float yaw   = -90.0f;
+float pitch = 0.0f;
+
+float cameraSpeed = 5.0f;
+float mouseSensitivity = 0.15f;
+
+// Keyboard state
+bool keyState[256] = { false };
+
+// Mouse
+bool firstMouse = true;
+POINT lastMousePos;
+
+// Time
+float deltaTime = 0.0f;
+float lastTime  = 0.0f;
+
+void CenterCursor(HWND hwnd)
+{
+    RECT rect;
+    GetClientRect(hwnd, &rect);
+
+    POINT center;
+    center.x = (rect.right - rect.left) / 2;
+    center.y = (rect.bottom - rect.top) / 2;
+
+    ClientToScreen(hwnd, &center);
+    SetCursorPos(center.x, center.y);
+}
+
+
+//////////////////////////
+
+
+
+// Entry point function
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int iCmdShow)
+{
+	// Local Function Decalartions
+	int initialized(void);
+	void display(void);
+	void update(void);
+	void uninitialized(void);
+
+	// Variable declarations
+	WNDCLASSEX wndclass; // WNDCLASS is a struct
+	HWND hwnd;
+	MSG msg;// MSG is a struct
+	TCHAR szAppName[] = TEXT("RTR6_WIN");
+	BOOL bDone = FALSE;
+
+	// Code
+	// Create Log File // fopen_s // fprint_s s for secured
+	gpFile = fopen(gszLogFileName, "w");  // r :- read, w :- write, a :- append r+ a+ 
+	if(gpFile == NULL)
+	{
+		MessageBox(NULL, TEXT("LogFile creation Failed"), TEXT("File I/O ERROR"), MB_OK);// NULL
+		exit(0);
+	}
+	else
+	{
+		fprintf(gpFile, "program started sucessfully\n");
+	}
+
+
+	// Window Class Initilization 
+	wndclass.cbSize = sizeof(WNDCLASSEX); 
+	wndclass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC ; 
+	wndclass.cbClsExtra = 0;
+	wndclass.cbWndExtra = 0;
+	wndclass.lpfnWndProc = WndProc;
+	wndclass.hInstance = hInstance;
+	wndclass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wndclass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(MYICON));
+	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wndclass.lpszClassName = szAppName;
+	wndclass.lpszMenuName = NULL;
+	wndclass.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(MYICON));
+
+	// Registration Of Window Class
+	RegisterClassEx(&wndclass);
+
+	// Create Window
+	hwnd =	CreateWindowEx(WS_EX_APPWINDOW,
+			szAppName,
+		 	TEXT("Omkar Ankush Kashid"),
+	  		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE,
+        	(GetSystemMetrics(SM_CXSCREEN) - WIN_WIDTH) / 2,  // Center X
+        	(GetSystemMetrics(SM_CYSCREEN) - WIN_HEIGHT) / 2, // Center Y
+		 	WIN_WIDTH,
+		  	WIN_HEIGHT,
+		   	NULL,
+		    NULL,
+			hInstance,
+			NULL);
+		
+	ghwnd = hwnd;
+
+	// Show Window
+	ShowWindow(hwnd, iCmdShow);
+
+	// Paint Background Of The Window
+	UpdateWindow(hwnd);
+
+	// Initilized
+	int result = initialized();
+	if(result != 0)
+	{
+		fprintf(gpFile, "initilized() failed\n");
+		DestroyWindow(hwnd);
+		hwnd = NULL;
+	}
+	else
+	{
+		fprintf(gpFile, "initilized() Complited Sucessfully");
+	}
+
+	// Set this window as foreground and active window
+	SetForegroundWindow(hwnd);
+	SetFocus(hwnd);
+
+	// GameLoop
+	while(bDone == FALSE)
+	{
+		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			if(msg.message == WM_QUIT)
+			{
+				bDone = TRUE;
+			}
+			else
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+		else
+		{
+			if(gbActiveWindow == TRUE)
+			{
+				if(gbEscKeyIsPressed == TRUE)
+				{
+					bDone = TRUE;
+				}
+
+				// Render
+				display();
+
+				// Update
+				update();
+				
+			}
+		}
+	}
+
+	// Uninitilized
+	uninitialized();
+
+	return((int)msg.wParam);
+}
+
+// Call Back Function
+LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
+{
+	// function declarations
+	void togglefullscreen(void);
+	void resize(int, int);
+	void uninitialized(void);
+
+	// Code
+	switch (iMsg)
+	{
+		
+		case WM_CREATE:
+			ZeroMemory((void *)&wpPrev, sizeof(WINDOWPLACEMENT));
+			wpPrev.length = sizeof(WINDOWPLACEMENT);
+			break;
+
+		case WM_SETFOCUS:
+			gbActiveWindow = TRUE;
+			ShowCursor(FALSE);
+    		firstMouse = true;
+			CenterCursor(hwnd);
+
+			break;
+
+		case WM_KILLFOCUS:
+			gbActiveWindow = FALSE;
+			ShowCursor(FALSE);
+			break;
+
+		case WM_ERASEBKGND:
+			return(0);
+
+		case WM_SIZE:
+			resize(LOWORD(lParam), HIWORD(lParam));
+			break;
+
+		case WM_KEYDOWN:
+			keyState[wParam] = true;
+
+			if (wParam == VK_ESCAPE)
+				gbEscKeyIsPressed = TRUE;
+			break;
+
+		case WM_KEYUP:
+			keyState[wParam] = false;
+			break;
+
+
+		case WM_CHAR:
+			switch(wParam)
+			{
+				case 'F':
+				case 'f':
+					if(gbFullScreen == FALSE)
+					{
+						togglefullscreen();
+						gbFullScreen = TRUE;
+					}
+					else
+					{
+						togglefullscreen();
+						gbFullScreen = FALSE;
+					}
+					break;			
+			}
+			break;
+
+		case WM_DESTROY :
+			PostQuitMessage(0);
+			break;
+
+		
+		case WM_CLOSE:
+			uninitialized();
+			break;
+
+		case WM_MOUSEMOVE:
+		{
+			if (!gbActiveWindow) break;
+
+			POINT p;
+			GetCursorPos(&p);
+			ScreenToClient(hwnd, &p);
+
+			RECT rect;
+			GetClientRect(hwnd, &rect);
+
+			int centerX = rect.right / 2;
+			int centerY = rect.bottom / 2;
+
+			float xoffset = (float)(p.x - centerX);
+			float yoffset = (float)(centerY - p.y);
+
+			xoffset *= mouseSensitivity;
+			yoffset *= mouseSensitivity;
+
+			yaw   += xoffset;
+			pitch += yoffset;
+
+			if (pitch > 89.0f)  pitch = 89.0f;
+			if (pitch < -89.0f) pitch = -89.0f;
+
+			vec3 front;
+			front[0] = cos(radians(yaw)) * cos(radians(pitch));
+			front[1] = sin(radians(pitch));
+			front[2] = sin(radians(yaw)) * cos(radians(pitch));
+			cameraFront = normalize(front);
+
+			// 🔒 lock mouse back to center
+			CenterCursor(hwnd);
+		}
+		break;
+
+		default:
+			break;
+			
+	}
+
+	return(DefWindowProc(hwnd, iMsg, wParam, lParam));
+}
+
+void togglefullscreen(void)
+{
+	// variable declarations
+	MONITORINFO mi;
+	
+
+	// Code
+	if(gbFullScreen == FALSE)
+	{
+		dwStyle = GetWindowLong(ghwnd, GWL_STYLE);
+		if(dwStyle & WS_OVERLAPPEDWINDOW)
+		{
+			ZeroMemory((void *)&mi, sizeof(MONITORINFO));
+			mi.cbSize = sizeof(MONITORINFO);
+			if(GetWindowPlacement(ghwnd, &wpPrev) && GetMonitorInfo(MonitorFromWindow(ghwnd, MONITORINFOF_PRIMARY), &mi))
+			{
+				SetWindowLong(ghwnd, GWL_STYLE, dwStyle & ~WS_OVERLAPPEDWINDOW);
+				SetWindowPos(ghwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top, mi.rcMonitor.right-mi.rcMonitor.left, mi.rcMonitor.bottom-mi.rcMonitor.top, SWP_NOZORDER | SWP_FRAMECHANGED);
+			}
+		}
+		
+		ShowCursor(FALSE);
+	}
+	else
+	{
+		SetWindowPlacement(ghwnd, &wpPrev);
+		SetWindowLong(ghwnd, GWL_STYLE, dwStyle | WS_OVERLAPPEDWINDOW);
+		SetWindowPos(ghwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_FRAMECHANGED);
+		ShowCursor(FALSE);
+	}
+
+}
+
+int initialized(void)
+{
+	// function declarations
+	void printGLInfo(void);
+	void resize(int, int);
+	void uninitialized(void);
+	BOOL loadGLTexture(GLuint*, TCHAR[]);
+
+	// Variable declarations
+	PIXELFORMATDESCRIPTOR pfd;
+	int iPixelFormatIndex = 0;
+	GLenum glewResult;
+
+	// code
+
+	//Pixel format discripter initilization
+	ZeroMemory((void *)&pfd, sizeof(PIXELFORMATDESCRIPTOR));
+	pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+	pfd.nVersion = 1;
+	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER ;
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.cColorBits = 32;
+	pfd.cRedBits = 8;
+	pfd.cGreenBits = 8;
+	pfd.cBlueBits = 8;
+	pfd.cAlphaBits = 8;
+	pfd.cDepthBits = 32;// depth
+	
+	// getdc
+	ghdc = GetDC(ghwnd);
+	if(ghdc == NULL)
+	{
+		fprintf(gpFile, "GetDC Function failed\n");
+		return(-1);
+	}
+
+	// get matching pixel format index using hdc and pfd
+	iPixelFormatIndex = ChoosePixelFormat(ghdc, &pfd);
+	if(iPixelFormatIndex == 0)
+	{
+		fprintf(gpFile, "choose pixel format failed\n");
+		return(-2);
+	}
+	
+	// Select The pixel format of found index
+	if(SetPixelFormat(ghdc, iPixelFormatIndex, &pfd) == FALSE)
+	{
+		fprintf(gpFile, "setPixel format failed");
+		return(-3);
+	}
+
+	// Create rendering context using hdc pfd and pixel format index and choosen pixel format index
+	ghrc = wglCreateContext(ghdc);
+	if(ghrc == NULL)
+	{
+		fprintf(gpFile, "wgl context failed\n");
+		return(-4);
+	}
+
+	// make this rendering context as current context
+	if(wglMakeCurrent(ghdc, ghrc) == FALSE)
+	{
+		fprintf(gpFile, "wglmake failed\n");
+		return(-5);
+	}
+
+	// Initialize GLEW
+	glewResult = glewInit();
+	if(glewResult != GLEW_OK)
+	{
+		fprintf(gpFile, "glewInit Failed\n");
+		return(-6);
+	}
+
+	// Print GL info
+	printGLInfo();
+
+	// Steps
+	// 1] write the shader source code
+	// 2] Create the shader object
+	// 3] Give the shdaer source to the shader object
+	// 4] Compile the shader programatically
+	// 5] Do shader compiliation error checking
+
+	// ========VERTEX SHADER=======
+	const char* vertexShaderSourceCode = 
+	"#version 460 core\n"\
+
+	"layout(location = 0) in vec3 aPosition;\n"\
+	"layout(location = 1) in vec3 aNormal;\n"\
+	"layout(location = 2) in vec2 aTexCoord;\n"\
+
+	"uniform mat4 uMVP;\n"\
+	"uniform mat4 uModel;\n"\
+	"uniform mat4 uModel;\n"\
+	"uniform mat4 uModel;\n"\
+	"uniform mat4 uProjection;\n"\
+
+	"out vec3 vNormal;\n"\
+	"out vec3 vWorldPos;\n"\
+	"out vec2 vUV;\n"\
+
+	"void main()\n"\
+	"{\n"\
+	"    vWorldPos = vec3(uModel * vec4(aPosition, 1.0));\n"\
+	"	 vWorldPos = worldPos.xyz;\n"\
+	"    vNormal   = mat3(transpose(inverse(uModel))) * aNormal;\n"\
+	"    vUV       = aTexCoord;\n"\
+
+	"    gl_Position = uProjection * uView * worldPos;\n"\
+	"}\n";
+
+	// 2nd
+	GLuint vertexShaderObject = glCreateShader(GL_VERTEX_SHADER);
+	// 3rd
+	glShaderSource(vertexShaderObject, 1, (const GLchar**)&vertexShaderSourceCode, NULL);
+	// 4th
+	glCompileShader(vertexShaderObject);
+	// 5th
+	GLint status = 0;
+	GLint infoLogLenth = 0;
+	GLchar* szinfoLog = NULL;
+	
+	glGetShaderiv(vertexShaderObject, GL_COMPILE_STATUS, &status);
+
+	if(status == GL_FALSE)
+	{
+		glGetShaderiv(vertexShaderObject, GL_INFO_LOG_LENGTH, &infoLogLenth);
+
+		if(infoLogLenth > 0)
+		{
+			szinfoLog = (GLchar*) malloc(infoLogLenth * sizeof(GLchar));
+
+			if(szinfoLog != NULL)
+			{
+				glGetShaderInfoLog(vertexShaderObject, infoLogLenth, NULL, szinfoLog);
+				fprintf(gpFile, "VERTEX SHADER COMPILATION LOG = %s\n", szinfoLog);
+				free(szinfoLog);
+				szinfoLog = NULL;
+			}
+		}
+		uninitialized();
+	}
+
+	// ===============FRAGMENT SHADER===============
+	const GLchar* fragmentShaderSourceCode = 
+	"#version 460 core\n"\
+	"in vec3 vNormal;\n"\
+	"in vec3 vWorldPos;\n"\
+	"in vec2 vUV;\n"\
+	"uniform sampler2D uTexture;\n"\
+	"uniform vec3 uLightDir;\n"\
+	"uniform vec3 uLightColor;\n"\
+	"uniform vec3 uViewPos;\n"\
+	"out vec4 FragColor;\n"\
+	"uniform samplerCube uEnvMap;\n"
+	"uniform bool uIsGlass;\n"
+	"void main()\n"\
+	"{\n"\
+	"    vec3 albedo = texture(uTexture, vUV).rgb;\n"\
+
+	"    vec3 N = normalize(vNormal);\n"\
+	"    vec3 L = normalize(-uLightDir);\n"\
+
+	"    float diff = max(dot(N, L), 0.0);\n"\
+
+	"    vec3 color = albedo * uLightColor * diff;\n"\
+
+		"if (uIsGlass)\n"\
+	"{\n"\
+		"vec3 V = normalize(uViewPos - vWorldPos);\n"\
+		"vec3 R = reflect(-V, normalize(vNormal));\n"\
+		"vec3 env = texture(uEnvMap, R).rgb;\n"\
+
+		"FragColor = vec4(mix(color, env, 0.6), 0.4);\n"\
+		"return\n"\
+	"}\n"\
+
+	"    FragColor = vec4(color, texture(uTexture, vUV).a);\n"\
+	"}\n";
+
+
+	GLuint fragmentShaderObject = glCreateShader(GL_FRAGMENT_SHADER);
+
+	glShaderSource(fragmentShaderObject, 1, (const GLchar**)&fragmentShaderSourceCode, NULL);
+
+	glCompileShader(fragmentShaderObject);
+
+	status = 0;
+	infoLogLenth = 0;
+	szinfoLog = NULL;
+
+	glGetShaderiv(fragmentShaderObject, GL_COMPILE_STATUS, &status);
+
+	if(status == GL_FALSE)
+	{
+		glGetShaderiv(fragmentShaderObject, GL_INFO_LOG_LENGTH, &infoLogLenth);
+
+		if(infoLogLenth > 0)
+		{
+			szinfoLog = (GLchar*) malloc(infoLogLenth * sizeof(GLchar));
+
+			if(szinfoLog != NULL)
+			{
+				glGetShaderInfoLog(fragmentShaderObject, infoLogLenth, NULL, szinfoLog);
+				fprintf(gpFile, "FRAGMENT SHADER COMPILATION LOG = %s\n", szinfoLog);
+				free(szinfoLog);
+				szinfoLog = NULL;
+			}
+		}
+		uninitialized();
+	}
+
+	// 1] CREATE SHADER PROGRAM OBJECT
+	// 2] Attach Shader object to shader program objects
+	// 3] tell to link shader objects to shader program object
+	// 4] Check for link error logs
+
+	// Create, Attach, Link Shader Program Object
+	shaderProgramObject = glCreateProgram();
+
+	glAttachShader(shaderProgramObject, vertexShaderObject);
+	glAttachShader(shaderProgramObject, fragmentShaderObject);
+
+	// bind shader attribute at a certan index in shader to same index in host program
+	glBindAttribLocation(shaderProgramObject, AMC_ATTRIBUTE_POSITION, "aPosition");
+	glBindAttribLocation(shaderProgramObject, AMC_ATTRIBUTE_TEXCOORD, "aTexCoord");
+	// Link the shader program object
+	glLinkProgram(shaderProgramObject);
+	
+	// Check for link error logs
+	// 1] Get the link status
+	// 2] Get the info log length	
+	// 3] Allocate memory for info log
+	// 4] Get the info log
+	// 5] Print the info log
+	// 6] Free the info log memory
+	// 7] Uninitialize the program if link failed
+	// 8] Unbind the shader program object
+	// 9] Unbind the shader object
+
+	status = 0;
+	infoLogLenth = 0;
+	szinfoLog = NULL;
+
+	glGetProgramiv(shaderProgramObject, GL_LINK_STATUS, &status);
+
+	
+	if(status == GL_FALSE)
+	{
+		glGetProgramiv(shaderProgramObject, GL_INFO_LOG_LENGTH, &infoLogLenth);
+
+		if(infoLogLenth > 0)
+		{
+			szinfoLog = (GLchar*) malloc(infoLogLenth * sizeof(GLchar));
+
+			if(szinfoLog != NULL)
+			{
+				glGetProgramInfoLog(shaderProgramObject, infoLogLenth, NULL, szinfoLog);
+				fprintf(gpFile, "SHADER PROGRAM LINK LOG = %s\n", szinfoLog);
+				free(szinfoLog);
+				szinfoLog = NULL;
+			}
+		}
+		uninitialized();
+	}
+
+	// Get the uniform locations
+	// uMVPMatrix is the uniform variable in vertex shader
+	// uTextureSampler is the uniform variable in fragment shader
+	// uMVPMatrix is the uniform variable in vertex shader	
+
+	uModelUniform    = glGetUniformLocation(shaderProgramObject, "uModel");
+	uViewUniform       = glGetUniformLocation(shaderProgramObject, "uView");
+	
+
+	uMVPUniform      = glGetUniformLocation(shaderProgramObject, "uMVP");
+	uTextureUniform  = glGetUniformLocation(shaderProgramObject, "uTexture");
+
+	uLightDirUniform   = glGetUniformLocation(shaderProgramObject, "uLightDir");
+	uLightColorUniform = glGetUniformLocation(shaderProgramObject, "uLightColor");
+	uViewPosUniform    = glGetUniformLocation(shaderProgramObject, "uViewPos");
+
+	uEnvMapUniform     = glGetUniformLocation(shaderProgramObject, "uEnvMap");
+	uIsGlassUniform    = glGetUniformLocation(shaderProgramObject, "uIsGlass");
+
+	
+
+	//Provide vertex position/vertices, color, normal, texcoord, etc. //in PP OpenGL no glVertex,Color,Texcoords,only given by array here
+	const GLfloat pyramid_position[] =
+	{
+		// front
+	 0.0f,  1.0f,  0.0f, // front-top
+	-1.0f, -1.0f,  1.0f, // front-left
+	 1.0f, -1.0f,  1.0f, // front-right
+
+	 // right
+	 0.0f,  1.0f,  0.0f, // right-top
+	 1.0f, -1.0f,  1.0f, // right-left
+	 1.0f, -1.0f, -1.0f, // right-right
+
+	 // back
+	 0.0f,  1.0f,  0.0f, // back-top
+	 1.0f, -1.0f, -1.0f, // back-left
+	-1.0f, -1.0f, -1.0f, // back-right
+
+	// left
+	0.0f,  1.0f,  0.0f, // left-top
+   -1.0f, -1.0f, -1.0f, // left-left
+   -1.0f, -1.0f,  1.0f, // left-right
+	};
+	const GLfloat pyramid_texcoords[] =
+	{// front
+	0.5, 1.0, // front-top
+	0.0, 0.0, // front-left
+	1.0, 0.0, // front-right
+
+	// right
+	0.5, 1.0, // right-top
+	1.0, 0.0, // right-left
+	0.0, 0.0, // right-right
+
+	// back
+	0.5, 1.0, // back-top
+	0.0, 0.0, // back-left
+	1.0, 0.0, // back-right
+
+	// left
+	0.5, 1.0, // left-top
+	1.0, 0.0, // left-left
+	0.0, 0.0, // left-right
+	};
+	
+	// ================pyramid=====================
+
+	// Vertex array object for arrays of vertex arrtributes
+	glGenVertexArrays(1, &vao_pyramid); // vao vertex array object
+	glBindVertexArray(vao_pyramid);
+
+	// POSITION
+	glGenBuffers(1, &vbo_position_pyramid); // vertex Buffer Object
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_position_pyramid);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(pyramid_position), pyramid_position, GL_STATIC_DRAW);
+	glVertexAttribPointer(AMC_ATTRIBUTE_POSITION, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(AMC_ATTRIBUTE_POSITION);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// COLOR
+	glGenBuffers(1, &vbo_TexCoord_pyramid); // vertex Buffer Object
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_TexCoord_pyramid);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(pyramid_texcoords), pyramid_texcoords, GL_STATIC_DRAW);
+	glVertexAttribPointer(AMC_ATTRIBUTE_TEXCOORD, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnableVertexAttribArray(AMC_ATTRIBUTE_TEXCOORD);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0); // vao unbind
+
+
+	// depth related calls
+	glClearDepth(1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_FRAMEBUFFER_SRGB);
+	glDisable(GL_CULL_FACE);   // important for now
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+
+
+	// from here onword OpenGL codes starts
+	// tell the opengl to choose the color to clear the screen
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+	// Load Textures
+	if(loadGLTexture(&textureStone, MAKEINTRESOURCE(IDBITMAP_STONE)) == FALSE)
+	{
+		fprintf(gpFile, "Load texture Stone failed!!\n");
+		return(-6);
+	}
+
+	if(loadGLTexture(&textureKundali, MAKEINTRESOURCE(IDBITMAP_KUNDALI)) == FALSE)
+	{
+		fprintf(gpFile, "Load texture Kundali failed!!\n");
+		return(-7);
+	}
+
+	if (!gModel.Load("Models/dassault_rafale_m_-_fighter_jet_-_free.glb"))
+    {
+        MessageBoxA(NULL, "Failed to load GLB", "Error", MB_OK);
+        return false;
+    }
+
+	
+	presepectiveProjectionMatrix = mat4::identity(); // this is analogas to glloadidentity
+
+	// Warmup resize
+	resize(WIN_WIDTH, WIN_HEIGHT);
+	
+	return(0);
+}
+
+
+BOOL loadGLTexture(GLuint* texture,TCHAR imageResourceID[])
+{
+	// variable declarations
+	HBITMAP hBitmap = NULL;
+	BITMAP bmp;
+	BOOL bResult = FALSE;
+
+	// code
+	// load the bitmap as image
+	hBitmap = (HBITMAP)LoadImage(GetModuleHandle(NULL), imageResourceID, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+	if(hBitmap)
+	{
+		bResult = TRUE;
+
+		// get bitmap sturucture from the loaded bitmap image
+		GetObject(hBitmap, sizeof(BITMAP), &bmp);
+
+		// Genrate OpenGL Texture object
+		glGenTextures(1, texture);
+
+		// bind to the newly created empty structured oabject
+		glBindTexture(GL_TEXTURE_2D, *texture);
+
+		// unpack the image into memory for faster loading
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+		// gluBuild2DMipmaps(GL_TEXTURE_2D, 3, bmp.bmWidth, bmp.bmHeight, GL_BGR_EXT, GL_UNSIGNED_BYTE, bmp.bmBits);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bmp.bmWidth, bmp.bmHeight, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, bmp.bmBits);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		DeleteObject(hBitmap);
+
+		hBitmap = NULL;
+	}
+
+	return(bResult);
+
+}
+
+void printGLInfo(void) {
+
+	// Varible declarations
+	GLint numExtensions, i;
+
+	// code
+	// print openGL Information
+	fprintf(gpFile, "OPENGL INFORMATION\n");
+	fprintf(gpFile, "---------x--------\n");
+	fprintf(gpFile, "openGL vendor : %s\n", glGetString(GL_VENDOR));
+	fprintf(gpFile, "OpenGL Renderer : %s\n",glGetString(GL_RENDERER));
+	fprintf(gpFile, "openGL version : %s\n", glGetString(GL_VERSION));
+	fprintf(gpFile, "GLSL Version = %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	// Get number of extentions
+	glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions); 
+	fprintf(gpFile, "Extention Countes : %d\n", numExtensions); 	
+
+	// Print opengl extensions
+	// for(i = 0; i < numExtensions; i++)
+	// {
+	// 	fprintf(gpFile, "%s\n", glGetStringi(GL_EXTENSIONS, i));
+	// }
+	
+	fprintf(gpFile, "---------x--------\n");
+
+}
+void resize(int width, int height)
+{
+	// code
+	// if height by accedent become 0 or less that 0 then make height 1
+	if(height <= 0)
+	{
+		height = 1;
+	}
+	// set the view port
+	glViewport(0, 0, (GLsizei)width, (GLsizei)height);
+
+	presepectiveProjectionMatrix = vmath :: perspective (45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 1000.0f);
+}
+
+// void display(void)
+// {
+
+// 	static float animTime = 0.0f;
+//     animTime += 0.016f;
+
+// 	gModel.Update(animTime);
+
+//     // Clear color & depth buffers
+//     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+//     // Use shader program
+//     glUseProgram(shaderProgramObject);
+
+
+
+//     // =========================================================
+//     // PYRAMID
+//     // =========================================================
+//     // mat4 modelMatrix = mat4::identity();
+//     // mat4 mvpMatrix   = mat4::identity();
+
+//     // // Pyramid transform
+//     // modelMatrix = vmath::translate(0.0f, 0.0f, -6.0f);
+
+//     // // MVP
+//     // mvpMatrix = presepectiveProjectionMatrix * modelMatrix;
+
+//     // // Send MVP
+//     // glUniformMatrix4fv(mvpMatrixUniform, 1, GL_FALSE, mvpMatrix);
+
+//     // Bind texture
+//     glActiveTexture(GL_TEXTURE0);
+//     glBindTexture(GL_TEXTURE_2D, textureStone);
+//     glUniform1i(textureSamplerUniform, 0);
+
+//     // Draw pyramid
+//     glBindVertexArray(vao_pyramid);
+//     glDrawArrays(GL_TRIANGLES, 0, 12);
+//     glBindVertexArray(0);
+
+//     glBindTexture(GL_TEXTURE_2D, 0);
+
+//     // =========================================================
+//     // GLTF MODEL (rubiks_cube.glb)
+//     // =========================================================
+// 	// ================= CAMERA VIEW =================
+// 	mat4 viewMatrix = vmath::lookat(
+// 		cameraPos,
+// 		cameraPos + cameraFront,
+// 		cameraUp
+// 	);
+
+// 	// ================= MODEL =================
+
+	
+// 	mat4 modelMatrix =
+// 		vmath::translate(0.0f, -1.0f, 0.0f) *
+// 		vmath::scale(0.5f, 0.5f, 0.5f);
+
+// 	mat4 mvp = presepectiveProjectionMatrix * viewMatrix * modelMatrix;
+
+
+// 	glUniformMatrix4fv(mvpMatrixUniform, 1, GL_FALSE, mvp);
+
+
+// 	// ---- USE PROGRAM (IMPORTANT) ----
+// 	glUseProgram(shaderProgramObject);
+
+	
+// 	// ---- SET MVP ----
+// 	glUniformMatrix4fv(mvpMatrixUniform, 1, GL_FALSE, mvp);
+	
+// 	// ---- SET SAMPLER *HERE* ----
+// 	glUniform1i(textureSamplerUniform, 0);
+	
+// 	// ---- DRAW GLTF (ModelLoader binds texture) ----
+// 	gModel.Draw();
+
+
+// 	// Unbind texture
+// 	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+//     // =========================================================
+//     // Cleanup
+//     // =========================================================
+//     glUseProgram(0);
+
+//     // Swap buffers
+//     SwapBuffers(ghdc);
+// }
+
+void display(void)
+{
+    static float animTime = 0.0f;
+    animTime += 0.016f;
+
+    gModel.Update(animTime);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glUseProgram(shaderProgramObject);
+
+    // -------- LIGHT --------
+    glUniform3f(uLightDirUniform, -0.3f, -1.0f, -0.2f);
+    glUniform3f(uLightColorUniform, 1.0f, 1.0f, 1.0f);
+    glUniform3fv(uViewPosUniform, 1, cameraPos);
+
+    // -------- CAMERA --------
+    mat4 viewMatrix = lookat(
+        cameraPos,
+        cameraPos + cameraFront,
+        cameraUp
+    );
+
+    // -------- MODEL --------
+    mat4 modelMatrix =
+        translate(0.0f, 0.0f, 0.0f) *
+        rotate(radians(-90.0f), 1.0f, 0.0f, 0.0f) *   // glTF fix
+        scale(0.05f, 0.05f, 0.05f);                   // aircraft scale
+
+    // ⚠️ DO NOT multiply animatedNodeMatrix here yet
+    // Your loader applies it internally
+
+    mat4 mvp =
+        presepectiveProjectionMatrix *
+        viewMatrix *
+        modelMatrix;
+
+    // -------- SEND UNIFORMS --------
+    glUniformMatrix4fv(uModelUniform, 1, GL_FALSE, modelMatrix);
+    glUniformMatrix4fv(uMVPUniform,   1, GL_FALSE, mvp);
+
+    glActiveTexture(GL_TEXTURE0);
+    glUniform1i(uTextureUniform, 0);
+
+    // -------- DRAW --------
+    gModel.Draw();
+
+    glUseProgram(0);
+    SwapBuffers(ghdc);
+}
+
+
+
+void update(void)
+{
+    float currentTime = GetTickCount() / 1000.0f;
+    deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+
+    float velocity = cameraSpeed * deltaTime;
+
+    vec3 right = normalize(cross(cameraFront, cameraUp));
+
+    if (keyState['W'])
+        cameraPos += velocity * cameraFront;
+
+    if (keyState['S'])
+        cameraPos -= velocity * cameraFront;
+
+    if (keyState['A'])
+        cameraPos -= velocity * right;
+
+    if (keyState['D'])
+        cameraPos += velocity * right;
+}
+
+
+
+void uninitialized(void)
+{
+	// function declarations
+	void togglefullscreen(void);
+
+	// code
+	// if user is exiting in full screen then restored back to noraml
+	if(gbFullScreen == TRUE)
+	{
+		togglefullscreen();
+		gbFullScreen = FALSE;
+	}
+
+	if (textureKundali) 
+	{
+		glDeleteTextures(1, &textureKundali);
+		textureKundali = 0;
+	}
+
+	if (textureStone) 
+	{
+		glDeleteTextures(1, &textureStone);
+		textureStone = 0;
+	}
+
+	
+
+	//free vbo_position
+	if (vbo_position_cube)
+	{
+		glDeleteBuffers(1, &vbo_position_cube);
+		vbo_position_cube = 0;
+	}
+
+	//free vao
+	if (vao_cube)
+	{
+		glDeleteVertexArrays(1, &vao_cube);
+		vao_cube = 0;
+	}
+
+	
+
+	//free vbo_position
+	if (vbo_position_pyramid)
+	{
+		glDeleteBuffers(1, &vbo_position_pyramid);
+		vbo_position_pyramid = 0;
+	}
+
+	//fre vao
+	if (vao_pyramid)
+	{
+		glDeleteVertexArrays(1, &vao_pyramid);
+		vao_pyramid = 0;
+	}
+
+	// Dettach , delete shaderobject and shader program object
+	// how Dettach/Delete Shader program object of any number and any type of shaders
+	// 1] Check if shader programm object is still there
+	// 2] Get number of shaders and continue only if number of shader is greater than 0
+	// 3] Create a buffer/Array to hold shader Object of obtained numbers of shaders
+	// 4] Get Shader objects into this buffer/Array and continue if malloc is succedded
+	// 5] Start a loop for obtained number of shaders and inside this loop dettached and delete every shader from the buffer/Array
+	// 6] Free the buffer/Array
+	// 7] Delete the Shader program object
+	if(shaderProgramObject) 
+	{
+		glUseProgram(shaderProgramObject);
+		GLint numShaders;
+		glGetProgramiv(shaderProgramObject, GL_ATTACHED_SHADERS, &numShaders);
+		if(numShaders > 0)
+		{
+			GLuint *pShaders = (GLuint*)malloc(numShaders * sizeof(GLuint));
+			if(pShaders != NULL)
+			{
+				glGetAttachedShaders(shaderProgramObject, numShaders, NULL, pShaders);
+				for(GLint i = 0; i < numShaders; i++)
+				{
+					glDetachShader(shaderProgramObject, pShaders[i]);
+					glDeleteShader(pShaders[i]);
+					pShaders[i] = 0;
+				}
+			}
+			free(pShaders);
+			pShaders = NULL;
+		}
+		glUseProgram(0);
+		glDeleteProgram(shaderProgramObject);
+	}
+
+
+	// make hdc as current context by relesing  rendering context as current context
+	if(wglGetCurrentContext() == ghrc)
+	{
+		wglMakeCurrent(NULL, NULL);
+	}
+
+	// delet the rendering context
+	if(ghrc) 
+	{
+		wglDeleteContext(ghrc);
+		ghrc = NULL;
+	}
+
+	// relse the dc
+	if(ghdc)
+	{
+		ReleaseDC(ghwnd, ghdc);
+		ghdc = NULL;
+	}
+
+	// distroy winode
+	if(ghwnd)
+	{
+		DestroyWindow(ghwnd);
+		ghwnd = NULL;
+	}
+
+	// Close the file
+	if(gpFile)
+	{
+		fprintf(gpFile, "Program terminated sucessfully");
+		fclose(gpFile);
+		gpFile = NULL;
+	}
+}
+

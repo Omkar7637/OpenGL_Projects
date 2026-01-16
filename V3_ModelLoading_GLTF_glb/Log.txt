@@ -1,0 +1,16 @@
+program started sucessfully
+OPENGL INFORMATION
+---------x--------
+openGL vendor : NVIDIA Corporation
+OpenGL Renderer : Quadro P1000/PCIe/SSE2
+openGL version : 4.6.0 NVIDIA 582.16
+GLSL Version = 4.60 NVIDIA
+Extention Countes : 396
+---------x--------
+VERTEX SHADER COMPILATION LOG = 0(7) : error C1038: declaration of "uModel" conflicts with previous declaration at 0(6)
+0(8) : error C1038: declaration of "uModel" conflicts with previous declaration at 0(6)
+0(16) : error C1503: undefined variable "worldPos"
+0(19) : error C1503: undefined variable "uView"
+0(19) : error C1503: undefined variable "worldPos"
+
+Program terminated sucessfully
