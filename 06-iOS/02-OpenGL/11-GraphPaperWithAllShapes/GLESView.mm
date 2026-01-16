@@ -32,61 +32,61 @@ enum
     NSInteger framesPerSecond;
     BOOL isDisplayLink;
     
-    GLuint shaderProgramObject_SAG;
-    mat4 perspectiveProjectionMatrix_SAG; // mat4 is in vmath.h
+    GLuint shaderProgramObject_AMC;
+    mat4 perspectiveProjectionMatrix_AMC; // mat4 is in vmath.h
 
     // ===================== Graph Related VAOs & VBOs =========================
     // For Horizontal lines
-    GLuint vao_upper_horizontal_SAG;
-    GLuint vbo_upper_horizontal_position_SAG;
+    GLuint vao_upper_horizontal_AMC;
+    GLuint vbo_upper_horizontal_position_AMC;
 
-    GLuint vao_lower_horizontal_SAG;
-    GLuint vbo_lower_horizontal_position_SAG;
+    GLuint vao_lower_horizontal_AMC;
+    GLuint vbo_lower_horizontal_position_AMC;
 
-    GLuint vbo_color_horizontal_SAG;
+    GLuint vbo_color_horizontal_AMC;
 
-    GLuint vao_green_horizontal_SAG;
-    GLuint vbo_green_horizontal_position_SAG;
-    GLuint vbo_green_horizontal_color_SAG;
+    GLuint vao_green_horizontal_AMC;
+    GLuint vbo_green_horizontal_position_AMC;
+    GLuint vbo_green_horizontal_color_AMC;
 
     // For Vertical Lines
-    GLuint vao_left_vertical_SAG;
-    GLuint vbo_left_vertical_position_SAG;
+    GLuint vao_left_vertical_AMC;
+    GLuint vbo_left_vertical_position_AMC;
 
-    GLuint vao_right_vertical_SAG;
-    GLuint vbo_right_vertical_position_SAG;
+    GLuint vao_right_vertical_AMC;
+    GLuint vbo_right_vertical_position_AMC;
 
-    GLuint vbo_color_vertical_SAG;
+    GLuint vbo_color_vertical_AMC;
 
-    GLuint vao_red_vertical_SAG;
-    GLuint vbo_red_vertical_position_SAG;
-    GLuint vbo_red_vertical_color_SAG;
+    GLuint vao_red_vertical_AMC;
+    GLuint vbo_red_vertical_position_AMC;
+    GLuint vbo_red_vertical_color_AMC;
 
     // ================= Circle Related VAOs & VBOs ======================
-    GLuint vao_circle_SAG;
-    GLuint vbo_circle_position_SAG;
-    GLuint vbo_circle_color_SAG;
+    GLuint vao_circle_AMC;
+    GLuint vbo_circle_position_AMC;
+    GLuint vbo_circle_color_AMC;
 
     // ================= Square Related VAOs & VBOs ======================
-    GLuint vao_square_SAG;
-    GLuint vbo_square_position_SAG;
-    GLuint vbo_square_color_SAG;
+    GLuint vao_square_AMC;
+    GLuint vbo_square_position_AMC;
+    GLuint vbo_square_color_AMC;
 
     // ================= Triangle Related VAOs & VBOs ======================
-    GLuint vao_triangle_SAG;
-    GLuint vbo_triangle_position_SAG;
-    GLuint vbo_triangle_color_SAG;
+    GLuint vao_triangle_AMC;
+    GLuint vbo_triangle_position_AMC;
+    GLuint vbo_triangle_color_AMC;
 
-    GLuint mvpMatrixUniform_SAG;
+    GLuint mvpMatrixUniform_AMC;
 
     // Variable To Handle Switch Between Shapes
-    BOOL currentShapeGraph_SAG;
-    BOOL currentShapeCircle_SAG;
-    BOOL currentShapeSquare_SAG;
-    BOOL currentShapeTriangle_SAG;
+    BOOL currentShapeGraph_AMC;
+    BOOL currentShapeCircle_AMC;
+    BOOL currentShapeSquare_AMC;
+    BOOL currentShapeTriangle_AMC;
     
-    int singleTap_SAG;
-    BOOL doubleTab_SAG;
+    int singleTap_AMC;
+    BOOL doubleTab_AMC;
 }
 
 -(id)initWithFrame:(CGRect)frame
@@ -96,13 +96,13 @@ enum
     if (self)
     {
         // Variable Initialization
-        currentShapeGraph_SAG = FALSE;
-        currentShapeCircle_SAG = FALSE;
-        currentShapeSquare_SAG = FALSE;
-        currentShapeTriangle_SAG = FALSE;
+        currentShapeGraph_AMC = FALSE;
+        currentShapeCircle_AMC = FALSE;
+        currentShapeSquare_AMC = FALSE;
+        currentShapeTriangle_AMC = FALSE;
         
-        singleTap_SAG = 0;
-        doubleTab_SAG = FALSE;
+        singleTap_AMC = 0;
+        doubleTab_AMC = FALSE;
         
         // Set The Background To Black
         [self setBackgroundColor:[UIColor blackColor]];
@@ -350,7 +350,7 @@ enum
     [self printGLInfo];
     
     // Vertex Shader
-    const GLchar* vertexShaderSourceCode_SAG =
+    const GLchar* vertexShaderSourceCode_AMC =
         "#version 300 core                          "\
         "\n                                         "\
         "in vec4 aPosition;                         "\
@@ -363,38 +363,38 @@ enum
         "   oColor=aColor;                          "\
         "}                                          ";
 
-    GLuint vertexShaderObject_SAG = glCreateShader(GL_VERTEX_SHADER); // Creates empty shader object
+    GLuint vertexShaderObject_AMC = glCreateShader(GL_VERTEX_SHADER); // Creates empty shader object
 
     // below function is made to receive shader source code
     glShaderSource(
-        vertexShaderObject_SAG,
+        vertexShaderObject_AMC,
         1, // Number Of Strings passed in 3rd parameter (Can pass multiple strings we passed only one)
-        (const GLchar**)&vertexShaderSourceCode_SAG,
+        (const GLchar**)&vertexShaderSourceCode_AMC,
         NULL // If multiple strings are there in 3rd param then it will be array of lengths of those multiple strings(We have only one so consider whole string)
     );
 
     // To compile shader source code(To convert human understandable to m/c i.e. GPU)
-    glCompileShader(vertexShaderObject_SAG);
+    glCompileShader(vertexShaderObject_AMC);
 
-    GLint status_SAG = 0;
-    GLint infoLogLength_SAG = 0;
-    GLchar* szInfoLog_SAG = NULL;
+    GLint status_AMC = 0;
+    GLint infoLogLength_AMC = 0;
+    GLchar* szInfoLog_AMC = NULL;
 
     // To get Error in our own variable
-    glGetShaderiv(vertexShaderObject_SAG, GL_COMPILE_STATUS, &status_SAG);
+    glGetShaderiv(vertexShaderObject_AMC, GL_COMPILE_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetShaderiv(vertexShaderObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG);
-        if (infoLogLength_SAG > 0)
+        glGetShaderiv(vertexShaderObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC);
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG + 1);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC + 1);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetShaderInfoLog(vertexShaderObject_SAG, infoLogLength_SAG + 1, NULL, szInfoLog_SAG);
-                printf("Vertex Shader Compilation Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetShaderInfoLog(vertexShaderObject_AMC, infoLogLength_AMC + 1, NULL, szInfoLog_AMC);
+                printf("Vertex Shader Compilation Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize];
@@ -403,7 +403,7 @@ enum
     }
 
     // Fragment Shader
-    const GLchar* fragmentShaderSourceCode_SAG =
+    const GLchar* fragmentShaderSourceCode_AMC =
         "#version 300 core                          "\
         "\n                                         "\
         "precision highp float;                     "\
@@ -414,30 +414,30 @@ enum
         "   FragColor=oColor;                       "\
         "}                                          ";
 
-    GLuint fragmentShaderObject_SAG = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint fragmentShaderObject_AMC = glCreateShader(GL_FRAGMENT_SHADER);
 
-    glShaderSource(fragmentShaderObject_SAG, 1, (const GLchar**)&fragmentShaderSourceCode_SAG, NULL);
+    glShaderSource(fragmentShaderObject_AMC, 1, (const GLchar**)&fragmentShaderSourceCode_AMC, NULL);
 
-    glCompileShader(fragmentShaderObject_SAG);
+    glCompileShader(fragmentShaderObject_AMC);
 
-    status_SAG = 0;
-    infoLogLength_SAG = 0;
-    szInfoLog_SAG = NULL;
+    status_AMC = 0;
+    infoLogLength_AMC = 0;
+    szInfoLog_AMC = NULL;
 
-    glGetShaderiv(fragmentShaderObject_SAG, GL_COMPILE_STATUS, &status_SAG);
+    glGetShaderiv(fragmentShaderObject_AMC, GL_COMPILE_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetShaderiv(fragmentShaderObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG); // GL_SHADER_INFO_LOG_LENGTH
-        if (infoLogLength_SAG > 0)
+        glGetShaderiv(fragmentShaderObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC); // GL_SHADER_INFO_LOG_LENGTH
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetShaderInfoLog(fragmentShaderObject_SAG, infoLogLength_SAG, NULL, szInfoLog_SAG);
-                printf("Fragment Shader Compilation Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetShaderInfoLog(fragmentShaderObject_AMC, infoLogLength_AMC, NULL, szInfoLog_AMC);
+                printf("Fragment Shader Compilation Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize];                                            // Change In mm
@@ -446,33 +446,33 @@ enum
     }
 
     // Shader Program
-    shaderProgramObject_SAG = glCreateProgram();
-    glAttachShader(shaderProgramObject_SAG, vertexShaderObject_SAG);
-    glAttachShader(shaderProgramObject_SAG, fragmentShaderObject_SAG);
+    shaderProgramObject_AMC = glCreateProgram();
+    glAttachShader(shaderProgramObject_AMC, vertexShaderObject_AMC);
+    glAttachShader(shaderProgramObject_AMC, fragmentShaderObject_AMC);
 
-    glBindAttribLocation(shaderProgramObject_SAG, AMC_ATTRIBUTE_POSITION, "aPosition");
-    glBindAttribLocation(shaderProgramObject_SAG, AMC_ATTRIBUTE_COLOR, "aColor");
+    glBindAttribLocation(shaderProgramObject_AMC, AMC_ATTRIBUTE_POSITION, "aPosition");
+    glBindAttribLocation(shaderProgramObject_AMC, AMC_ATTRIBUTE_COLOR, "aColor");
 
-    glLinkProgram(shaderProgramObject_SAG);
+    glLinkProgram(shaderProgramObject_AMC);
 
-    status_SAG = 0;
-    infoLogLength_SAG = 0;
-    szInfoLog_SAG = NULL;
+    status_AMC = 0;
+    infoLogLength_AMC = 0;
+    szInfoLog_AMC = NULL;
 
-    glGetProgramiv(shaderProgramObject_SAG, GL_LINK_STATUS, &status_SAG);
+    glGetProgramiv(shaderProgramObject_AMC, GL_LINK_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetProgramiv(shaderProgramObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG);
-        if (infoLogLength_SAG > 0)
+        glGetProgramiv(shaderProgramObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC);
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetProgramInfoLog(shaderProgramObject_SAG, infoLogLength_SAG, NULL, szInfoLog_SAG);
-                printf("Shader Program Linking Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetProgramInfoLog(shaderProgramObject_AMC, infoLogLength_AMC, NULL, szInfoLog_AMC);
+                printf("Shader Program Linking Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize];                                            // Change In mm
@@ -481,7 +481,7 @@ enum
     }
 
     // Get Shader Uniform Locations
-    mvpMatrixUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uMVPMatrix");
+    mvpMatrixUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uMVPMatrix");
 
     [self initialize_graph];
     [self initialize_circle];
@@ -497,7 +497,7 @@ enum
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     // initialize ortho mat
-    perspectiveProjectionMatrix_SAG = vmath::mat4::identity();
+    perspectiveProjectionMatrix_AMC = vmath::mat4::identity();
 
     [self resize:WIN_WIDTH :WIN_HEIGHT];
     
@@ -510,24 +510,24 @@ enum
 
     // *********** Upper Horizontal Lines *******************
 
-    GLfloat upper_horizontal_lines_position_SAG[80 * 2];
+    GLfloat upper_horizontal_lines_position_AMC[80 * 2];
     for (int i = 0; i < 40; i++)
     {
         GLfloat y = i * 0.031f;
-        upper_horizontal_lines_position_SAG[i * 4] = -1.7f;
-        upper_horizontal_lines_position_SAG[i * 4 + 1] = y;
-        upper_horizontal_lines_position_SAG[i * 4 + 2] = 1.7f;
-        upper_horizontal_lines_position_SAG[i * 4 + 3] = y;
+        upper_horizontal_lines_position_AMC[i * 4] = -1.7f;
+        upper_horizontal_lines_position_AMC[i * 4 + 1] = y;
+        upper_horizontal_lines_position_AMC[i * 4 + 2] = 1.7f;
+        upper_horizontal_lines_position_AMC[i * 4 + 3] = y;
     }
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_upper_horizontal_SAG);
-    glBindVertexArray(vao_upper_horizontal_SAG);
+    glGenVertexArrays(1, &vao_upper_horizontal_AMC);
+    glBindVertexArray(vao_upper_horizontal_AMC);
 
     // VBO (Vertex Buffer Object) For Position
-    glGenBuffers(1, &vbo_upper_horizontal_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_upper_horizontal_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(upper_horizontal_lines_position_SAG), upper_horizontal_lines_position_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_upper_horizontal_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_upper_horizontal_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(upper_horizontal_lines_position_AMC), upper_horizontal_lines_position_AMC, GL_STATIC_DRAW);
 
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
@@ -547,24 +547,24 @@ enum
 
     // *********** Lower Horizontal Lines *******************
 
-    GLfloat lower_horizontal_lines_position_SAG[80 * 2];
+    GLfloat lower_horizontal_lines_position_AMC[80 * 2];
     for (int i = 0; i < 40; i++)
     {
         GLfloat y = i * -0.031f;
-        lower_horizontal_lines_position_SAG[i * 4] = -1.7f;
-        lower_horizontal_lines_position_SAG[i * 4 + 1] = y;
-        lower_horizontal_lines_position_SAG[i * 4 + 2] = 1.7f;
-        lower_horizontal_lines_position_SAG[i * 4 + 3] = y;
+        lower_horizontal_lines_position_AMC[i * 4] = -1.7f;
+        lower_horizontal_lines_position_AMC[i * 4 + 1] = y;
+        lower_horizontal_lines_position_AMC[i * 4 + 2] = 1.7f;
+        lower_horizontal_lines_position_AMC[i * 4 + 3] = y;
     }
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_lower_horizontal_SAG);
-    glBindVertexArray(vao_lower_horizontal_SAG);
+    glGenVertexArrays(1, &vao_lower_horizontal_AMC);
+    glBindVertexArray(vao_lower_horizontal_AMC);
 
     // VBO (Vertex Buffer Object) For Position
-    glGenBuffers(1, &vbo_lower_horizontal_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_lower_horizontal_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(lower_horizontal_lines_position_SAG), lower_horizontal_lines_position_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_lower_horizontal_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_lower_horizontal_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(lower_horizontal_lines_position_AMC), lower_horizontal_lines_position_AMC, GL_STATIC_DRAW);
 
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
@@ -585,23 +585,23 @@ enum
 
     // *********** Green Horizontal Line *******************
 
-    GLfloat green_horizontal_line_position_SAG[] = {
+    GLfloat green_horizontal_line_position_AMC[] = {
         -1.7f, 0.0f, 1.7f, 0.0f
     };
 
-    GLfloat green_horizontal_line_color_SAG[] = {
+    GLfloat green_horizontal_line_color_AMC[] = {
          0.0f, 1.0f, 0.0f,
          0.0f, 1.0f, 0.0f
     };
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_green_horizontal_SAG);
-    glBindVertexArray(vao_green_horizontal_SAG);
+    glGenVertexArrays(1, &vao_green_horizontal_AMC);
+    glBindVertexArray(vao_green_horizontal_AMC);
 
     // VBO (Vertex Buffer Object) For Position
-    glGenBuffers(1, &vbo_green_horizontal_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_green_horizontal_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(green_horizontal_line_position_SAG), green_horizontal_line_position_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_green_horizontal_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_green_horizontal_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(green_horizontal_line_position_AMC), green_horizontal_line_position_AMC, GL_STATIC_DRAW);
 
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
@@ -616,11 +616,11 @@ enum
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // VBO (Vertex Buffer Object) For Color
-    glGenBuffers(1, &vbo_green_horizontal_color_SAG);
+    glGenBuffers(1, &vbo_green_horizontal_color_AMC);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_green_horizontal_color_SAG);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_green_horizontal_color_AMC);
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(green_horizontal_line_color_SAG), green_horizontal_line_color_SAG, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(green_horizontal_line_color_AMC), green_horizontal_line_color_AMC, GL_STATIC_DRAW);
 
     glVertexAttribPointer(
         AMC_ATTRIBUTE_COLOR,
@@ -640,24 +640,24 @@ enum
 
     // ******************* Left Vertical Lines *******************
 
-    GLfloat left_vertical_lines_position_SAG[80 * 2];
+    GLfloat left_vertical_lines_position_AMC[80 * 2];
     for (int i = 0; i < 40; i++)
     {
         GLfloat x = i * -0.0436f;
-        left_vertical_lines_position_SAG[i * 4] = x;
-        left_vertical_lines_position_SAG[i * 4 + 1] = -1.21f;
-        left_vertical_lines_position_SAG[i * 4 + 2] = x;
-        left_vertical_lines_position_SAG[i * 4 + 3] = 1.21f;
+        left_vertical_lines_position_AMC[i * 4] = x;
+        left_vertical_lines_position_AMC[i * 4 + 1] = -1.21f;
+        left_vertical_lines_position_AMC[i * 4 + 2] = x;
+        left_vertical_lines_position_AMC[i * 4 + 3] = 1.21f;
     }
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_left_vertical_SAG);
-    glBindVertexArray(vao_left_vertical_SAG);
+    glGenVertexArrays(1, &vao_left_vertical_AMC);
+    glBindVertexArray(vao_left_vertical_AMC);
 
     // VBO (Vertex Buffer Object) For Position
-    glGenBuffers(1, &vbo_left_vertical_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_left_vertical_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(left_vertical_lines_position_SAG), left_vertical_lines_position_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_left_vertical_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_left_vertical_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(left_vertical_lines_position_AMC), left_vertical_lines_position_AMC, GL_STATIC_DRAW);
 
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
@@ -677,24 +677,24 @@ enum
 
     // ******************* Right Vertical Lines *******************
 
-    GLfloat right_vertical_lines_position_SAG[80 * 2];
+    GLfloat right_vertical_lines_position_AMC[80 * 2];
     for (int i = 0; i < 40; i++)
     {
         GLfloat x = i * 0.0436f;
-        right_vertical_lines_position_SAG[i * 4] = x;
-        right_vertical_lines_position_SAG[i * 4 + 1] = -1.21f;
-        right_vertical_lines_position_SAG[i * 4 + 2] = x;
-        right_vertical_lines_position_SAG[i * 4 + 3] = 1.21f;
+        right_vertical_lines_position_AMC[i * 4] = x;
+        right_vertical_lines_position_AMC[i * 4 + 1] = -1.21f;
+        right_vertical_lines_position_AMC[i * 4 + 2] = x;
+        right_vertical_lines_position_AMC[i * 4 + 3] = 1.21f;
     }
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_right_vertical_SAG);
-    glBindVertexArray(vao_right_vertical_SAG);
+    glGenVertexArrays(1, &vao_right_vertical_AMC);
+    glBindVertexArray(vao_right_vertical_AMC);
 
     // VBO (Vertex Buffer Object) For Position
-    glGenBuffers(1, &vbo_right_vertical_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_right_vertical_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(right_vertical_lines_position_SAG), right_vertical_lines_position_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_right_vertical_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_right_vertical_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(right_vertical_lines_position_AMC), right_vertical_lines_position_AMC, GL_STATIC_DRAW);
 
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
@@ -714,23 +714,23 @@ enum
 
     // *********** Red Vertical Line *******************
 
-    GLfloat red_vertical_line_position_SAG[] = {
+    GLfloat red_vertical_line_position_AMC[] = {
          0.0f, 1.21f, 0.0f, -1.21f
     };
 
-    GLfloat red_vertical_line_color_SAG[] = {
+    GLfloat red_vertical_line_color_AMC[] = {
          1.0f, 0.0f, 0.0f,
          1.0f, 0.0f, 0.0f
     };
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_red_vertical_SAG);
-    glBindVertexArray(vao_red_vertical_SAG);
+    glGenVertexArrays(1, &vao_red_vertical_AMC);
+    glBindVertexArray(vao_red_vertical_AMC);
 
     // VBO (Vertex Buffer Object) For Position
-    glGenBuffers(1, &vbo_red_vertical_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_red_vertical_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(red_vertical_line_position_SAG), red_vertical_line_position_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_red_vertical_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_red_vertical_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(red_vertical_line_position_AMC), red_vertical_line_position_AMC, GL_STATIC_DRAW);
 
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
@@ -745,9 +745,9 @@ enum
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // VBO (Vertex Buffer Object) For Color
-    glGenBuffers(1, &vbo_red_vertical_color_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_red_vertical_color_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(red_vertical_line_color_SAG), red_vertical_line_color_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_red_vertical_color_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_red_vertical_color_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(red_vertical_line_color_AMC), red_vertical_line_color_AMC, GL_STATIC_DRAW);
 
     glVertexAttribPointer(
         AMC_ATTRIBUTE_COLOR,
@@ -766,36 +766,36 @@ enum
 
 -(void)initialize_circle
 {
-    int segments_SAG = 50;
-    float radius_SAG = 1.0f;
-    GLfloat vertices_SAG[102];
-    GLfloat angleStep_SAG = 2.0f * M_PI / segments_SAG;
+    int segments_AMC = 50;
+    float radius_AMC = 1.0f;
+    GLfloat vertices_AMC[102];
+    GLfloat angleStep_AMC = 2.0f * M_PI / segments_AMC;
 
-    for (int i = 0; i <= segments_SAG; i++)
+    for (int i = 0; i <= segments_AMC; i++)
     {
-        float angle_SAG = i * angleStep_SAG;
-        vertices_SAG[2 * i] = cos(angle_SAG) * radius_SAG;
-        vertices_SAG[2 * i + 1] = sin(angle_SAG) * radius_SAG;
+        float angle_AMC = i * angleStep_AMC;
+        vertices_AMC[2 * i] = cos(angle_AMC) * radius_AMC;
+        vertices_AMC[2 * i + 1] = sin(angle_AMC) * radius_AMC;
     }
 
-    GLfloat colors_SAG[153];
-    float color_SAG[] = { 1.0f, 1.0f, 0.0f };
+    GLfloat colors_AMC[153];
+    float color_AMC[] = { 1.0f, 1.0f, 0.0f };
 
-    for (int i = 0; i <= segments_SAG; i++)
+    for (int i = 0; i <= segments_AMC; i++)
     {
-        colors_SAG[3 * i] = color_SAG[0];
-        colors_SAG[3 * i + 1] = color_SAG[1];
-        colors_SAG[3 * i + 2] = color_SAG[2];
+        colors_AMC[3 * i] = color_AMC[0];
+        colors_AMC[3 * i + 1] = color_AMC[1];
+        colors_AMC[3 * i + 2] = color_AMC[2];
     }
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_circle_SAG);
-    glBindVertexArray(vao_circle_SAG);
+    glGenVertexArrays(1, &vao_circle_AMC);
+    glBindVertexArray(vao_circle_AMC);
 
     // VBO (Vertex Buffer Object) For Position
-    glGenBuffers(1, &vbo_circle_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_circle_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, 102 * sizeof(float), vertices_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_circle_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_circle_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, 102 * sizeof(float), vertices_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
         2,
@@ -808,9 +808,9 @@ enum
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // VBO (Vertex Buffer Object) For Color
-    glGenBuffers(1, &vbo_circle_color_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_circle_color_SAG);
-    glBufferData(GL_ARRAY_BUFFER, 153 * sizeof(float), colors_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_circle_color_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_circle_color_AMC);
+    glBufferData(GL_ARRAY_BUFFER, 153 * sizeof(float), colors_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_COLOR,
         3,
@@ -827,7 +827,7 @@ enum
 
 -(void)initialize_square
 {
-    const GLfloat square_position_SAG[] =
+    const GLfloat square_position_AMC[] =
     {
          1.0f,  1.0f,  0.0f,
         -1.0f,  1.0f,  0.0f,
@@ -835,7 +835,7 @@ enum
          1.0f, -1.0f,  0.0f
     };
 
-    const GLfloat square_color_SAG[] =
+    const GLfloat square_color_AMC[] =
     {
         1.0f, 1.0f, 0.0f,
         1.0f, 1.0f, 0.0f,
@@ -846,13 +846,13 @@ enum
     // ======================== SQUARE VAO =====================================
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_square_SAG);
-    glBindVertexArray(vao_square_SAG);
+    glGenVertexArrays(1, &vao_square_AMC);
+    glBindVertexArray(vao_square_AMC);
 
     // VBO (Vertex Buffer Object) For Square Position
-    glGenBuffers(1, &vbo_square_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_square_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(square_position_SAG), square_position_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_square_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_square_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(square_position_AMC), square_position_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
         3,
@@ -865,9 +865,9 @@ enum
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // VBO (Vertex Buffer Object) For Square Color
-    glGenBuffers(1, &vbo_square_color_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_square_color_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(square_color_SAG), square_color_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_square_color_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_square_color_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(square_color_AMC), square_color_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_COLOR,
         3,
@@ -884,14 +884,14 @@ enum
 
 -(void)initialize_triangle
 {
-    const GLfloat triangle_position_SAG[] =
+    const GLfloat triangle_position_AMC[] =
     {
          0.00f,  1.0f, 0.0f,
         -0.86f, -0.5f, 0.0f,
          0.86f, -0.5f, 0.0f
     };
 
-    const GLfloat triangle_color_SAG[] =
+    const GLfloat triangle_color_AMC[] =
     {
         1.0f, 1.0f, 0.0f,
         1.0f, 1.0f, 0.0f,
@@ -899,13 +899,13 @@ enum
     };
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_triangle_SAG);
-    glBindVertexArray(vao_triangle_SAG);
+    glGenVertexArrays(1, &vao_triangle_AMC);
+    glBindVertexArray(vao_triangle_AMC);
 
     // VBO (Vertex Buffer Object) For Position
-    glGenBuffers(1, &vbo_triangle_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_position_SAG), triangle_position_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_triangle_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_position_AMC), triangle_position_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
         3,
@@ -918,9 +918,9 @@ enum
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // VBO (Vertex Buffer Object) For Color
-    glGenBuffers(1, &vbo_triangle_color_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_color_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_color_SAG), triangle_color_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_triangle_color_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_triangle_color_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_color_AMC), triangle_color_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_COLOR,
         3,
@@ -939,8 +939,8 @@ enum
 -(void)printGLInfo
 {
     // Variable Declarations
-    GLint i_SAG;
-    GLint numExtensions_SAG;
+    GLint i_AMC;
+    GLint numExtensions_AMC;
 
     // Code
     printf(":::::::::::::::::::::::::::::::::::::::::::::::\n");
@@ -951,29 +951,29 @@ enum
     printf("OpenGL Version     : %s\n",        glGetString(GL_VERSION));
     printf("GLSL Version       : %s\n",        glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions_SAG);
-    for (i_SAG = 0; i_SAG < numExtensions_SAG; i_SAG++)
+    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions_AMC);
+    for (i_AMC = 0; i_AMC < numExtensions_AMC; i_AMC++)
     {
-        printf("%s\n", glGetStringi(GL_EXTENSIONS, i_SAG));
+        printf("%s\n", glGetStringi(GL_EXTENSIONS, i_AMC));
     }
  
     printf(":::::::::::::::::::::::::::::::::::::::::::::::\n");
 }
 
--(void)resize:(int)width_SAG :(int)height_SAG
+-(void)resize:(int)width_AMC :(int)height_AMC
 {
     // Code
-    if(height_SAG <= 0)
+    if(height_AMC <= 0)
     {
-        height_SAG = 1;
+        height_AMC = 1;
     }
     
-    glViewport(0, 0, (GLsizei)width_SAG, (GLsizei)height_SAG);
+    glViewport(0, 0, (GLsizei)width_AMC, (GLsizei)height_AMC);
     
     // Set perspective projection matrix
-    perspectiveProjectionMatrix_SAG = vmath::perspective(   // glFrustum()
+    perspectiveProjectionMatrix_AMC = vmath::perspective(   // glFrustum()
         45.0f,                                              // Field Of View (fovy) Radian considered
-        (GLfloat)width_SAG / (GLfloat)height_SAG,           // Aspect Ratio
+        (GLfloat)width_AMC / (GLfloat)height_AMC,           // Aspect Ratio
         0.1f,                                               // Near standered Value
         100.0f                                              // Far Standered Value
     );
@@ -984,14 +984,14 @@ enum
     // Code
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                                     // Step-3 Depth
     
-    glUseProgram(shaderProgramObject_SAG);
+    glUseProgram(shaderProgramObject_AMC);
 
     // Transformation
-    mat4 modelViewMtrix_SAG = vmath::translate(0.0f, 0.0f, -3.0f);
-    mat4 modelViewProjectionMatrix_SAG = perspectiveProjectionMatrix_SAG * modelViewMtrix_SAG; // here order of mult is VVIMP.
+    mat4 modelViewMtrix_AMC = vmath::translate(0.0f, 0.0f, -3.0f);
+    mat4 modelViewProjectionMatrix_AMC = perspectiveProjectionMatrix_AMC * modelViewMtrix_AMC; // here order of mult is VVIMP.
 
     // Push above MVP into vertex shhadr's MVP uniform
-    glUniformMatrix4fv(mvpMatrixUniform_SAG, 1, GL_FALSE, modelViewProjectionMatrix_SAG);
+    glUniformMatrix4fv(mvpMatrixUniform_AMC, 1, GL_FALSE, modelViewProjectionMatrix_AMC);
 
     [self handle_shape_switch];
 
@@ -1000,22 +1000,22 @@ enum
 
 -(void)handle_shape_switch
 {
-    if (currentShapeGraph_SAG == TRUE)
+    if (currentShapeGraph_AMC == TRUE)
     {
         [self draw_graph];
     }
 
-    if (currentShapeCircle_SAG == TRUE)
+    if (currentShapeCircle_AMC == TRUE)
     {
         [self draw_circle];
     }
 
-    if (currentShapeSquare_SAG == TRUE)
+    if (currentShapeSquare_AMC == TRUE)
     {
         [self draw_square];
     }
 
-    if (currentShapeTriangle_SAG == TRUE)
+    if (currentShapeTriangle_AMC == TRUE)
     {
         [self draw_triangle];
     }
@@ -1024,24 +1024,24 @@ enum
 -(void)draw_graph
 {
     // Variable Declarations
-    float normalLineWidth_SAG = 0.125000;
-    float largerLineWidth_SAG = 1.000000;
+    float normalLineWidth_AMC = 0.125000;
+    float largerLineWidth_AMC = 1.000000;
 
     // ============================== Draw Horizontal Lines =================================
 
     // Draw upper horiontal lines using below loop
-    glBindVertexArray(vao_upper_horizontal_SAG);
+    glBindVertexArray(vao_upper_horizontal_AMC);
 
     for (int i = 0; i < 40; i++)
     {
         // Check if this is a 5th line
         if (i % 5 == 4)
         {
-            glLineWidth(largerLineWidth_SAG);
+            glLineWidth(largerLineWidth_AMC);
         }
         else
         {
-            glLineWidth(normalLineWidth_SAG);
+            glLineWidth(normalLineWidth_AMC);
         }
 
         // Draw the current line
@@ -1051,18 +1051,18 @@ enum
     glBindVertexArray(0);
 
     // Draw Lower horiontal lines using below loop
-    glBindVertexArray(vao_lower_horizontal_SAG);
+    glBindVertexArray(vao_lower_horizontal_AMC);
 
     for (int i = 0; i < 40; i++)
     {
         // Check if this is a 5th line
         if (i % 5 == 4)
         {
-            glLineWidth(largerLineWidth_SAG);
+            glLineWidth(largerLineWidth_AMC);
         }
         else
         {
-            glLineWidth(normalLineWidth_SAG);
+            glLineWidth(normalLineWidth_AMC);
         }
 
         // Draw the current line
@@ -1072,26 +1072,26 @@ enum
     glBindVertexArray(0);
 
     // Draw green horiontal line
-    glBindVertexArray(vao_green_horizontal_SAG);
-    glLineWidth(largerLineWidth_SAG);
+    glBindVertexArray(vao_green_horizontal_AMC);
+    glLineWidth(largerLineWidth_AMC);
     glDrawArrays(GL_LINES, 0, 2);
     glBindVertexArray(0);
 
     // ============================== Draw Vertical Lines =================================
 
     // Draw left Vertical lines using below loop
-    glBindVertexArray(vao_left_vertical_SAG);
+    glBindVertexArray(vao_left_vertical_AMC);
 
     for (int i = 0; i < 40; i++)
     {
         // Check if this is a 5th line
         if (i % 5 == 4)
         {
-            glLineWidth(largerLineWidth_SAG);
+            glLineWidth(largerLineWidth_AMC);
         }
         else
         {
-            glLineWidth(normalLineWidth_SAG);
+            glLineWidth(normalLineWidth_AMC);
         }
 
         // Draw the current line
@@ -1101,18 +1101,18 @@ enum
     glBindVertexArray(0);
 
     // Draw right Vertical lines using below loop
-    glBindVertexArray(vao_right_vertical_SAG);
+    glBindVertexArray(vao_right_vertical_AMC);
 
     for (int i = 0; i < 40; i++)
     {
         // Check if this is a 5th line
         if (i % 5 == 4)
         {
-            glLineWidth(largerLineWidth_SAG);
+            glLineWidth(largerLineWidth_AMC);
         }
         else
         {
-            glLineWidth(normalLineWidth_SAG);
+            glLineWidth(normalLineWidth_AMC);
         }
 
         // Draw the current line
@@ -1122,29 +1122,29 @@ enum
     glBindVertexArray(0);
 
     // Draw Red Vertical line
-    glBindVertexArray(vao_red_vertical_SAG);
-    glLineWidth(largerLineWidth_SAG);
+    glBindVertexArray(vao_red_vertical_AMC);
+    glLineWidth(largerLineWidth_AMC);
     glDrawArrays(GL_LINES, 0, 2);
     glBindVertexArray(0);
 }
 
 -(void)draw_circle
 {
-    glBindVertexArray(vao_circle_SAG);
+    glBindVertexArray(vao_circle_AMC);
     glDrawArrays(GL_LINE_LOOP, 0, 51);
     glBindVertexArray(0);
 }
 
 -(void)draw_square
 {
-    glBindVertexArray(vao_square_SAG);
+    glBindVertexArray(vao_square_AMC);
     glDrawArrays(GL_LINE_LOOP, 0, 4);
     glBindVertexArray(0);
 }
 
 -(void)draw_triangle
 {
-    glBindVertexArray(vao_triangle_SAG);
+    glBindVertexArray(vao_triangle_AMC);
     glDrawArrays(GL_LINE_LOOP, 0, 3);
     glBindVertexArray(0);
 }
@@ -1158,33 +1158,33 @@ enum
 {
     // Code
     
-    if (shaderProgramObject_SAG)
+    if (shaderProgramObject_AMC)
     {
-        glUseProgram(shaderProgramObject_SAG);
+        glUseProgram(shaderProgramObject_AMC);
 
-        GLint numShaders_SAG = 0;
-        glGetProgramiv(shaderProgramObject_SAG, GL_ATTACHED_SHADERS, &numShaders_SAG);
+        GLint numShaders_AMC = 0;
+        glGetProgramiv(shaderProgramObject_AMC, GL_ATTACHED_SHADERS, &numShaders_AMC);
 
-        if (numShaders_SAG > 0)
+        if (numShaders_AMC > 0)
         {
-            GLuint* pShaders_SAG = (GLuint*)malloc(numShaders_SAG * sizeof(GLuint));
-            if (pShaders_SAG != NULL)
+            GLuint* pShaders_AMC = (GLuint*)malloc(numShaders_AMC * sizeof(GLuint));
+            if (pShaders_AMC != NULL)
             {
-                glGetAttachedShaders(shaderProgramObject_SAG, numShaders_SAG, NULL, pShaders_SAG);
-                for (GLint i = 0; i < numShaders_SAG; i++)
+                glGetAttachedShaders(shaderProgramObject_AMC, numShaders_AMC, NULL, pShaders_AMC);
+                for (GLint i = 0; i < numShaders_AMC; i++)
                 {
-                    glDetachShader(shaderProgramObject_SAG, pShaders_SAG[i]);
-                    glDeleteShader(pShaders_SAG[i]);
-                    pShaders_SAG[i] = 0;
+                    glDetachShader(shaderProgramObject_AMC, pShaders_AMC[i]);
+                    glDeleteShader(pShaders_AMC[i]);
+                    pShaders_AMC[i] = 0;
                 }
-                free(pShaders_SAG);
-                pShaders_SAG = NULL;
+                free(pShaders_AMC);
+                pShaders_AMC = NULL;
             }
         }
 
         glUseProgram(0);
-        glDeleteProgram(shaderProgramObject_SAG);
-        shaderProgramObject_SAG = 0;
+        glDeleteProgram(shaderProgramObject_AMC);
+        shaderProgramObject_AMC = 0;
     }
     
     [self uninitialize_graph];
@@ -1227,189 +1227,189 @@ enum
     // ========================= Uninitialization For Horizontal Lines ==============================
     
     // Delete VBO (Vertex Buffer Object) for green color
-    if (vbo_green_horizontal_color_SAG)
+    if (vbo_green_horizontal_color_AMC)
     {
-        glDeleteBuffers(1, &vbo_green_horizontal_color_SAG);
-        vbo_green_horizontal_color_SAG = 0;
+        glDeleteBuffers(1, &vbo_green_horizontal_color_AMC);
+        vbo_green_horizontal_color_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for horizontal lines color
-    if (vbo_color_horizontal_SAG)
+    if (vbo_color_horizontal_AMC)
     {
-        glDeleteBuffers(1, &vbo_color_horizontal_SAG);
-        vbo_color_horizontal_SAG = 0;
+        glDeleteBuffers(1, &vbo_color_horizontal_AMC);
+        vbo_color_horizontal_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for green line position
-    if (vbo_green_horizontal_position_SAG)
+    if (vbo_green_horizontal_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_green_horizontal_position_SAG);
-        vbo_green_horizontal_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_green_horizontal_position_AMC);
+        vbo_green_horizontal_position_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for upper lines position
-    if (vbo_upper_horizontal_position_SAG)
+    if (vbo_upper_horizontal_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_upper_horizontal_position_SAG);
-        vbo_upper_horizontal_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_upper_horizontal_position_AMC);
+        vbo_upper_horizontal_position_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for lower lines position
-    if (vbo_lower_horizontal_position_SAG)
+    if (vbo_lower_horizontal_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_lower_horizontal_position_SAG);
-        vbo_lower_horizontal_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_lower_horizontal_position_AMC);
+        vbo_lower_horizontal_position_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object) for green line position
-    if (vao_green_horizontal_SAG)
+    if (vao_green_horizontal_AMC)
     {
-        glDeleteVertexArrays(1, &vao_green_horizontal_SAG);
-        vao_green_horizontal_SAG = 0;
+        glDeleteVertexArrays(1, &vao_green_horizontal_AMC);
+        vao_green_horizontal_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object) for upper lines position
-    if (vao_upper_horizontal_SAG)
+    if (vao_upper_horizontal_AMC)
     {
-        glDeleteVertexArrays(1, &vao_upper_horizontal_SAG);
-        vao_upper_horizontal_SAG = 0;
+        glDeleteVertexArrays(1, &vao_upper_horizontal_AMC);
+        vao_upper_horizontal_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object) for lower lines position
-    if (vao_lower_horizontal_SAG)
+    if (vao_lower_horizontal_AMC)
     {
-        glDeleteVertexArrays(1, &vao_lower_horizontal_SAG);
-        vao_lower_horizontal_SAG = 0;
+        glDeleteVertexArrays(1, &vao_lower_horizontal_AMC);
+        vao_lower_horizontal_AMC = 0;
     }
 
     // ========================= Uninitialization For Vertical Lines ==============================
 
     // Delete VBO (Vertex Buffer Object) for red color
-    if (vbo_red_vertical_color_SAG)
+    if (vbo_red_vertical_color_AMC)
     {
-        glDeleteBuffers(1, &vbo_red_vertical_color_SAG);
-        vbo_red_vertical_color_SAG = 0;
+        glDeleteBuffers(1, &vbo_red_vertical_color_AMC);
+        vbo_red_vertical_color_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for vertiocal lines color
-    if (vbo_color_vertical_SAG)
+    if (vbo_color_vertical_AMC)
     {
-        glDeleteBuffers(1, &vbo_color_vertical_SAG);
-        vbo_color_vertical_SAG = 0;
+        glDeleteBuffers(1, &vbo_color_vertical_AMC);
+        vbo_color_vertical_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for red line position
-    if (vbo_red_vertical_position_SAG)
+    if (vbo_red_vertical_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_red_vertical_position_SAG);
-        vbo_red_vertical_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_red_vertical_position_AMC);
+        vbo_red_vertical_position_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for left lines position
-    if (vbo_left_vertical_position_SAG)
+    if (vbo_left_vertical_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_left_vertical_position_SAG);
-        vbo_left_vertical_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_left_vertical_position_AMC);
+        vbo_left_vertical_position_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for right lines position
-    if (vbo_right_vertical_position_SAG)
+    if (vbo_right_vertical_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_right_vertical_position_SAG);
-        vbo_right_vertical_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_right_vertical_position_AMC);
+        vbo_right_vertical_position_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object) for red line position
-    if (vbo_red_vertical_position_SAG)
+    if (vbo_red_vertical_position_AMC)
     {
-        glDeleteVertexArrays(1, &vbo_red_vertical_position_SAG);
-        vbo_red_vertical_position_SAG = 0;
+        glDeleteVertexArrays(1, &vbo_red_vertical_position_AMC);
+        vbo_red_vertical_position_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object) for left lines position
-    if (vao_left_vertical_SAG)
+    if (vao_left_vertical_AMC)
     {
-        glDeleteVertexArrays(1, &vao_left_vertical_SAG);
-        vao_left_vertical_SAG = 0;
+        glDeleteVertexArrays(1, &vao_left_vertical_AMC);
+        vao_left_vertical_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object) for right lines position
-    if (vao_right_vertical_SAG)
+    if (vao_right_vertical_AMC)
     {
-        glDeleteVertexArrays(1, &vao_right_vertical_SAG);
-        vao_right_vertical_SAG = 0;
+        glDeleteVertexArrays(1, &vao_right_vertical_AMC);
+        vao_right_vertical_AMC = 0;
     }
 }
 
 -(void)uninitialize_circle
 {
     // Delete VBO (Vertex Buffer Object) for circle color
-    if (vbo_circle_color_SAG)
+    if (vbo_circle_color_AMC)
     {
-        glDeleteBuffers(1, &vbo_circle_color_SAG);
-        vbo_circle_color_SAG = 0;
+        glDeleteBuffers(1, &vbo_circle_color_AMC);
+        vbo_circle_color_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for circle position
-    if (vbo_circle_position_SAG)
+    if (vbo_circle_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_circle_position_SAG);
-        vbo_circle_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_circle_position_AMC);
+        vbo_circle_position_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object) for circle
-    if (vao_circle_SAG)
+    if (vao_circle_AMC)
     {
-        glDeleteVertexArrays(1, &vao_circle_SAG);
-        vao_circle_SAG = 0;
+        glDeleteVertexArrays(1, &vao_circle_AMC);
+        vao_circle_AMC = 0;
     }
 }
 
 -(void)uninitialize_square
 {
     // Delete VBO (Vertex Buffer Object) for square color
-    if (vbo_square_color_SAG)
+    if (vbo_square_color_AMC)
     {
-        glDeleteBuffers(1, &vbo_square_color_SAG);
-        vbo_square_color_SAG = 0;
+        glDeleteBuffers(1, &vbo_square_color_AMC);
+        vbo_square_color_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for square position
-    if (vbo_square_position_SAG)
+    if (vbo_square_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_square_position_SAG);
-        vbo_square_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_square_position_AMC);
+        vbo_square_position_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object) for square
-    if (vao_square_SAG)
+    if (vao_square_AMC)
     {
-        glDeleteVertexArrays(1, &vao_square_SAG);
-        vao_square_SAG = 0;
+        glDeleteVertexArrays(1, &vao_square_AMC);
+        vao_square_AMC = 0;
     }
 }
 
 -(void)uninitialize_triangle
 {
     // Delete VBO (Vertex Buffer Object) for triangle color
-    if (vbo_triangle_color_SAG)
+    if (vbo_triangle_color_AMC)
     {
-        glDeleteBuffers(1, &vbo_triangle_color_SAG);
-        vbo_triangle_color_SAG = 0;
+        glDeleteBuffers(1, &vbo_triangle_color_AMC);
+        vbo_triangle_color_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for triangle position
-    if (vbo_triangle_position_SAG)
+    if (vbo_triangle_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_triangle_position_SAG);
-        vbo_triangle_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_triangle_position_AMC);
+        vbo_triangle_position_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object) for triangle
-    if (vao_triangle_SAG)
+    if (vao_triangle_AMC)
     {
-        glDeleteVertexArrays(1, &vao_triangle_SAG);
-        vao_triangle_SAG = 0;
+        glDeleteVertexArrays(1, &vao_triangle_AMC);
+        vao_triangle_AMC = 0;
     }
 }
 
@@ -1427,35 +1427,35 @@ enum
 -(void)onSingleTap:(UITapGestureRecognizer*)gestureRecognizer
 {
     // Code
-    singleTap_SAG++;
-    if (singleTap_SAG == 1)
+    singleTap_AMC++;
+    if (singleTap_AMC == 1)
     {
-        currentShapeCircle_SAG = TRUE;
+        currentShapeCircle_AMC = TRUE;
     }
     
-    if (singleTap_SAG == 2)
+    if (singleTap_AMC == 2)
     {
-        currentShapeSquare_SAG = TRUE;
+        currentShapeSquare_AMC = TRUE;
     }
     
-    if (singleTap_SAG == 3)
+    if (singleTap_AMC == 3)
     {
-        currentShapeTriangle_SAG = TRUE;
+        currentShapeTriangle_AMC = TRUE;
     }
-    if (singleTap_SAG == 4)
+    if (singleTap_AMC == 4)
     {
-        currentShapeCircle_SAG = FALSE;
-    }
-    
-    if (singleTap_SAG == 5)
-    {
-        currentShapeSquare_SAG = FALSE;
+        currentShapeCircle_AMC = FALSE;
     }
     
-    if (singleTap_SAG == 6)
+    if (singleTap_AMC == 5)
     {
-        currentShapeTriangle_SAG = FALSE;
-        singleTap_SAG = 0;
+        currentShapeSquare_AMC = FALSE;
+    }
+    
+    if (singleTap_AMC == 6)
+    {
+        currentShapeTriangle_AMC = FALSE;
+        singleTap_AMC = 0;
     }
 }
 
@@ -1463,15 +1463,15 @@ enum
 {
     // Code
     
-    if (doubleTab_SAG == FALSE)
+    if (doubleTab_AMC == FALSE)
     {
-        currentShapeGraph_SAG = TRUE;
-        doubleTab_SAG = TRUE;
+        currentShapeGraph_AMC = TRUE;
+        doubleTab_AMC = TRUE;
     }
     else
     {
-        currentShapeGraph_SAG = FALSE;
-        doubleTab_SAG = FALSE;
+        currentShapeGraph_AMC = FALSE;
+        doubleTab_AMC = FALSE;
     }
 }
 

@@ -39,45 +39,45 @@ enum
     NSInteger framesPerSecond;
     BOOL isDisplayLink;
     
-    GLuint shaderProgramObject_SAG;
-    mat4 perspectiveProjectionMatrix_SAG;
+    GLuint shaderProgramObject_AMC;
+    mat4 perspectiveProjectionMatrix_AMC;
 
     // =============== Sun Related VAOs & VBOs ======================
-    GLuint vao_sun_SAG;
-    GLuint vbo_sun_position_SAG;
-    GLuint vbo_sun_element_SAG;
+    GLuint vao_sun_AMC;
+    GLuint vbo_sun_position_AMC;
+    GLuint vbo_sun_element_AMC;
 
     // =============== Earth Related VAOs & VBOs ====================
-    GLuint vao_earth_SAG;
-    GLuint vbo_earth_position_SAG;
-    GLuint vbo_earth_element_SAG;
+    GLuint vao_earth_AMC;
+    GLuint vbo_earth_position_AMC;
+    GLuint vbo_earth_element_AMC;
 
     // =============== Moon Related VAOs & VBOs =====================
-    GLuint vao_moon_SAG;
-    GLuint vbo_moon_position_SAG;
-    GLuint vbo_moon_element_SAG;
+    GLuint vao_moon_AMC;
+    GLuint vbo_moon_position_AMC;
+    GLuint vbo_moon_element_AMC;
 
-    GLuint mvpMatrixUniform_SAG;
+    GLuint mvpMatrixUniform_AMC;
 
     // Variables For Spheres
-    float sphere_vertices_SAG[1146];
-    float sphere_normals_SAG[1146];
-    float sphere_textures_SAG[764];
-    unsigned short sphere_elements_SAG[2280];
+    float sphere_vertices_AMC[1146];
+    float sphere_normals_AMC[1146];
+    float sphere_textures_AMC[764];
+    unsigned short sphere_elements_AMC[2280];
 
-    GLuint gNumVertices_SAG;
-    GLuint gNumElements_SAG;
+    GLuint gNumVertices_AMC;
+    GLuint gNumElements_AMC;
 
     // Variable Declaration For Solar System
-    int day_SAG;
-    int year_SAG;
-    int moon_SAG;
-    int changeFocus_SAG;
+    int day_AMC;
+    int year_AMC;
+    int moon_AMC;
+    int changeFocus_AMC;
     BOOL startRotation_sud;
     BOOL rotateClockWise_sud;
 
     // Defining Stack To Manage Transformation Matrices
-    stack<mat4> matrix_stack_SAG;
+    stack<mat4> matrix_stack_AMC;
 }
 
 -(id)initWithFrame:(CGRect)frame
@@ -86,10 +86,10 @@ enum
     self = [super initWithFrame:frame];
     if (self)
     {
-        day_SAG = 0;
-        year_SAG = 0;
-        moon_SAG = 0;
-        changeFocus_SAG = 0;
+        day_AMC = 0;
+        year_AMC = 0;
+        moon_AMC = 0;
+        changeFocus_AMC = 0;
         startRotation_sud = FALSE;
         rotateClockWise_sud = FALSE;
         
@@ -339,7 +339,7 @@ enum
     [self printGLInfo];
     
     // Vertex Shader
-    const GLchar* vertexShaderSourceCode_SAG =
+    const GLchar* vertexShaderSourceCode_AMC =
         "#version 300 core"\
         "\n"\
         "in vec4 aPosition;" \
@@ -352,38 +352,38 @@ enum
             "oColor=aColor;" \
         "}";
 
-    GLuint vertexShaderObject_SAG = glCreateShader(GL_VERTEX_SHADER); // Creates empty shader object
+    GLuint vertexShaderObject_AMC = glCreateShader(GL_VERTEX_SHADER); // Creates empty shader object
 
     // below function is made to receive shader source code
     glShaderSource(
-        vertexShaderObject_SAG,
+        vertexShaderObject_AMC,
         1, // Number Of Strings passed in 3rd parameter (Can pass multiple strings we passed only one)
-        (const GLchar**)&vertexShaderSourceCode_SAG,
+        (const GLchar**)&vertexShaderSourceCode_AMC,
         NULL // If multiple strings are there in 3rd param then it will be array of lengths of those multiple strings(We have only one so consider whole string)
     );
 
     // To compile shader source code(To convert human understandable to m/c i.e. GPU)
-    glCompileShader(vertexShaderObject_SAG);
+    glCompileShader(vertexShaderObject_AMC);
 
-    GLint status_SAG = 0;
-    GLint infoLogLength_SAG = 0;
-    GLchar* szInfoLog_SAG = NULL;
+    GLint status_AMC = 0;
+    GLint infoLogLength_AMC = 0;
+    GLchar* szInfoLog_AMC = NULL;
 
     // To get Error in our own variable
-    glGetShaderiv(vertexShaderObject_SAG, GL_COMPILE_STATUS, &status_SAG);
+    glGetShaderiv(vertexShaderObject_AMC, GL_COMPILE_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetShaderiv(vertexShaderObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG);
-        if (infoLogLength_SAG > 0)
+        glGetShaderiv(vertexShaderObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC);
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG + 1);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC + 1);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetShaderInfoLog(vertexShaderObject_SAG, infoLogLength_SAG + 1, NULL, szInfoLog_SAG);
-                printf("Vertex Shader Compilation Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetShaderInfoLog(vertexShaderObject_AMC, infoLogLength_AMC + 1, NULL, szInfoLog_AMC);
+                printf("Vertex Shader Compilation Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize];
@@ -392,7 +392,7 @@ enum
     }
 
     // Fragment Shader
-    const GLchar* fragmentShaderSourceCode_SAG =
+    const GLchar* fragmentShaderSourceCode_AMC =
         "#version 300 core"\
         "\n"\
         "precision highp float;"\
@@ -403,30 +403,30 @@ enum
             "FragColor=oColor;" \
         "}";
 
-    GLuint fragmentShaderObject_SAG = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint fragmentShaderObject_AMC = glCreateShader(GL_FRAGMENT_SHADER);
 
-    glShaderSource(fragmentShaderObject_SAG, 1, (const GLchar**)&fragmentShaderSourceCode_SAG, NULL);
+    glShaderSource(fragmentShaderObject_AMC, 1, (const GLchar**)&fragmentShaderSourceCode_AMC, NULL);
 
-    glCompileShader(fragmentShaderObject_SAG);
+    glCompileShader(fragmentShaderObject_AMC);
 
-    status_SAG = 0;
-    infoLogLength_SAG = 0;
-    szInfoLog_SAG = NULL;
+    status_AMC = 0;
+    infoLogLength_AMC = 0;
+    szInfoLog_AMC = NULL;
 
-    glGetShaderiv(fragmentShaderObject_SAG, GL_COMPILE_STATUS, &status_SAG);
+    glGetShaderiv(fragmentShaderObject_AMC, GL_COMPILE_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetShaderiv(fragmentShaderObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG); // GL_SHADER_INFO_LOG_LENGTH
-        if (infoLogLength_SAG > 0)
+        glGetShaderiv(fragmentShaderObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC); // GL_SHADER_INFO_LOG_LENGTH
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetShaderInfoLog(fragmentShaderObject_SAG, infoLogLength_SAG, NULL, szInfoLog_SAG);
-                printf("Fragment Shader Compilation Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetShaderInfoLog(fragmentShaderObject_AMC, infoLogLength_AMC, NULL, szInfoLog_AMC);
+                printf("Fragment Shader Compilation Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize];                                            // Change In mm
@@ -435,33 +435,33 @@ enum
     }
 
     // Shader Program
-    shaderProgramObject_SAG = glCreateProgram();
-    glAttachShader(shaderProgramObject_SAG, vertexShaderObject_SAG);
-    glAttachShader(shaderProgramObject_SAG, fragmentShaderObject_SAG);
+    shaderProgramObject_AMC = glCreateProgram();
+    glAttachShader(shaderProgramObject_AMC, vertexShaderObject_AMC);
+    glAttachShader(shaderProgramObject_AMC, fragmentShaderObject_AMC);
 
-    glBindAttribLocation(shaderProgramObject_SAG, AMC_ATTRIBUTE_POSITION, "aPosition");
-    glBindAttribLocation(shaderProgramObject_SAG, AMC_ATTRIBUTE_COLOR, "aColor");
+    glBindAttribLocation(shaderProgramObject_AMC, AMC_ATTRIBUTE_POSITION, "aPosition");
+    glBindAttribLocation(shaderProgramObject_AMC, AMC_ATTRIBUTE_COLOR, "aColor");
 
-    glLinkProgram(shaderProgramObject_SAG);
+    glLinkProgram(shaderProgramObject_AMC);
 
-    status_SAG = 0;
-    infoLogLength_SAG = 0;
-    szInfoLog_SAG = NULL;
+    status_AMC = 0;
+    infoLogLength_AMC = 0;
+    szInfoLog_AMC = NULL;
 
-    glGetProgramiv(shaderProgramObject_SAG, GL_LINK_STATUS, &status_SAG);
+    glGetProgramiv(shaderProgramObject_AMC, GL_LINK_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetProgramiv(shaderProgramObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG);
-        if (infoLogLength_SAG > 0)
+        glGetProgramiv(shaderProgramObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC);
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetProgramInfoLog(shaderProgramObject_SAG, infoLogLength_SAG, NULL, szInfoLog_SAG);
-                printf("Shader Program Linking Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetProgramInfoLog(shaderProgramObject_AMC, infoLogLength_AMC, NULL, szInfoLog_AMC);
+                printf("Shader Program Linking Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize];                                            // Change In mm
@@ -470,24 +470,24 @@ enum
     }
 
     // Get Shader Uniform Locations
-    mvpMatrixUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uMVPMatrix");
+    mvpMatrixUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uMVPMatrix");
 
     Sphere *sphere = [[Sphere alloc]init];
-    [sphere getSphereVertexData:sphere_vertices_SAG :sphere_normals_SAG :sphere_textures_SAG :sphere_elements_SAG];
+    [sphere getSphereVertexData:sphere_vertices_AMC :sphere_normals_AMC :sphere_textures_AMC :sphere_elements_AMC];
     
-    gNumVertices_SAG = [sphere getNumberOfSphereVertices];
-    gNumElements_SAG = [sphere getNumberOfSphereElements];
+    gNumVertices_AMC = [sphere getNumberOfSphereVertices];
+    gNumElements_AMC = [sphere getNumberOfSphereElements];
 
     // ================================ SUN VAO & VBO =====================================
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_sun_SAG);
-    glBindVertexArray(vao_sun_SAG);
+    glGenVertexArrays(1, &vao_sun_AMC);
+    glBindVertexArray(vao_sun_AMC);
 
     // VBO (Vertex Buffer Object) For Sphere Position
-    glGenBuffers(1, &vbo_sun_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_sun_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(sphere_vertices_SAG), sphere_vertices_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_sun_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_sun_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(sphere_vertices_AMC), sphere_vertices_AMC, GL_STATIC_DRAW);
 
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
@@ -502,9 +502,9 @@ enum
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // element vbo
-    glGenBuffers(1, &vbo_sun_element_SAG);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_sun_element_SAG);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sphere_elements_SAG), sphere_elements_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_sun_element_AMC);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_sun_element_AMC);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sphere_elements_AMC), sphere_elements_AMC, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
@@ -512,13 +512,13 @@ enum
     // ================================ Earth VAO & VBO =====================================
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_earth_SAG);
-    glBindVertexArray(vao_earth_SAG);
+    glGenVertexArrays(1, &vao_earth_AMC);
+    glBindVertexArray(vao_earth_AMC);
 
     // VBO (Vertex Buffer Object) For Sphere Position
-    glGenBuffers(1, &vbo_earth_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_earth_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(sphere_vertices_SAG), sphere_vertices_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_earth_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_earth_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(sphere_vertices_AMC), sphere_vertices_AMC, GL_STATIC_DRAW);
 
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
@@ -533,9 +533,9 @@ enum
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // element vbo
-    glGenBuffers(1, &vbo_earth_element_SAG);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_earth_element_SAG);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sphere_elements_SAG), sphere_elements_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_earth_element_AMC);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_earth_element_AMC);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sphere_elements_AMC), sphere_elements_AMC, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
@@ -543,13 +543,13 @@ enum
     // ================================ Moon VAO & VBO =====================================
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_moon_SAG);
-    glBindVertexArray(vao_moon_SAG);
+    glGenVertexArrays(1, &vao_moon_AMC);
+    glBindVertexArray(vao_moon_AMC);
 
     // VBO (Vertex Buffer Object) For Sphere Position
-    glGenBuffers(1, &vbo_moon_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_moon_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(sphere_vertices_SAG), sphere_vertices_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_moon_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_moon_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(sphere_vertices_AMC), sphere_vertices_AMC, GL_STATIC_DRAW);
 
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
@@ -567,9 +567,9 @@ enum
     //glVertexAttrib3f(AMC_ATTRIBUTE_COLOR, 0.0f, 0.5f, 1.0f);
 
     // element vbo
-    glGenBuffers(1, &vbo_moon_element_SAG);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_moon_element_SAG);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sphere_elements_SAG), sphere_elements_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_moon_element_AMC);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_moon_element_AMC);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sphere_elements_AMC), sphere_elements_AMC, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
@@ -583,35 +583,35 @@ enum
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     // initialize ortho mat
-    perspectiveProjectionMatrix_SAG = vmath::mat4::identity();
+    perspectiveProjectionMatrix_AMC = vmath::mat4::identity();
 
     [self resize:WIN_WIDTH :WIN_HEIGHT];
     
     return(0);
 }
 
--(void)pushMatrix:(const mat4&)matrix_SAG    // Push Matrix Onto The Stack
+-(void)pushMatrix:(const mat4&)matrix_AMC    // Push Matrix Onto The Stack
 {
-    matrix_stack_SAG.push(matrix_SAG);
+    matrix_stack_AMC.push(matrix_AMC);
 }
 
 -(mat4)popMatrix                            // Pop Matrix From The Stack
 {
-    if (matrix_stack_SAG.empty())
+    if (matrix_stack_AMC.empty())
     {
         printf("Matrix Stack Is Empty !!!\n");
     }
 
-    mat4 topMatrix_SAG = matrix_stack_SAG.top();
-    matrix_stack_SAG.pop();
-    return(topMatrix_SAG);
+    mat4 topMatrix_AMC = matrix_stack_AMC.top();
+    matrix_stack_AMC.pop();
+    return(topMatrix_AMC);
 }
 
 -(void)printGLInfo
 {
     // Variable Declarations
-    GLint i_SAG;
-    GLint numExtensions_SAG;
+    GLint i_AMC;
+    GLint numExtensions_AMC;
 
     // Code
     printf(":::::::::::::::::::::::::::::::::::::::::::::::\n");
@@ -622,29 +622,29 @@ enum
     printf("OpenGL Version     : %s\n",        glGetString(GL_VERSION));
     printf("GLSL Version       : %s\n",        glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions_SAG);
-    for (i_SAG = 0; i_SAG < numExtensions_SAG; i_SAG++)
+    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions_AMC);
+    for (i_AMC = 0; i_AMC < numExtensions_AMC; i_AMC++)
     {
-        printf("%s\n", glGetStringi(GL_EXTENSIONS, i_SAG));
+        printf("%s\n", glGetStringi(GL_EXTENSIONS, i_AMC));
     }
  
     printf(":::::::::::::::::::::::::::::::::::::::::::::::\n");
 }
 
--(void)resize:(int)width_SAG :(int)height_SAG
+-(void)resize:(int)width_AMC :(int)height_AMC
 {
     // Code
-    if(height_SAG <= 0)
+    if(height_AMC <= 0)
     {
-        height_SAG = 1;
+        height_AMC = 1;
     }
     
-    glViewport(0, 0, (GLsizei)width_SAG, (GLsizei)height_SAG);
+    glViewport(0, 0, (GLsizei)width_AMC, (GLsizei)height_AMC);
     
     // Set perspective projection matrix
-    perspectiveProjectionMatrix_SAG = vmath::perspective(   // glFrustum()
+    perspectiveProjectionMatrix_AMC = vmath::perspective(   // glFrustum()
         45.0f,                                              // Field Of View (fovy) Radian considered
-        (GLfloat)width_SAG / (GLfloat)height_SAG,           // Aspect Ratio
+        (GLfloat)width_AMC / (GLfloat)height_AMC,           // Aspect Ratio
         0.1f,                                               // Near standered Value
         100.0f                                              // Far Standered Value
     );
@@ -655,76 +655,76 @@ enum
     // Code
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                                     // Step-3 Depth
     
-    glUseProgram(shaderProgramObject_SAG);
+    glUseProgram(shaderProgramObject_AMC);
 
     // ============================== Sun Related Transformation ===========================
-    mat4 modelViewMatrix_SAG = mat4::identity();
-    modelViewMatrix_SAG = vmath::translate(0.0f, 0.0f, -3.0f);            // Translate
-    mat4 modelViewProjectionMatrix_SAG = perspectiveProjectionMatrix_SAG * modelViewMatrix_SAG; // here order of mult is VVIMP.
+    mat4 modelViewMatrix_AMC = mat4::identity();
+    modelViewMatrix_AMC = vmath::translate(0.0f, 0.0f, -3.0f);            // Translate
+    mat4 modelViewProjectionMatrix_AMC = perspectiveProjectionMatrix_AMC * modelViewMatrix_AMC; // here order of mult is VVIMP.
 
-    matrix_stack_SAG.push(modelViewMatrix_SAG);
+    matrix_stack_AMC.push(modelViewMatrix_AMC);
 
     // Push above MVP into vertex shhadr's MVP uniform
-    glUniformMatrix4fv(mvpMatrixUniform_SAG, 1, GL_FALSE, modelViewProjectionMatrix_SAG);
+    glUniformMatrix4fv(mvpMatrixUniform_AMC, 1, GL_FALSE, modelViewProjectionMatrix_AMC);
 
-    glBindVertexArray(vao_sun_SAG);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_sun_element_SAG);
+    glBindVertexArray(vao_sun_AMC);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_sun_element_AMC);
     glVertexAttrib3f(AMC_ATTRIBUTE_COLOR, 1.0f, 0.5f, 0.0f);
-    glDrawElements(GL_TRIANGLES, gNumElements_SAG, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLES, gNumElements_AMC, GL_UNSIGNED_SHORT, 0);
     glBindVertexArray(0);
 
     // ============================== Earth Related Transformation ===========================
-    mat4 translationMatrix_SAG = mat4::identity();
-    translationMatrix_SAG = vmath::translate(1.2f, 0.0f, 0.0f);
+    mat4 translationMatrix_AMC = mat4::identity();
+    translationMatrix_AMC = vmath::translate(1.2f, 0.0f, 0.0f);
 
-    mat4 scaleMatrix_SAG = mat4::identity();
-    scaleMatrix_SAG = vmath::scale(0.6f, 0.6f, 0.6f);
+    mat4 scaleMatrix_AMC = mat4::identity();
+    scaleMatrix_AMC = vmath::scale(0.6f, 0.6f, 0.6f);
 
-    mat4 rotationMatrix1_SAG = mat4::identity();
-    rotationMatrix1_SAG = vmath::rotate((GLfloat)year_SAG, 0.0f, 1.0f, 0.0f);
+    mat4 rotationMatrix1_AMC = mat4::identity();
+    rotationMatrix1_AMC = vmath::rotate((GLfloat)year_AMC, 0.0f, 1.0f, 0.0f);
 
-    modelViewMatrix_SAG = matrix_stack_SAG.top() * rotationMatrix1_SAG * translationMatrix_SAG * scaleMatrix_SAG;
+    modelViewMatrix_AMC = matrix_stack_AMC.top() * rotationMatrix1_AMC * translationMatrix_AMC * scaleMatrix_AMC;
 
-    matrix_stack_SAG.push(modelViewMatrix_SAG);
+    matrix_stack_AMC.push(modelViewMatrix_AMC);
 
-    mat4 rotationMatrix2_SAG = mat4::identity();
-    rotationMatrix2_SAG = vmath::rotate((GLfloat)day_SAG, 0.0f, 1.0f, 0.0f);
+    mat4 rotationMatrix2_AMC = mat4::identity();
+    rotationMatrix2_AMC = vmath::rotate((GLfloat)day_AMC, 0.0f, 1.0f, 0.0f);
 
-    modelViewMatrix_SAG = matrix_stack_SAG.top() * rotationMatrix2_SAG;
+    modelViewMatrix_AMC = matrix_stack_AMC.top() * rotationMatrix2_AMC;
 
-    modelViewProjectionMatrix_SAG = perspectiveProjectionMatrix_SAG * modelViewMatrix_SAG; // here order of mult is VVIMP.
+    modelViewProjectionMatrix_AMC = perspectiveProjectionMatrix_AMC * modelViewMatrix_AMC; // here order of mult is VVIMP.
 
     // Push above MVP into vertex shhadr's MVP uniform
-    glUniformMatrix4fv(mvpMatrixUniform_SAG, 1, GL_FALSE, modelViewProjectionMatrix_SAG);
+    glUniformMatrix4fv(mvpMatrixUniform_AMC, 1, GL_FALSE, modelViewProjectionMatrix_AMC);
 
-    glBindVertexArray(vao_earth_SAG);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_earth_element_SAG);
+    glBindVertexArray(vao_earth_AMC);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_earth_element_AMC);
     glVertexAttrib3f(AMC_ATTRIBUTE_COLOR, 0.4f, 0.9f, 1.0f);
-    glDrawElements(GL_LINES, gNumElements_SAG, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_LINES, gNumElements_AMC, GL_UNSIGNED_SHORT, 0);
     glBindVertexArray(0);
 
     // ============================== Moon Related Transformation ===========================
-    translationMatrix_SAG = mat4::identity();
-    translationMatrix_SAG = vmath::translate(0.9f, 0.0f, 0.0f);
+    translationMatrix_AMC = mat4::identity();
+    translationMatrix_AMC = vmath::translate(0.9f, 0.0f, 0.0f);
 
-    scaleMatrix_SAG = mat4::identity();
-    scaleMatrix_SAG = vmath::scale(0.5f, 0.5f, 0.5f);
+    scaleMatrix_AMC = mat4::identity();
+    scaleMatrix_AMC = vmath::scale(0.5f, 0.5f, 0.5f);
 
-    rotationMatrix1_SAG = mat4::identity();
-    rotationMatrix1_SAG = vmath::rotate((GLfloat)moon_SAG, 0.0f, 1.0f, 0.0f);
+    rotationMatrix1_AMC = mat4::identity();
+    rotationMatrix1_AMC = vmath::rotate((GLfloat)moon_AMC, 0.0f, 1.0f, 0.0f);
 
     mat4 lastTransformedMatrix = [self popMatrix];
-    modelViewMatrix_SAG = lastTransformedMatrix * rotationMatrix1_SAG * translationMatrix_SAG * scaleMatrix_SAG;
+    modelViewMatrix_AMC = lastTransformedMatrix * rotationMatrix1_AMC * translationMatrix_AMC * scaleMatrix_AMC;
 
-    modelViewProjectionMatrix_SAG = perspectiveProjectionMatrix_SAG * modelViewMatrix_SAG; // here order of mult is VVIMP.
+    modelViewProjectionMatrix_AMC = perspectiveProjectionMatrix_AMC * modelViewMatrix_AMC; // here order of mult is VVIMP.
 
     // Push above MVP into vertex shhadr's MVP uniform
-    glUniformMatrix4fv(mvpMatrixUniform_SAG, 1, GL_FALSE, modelViewProjectionMatrix_SAG);
+    glUniformMatrix4fv(mvpMatrixUniform_AMC, 1, GL_FALSE, modelViewProjectionMatrix_AMC);
 
-    glBindVertexArray(vao_moon_SAG);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_moon_element_SAG);
+    glBindVertexArray(vao_moon_AMC);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_moon_element_AMC);
     glVertexAttrib3f(AMC_ATTRIBUTE_COLOR, 1.0f, 1.0f, 1.0f);
-    glDrawElements(GL_LINES, gNumElements_SAG, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_LINES, gNumElements_AMC, GL_UNSIGNED_SHORT, 0);
     glBindVertexArray(0);
 
     [self popMatrix];
@@ -740,32 +740,32 @@ enum
     {
         if(rotateClockWise_sud == FALSE)
         {
-            if(changeFocus_SAG == 1)
+            if(changeFocus_AMC == 1)
             {
-                day_SAG = (day_SAG + 3) % 360;
+                day_AMC = (day_AMC + 3) % 360;
             }
-            else if(changeFocus_SAG == 2)
+            else if(changeFocus_AMC == 2)
             {
-                year_SAG = (year_SAG + 3) % 360;
+                year_AMC = (year_AMC + 3) % 360;
             }
-            else if(changeFocus_SAG == 3)
+            else if(changeFocus_AMC == 3)
             {
-                moon_SAG = (moon_SAG + 3) % 360;
+                moon_AMC = (moon_AMC + 3) % 360;
             }
         }
         else
         {
-            if(changeFocus_SAG == 1)
+            if(changeFocus_AMC == 1)
             {
-                day_SAG = (day_SAG - 3) % 360;
+                day_AMC = (day_AMC - 3) % 360;
             }
-            else if(changeFocus_SAG == 2)
+            else if(changeFocus_AMC == 2)
             {
-                year_SAG = (year_SAG - 3) % 360;
+                year_AMC = (year_AMC - 3) % 360;
             }
-            else if(changeFocus_SAG == 3)
+            else if(changeFocus_AMC == 3)
             {
-                moon_SAG = (moon_SAG - 3) % 360;
+                moon_AMC = (moon_AMC - 3) % 360;
             }
         }
     }
@@ -775,33 +775,33 @@ enum
 {
     // Code
     
-    if (shaderProgramObject_SAG)
+    if (shaderProgramObject_AMC)
     {
-        glUseProgram(shaderProgramObject_SAG);
+        glUseProgram(shaderProgramObject_AMC);
 
-        GLint numShaders_SAG = 0;
-        glGetProgramiv(shaderProgramObject_SAG, GL_ATTACHED_SHADERS, &numShaders_SAG);
+        GLint numShaders_AMC = 0;
+        glGetProgramiv(shaderProgramObject_AMC, GL_ATTACHED_SHADERS, &numShaders_AMC);
 
-        if (numShaders_SAG > 0)
+        if (numShaders_AMC > 0)
         {
-            GLuint* pShaders_SAG = (GLuint*)malloc(numShaders_SAG * sizeof(GLuint));
-            if (pShaders_SAG != NULL)
+            GLuint* pShaders_AMC = (GLuint*)malloc(numShaders_AMC * sizeof(GLuint));
+            if (pShaders_AMC != NULL)
             {
-                glGetAttachedShaders(shaderProgramObject_SAG, numShaders_SAG, NULL, pShaders_SAG);
-                for (GLint i = 0; i < numShaders_SAG; i++)
+                glGetAttachedShaders(shaderProgramObject_AMC, numShaders_AMC, NULL, pShaders_AMC);
+                for (GLint i = 0; i < numShaders_AMC; i++)
                 {
-                    glDetachShader(shaderProgramObject_SAG, pShaders_SAG[i]);
-                    glDeleteShader(pShaders_SAG[i]);
-                    pShaders_SAG[i] = 0;
+                    glDetachShader(shaderProgramObject_AMC, pShaders_AMC[i]);
+                    glDeleteShader(pShaders_AMC[i]);
+                    pShaders_AMC[i] = 0;
                 }
-                free(pShaders_SAG);
-                pShaders_SAG = NULL;
+                free(pShaders_AMC);
+                pShaders_AMC = NULL;
             }
         }
 
         glUseProgram(0);
-        glDeleteProgram(shaderProgramObject_SAG);
-        shaderProgramObject_SAG = 0;
+        glDeleteProgram(shaderProgramObject_AMC);
+        shaderProgramObject_AMC = 0;
     }
 
     // ================= SPHERE ====================
@@ -809,70 +809,70 @@ enum
     // ================= Sun VAO & VBOs ====================
 
     // Delete VBO (Vertex Buffer Object) for sun position
-    if (vbo_sun_position_SAG)
+    if (vbo_sun_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_sun_position_SAG);
-        vbo_sun_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_sun_position_AMC);
+        vbo_sun_position_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for sun Element
-    if (vbo_sun_element_SAG)
+    if (vbo_sun_element_AMC)
     {
-        glDeleteBuffers(1, &vbo_sun_element_SAG);
-        vbo_sun_element_SAG = 0;
+        glDeleteBuffers(1, &vbo_sun_element_AMC);
+        vbo_sun_element_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object) For sun
-    if (vao_sun_SAG)
+    if (vao_sun_AMC)
     {
-        glDeleteVertexArrays(1, &vao_sun_SAG);
-        vao_sun_SAG = 0;
+        glDeleteVertexArrays(1, &vao_sun_AMC);
+        vao_sun_AMC = 0;
     }
 
     // ================= Earth VAO & VBOs ====================
 
     // Delete VBO (Vertex Buffer Object) for earth position
-    if (vbo_earth_position_SAG)
+    if (vbo_earth_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_earth_position_SAG);
-        vbo_earth_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_earth_position_AMC);
+        vbo_earth_position_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for earth Element
-    if (vbo_earth_element_SAG)
+    if (vbo_earth_element_AMC)
     {
-        glDeleteBuffers(1, &vbo_earth_element_SAG);
-        vbo_earth_element_SAG = 0;
+        glDeleteBuffers(1, &vbo_earth_element_AMC);
+        vbo_earth_element_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object) For Earth
-    if (vao_earth_SAG)
+    if (vao_earth_AMC)
     {
-        glDeleteVertexArrays(1, &vao_earth_SAG);
-        vao_earth_SAG = 0;
+        glDeleteVertexArrays(1, &vao_earth_AMC);
+        vao_earth_AMC = 0;
     }
 
     // ================= Moon VAO & VBOs ====================
 
     // Delete VBO (Vertex Buffer Object) for moon position
-    if (vbo_moon_position_SAG)
+    if (vbo_moon_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_moon_position_SAG);
-        vbo_moon_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_moon_position_AMC);
+        vbo_moon_position_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for moon Element
-    if (vbo_moon_element_SAG)
+    if (vbo_moon_element_AMC)
     {
-        glDeleteBuffers(1, &vbo_moon_element_SAG);
-        vbo_moon_element_SAG = 0;
+        glDeleteBuffers(1, &vbo_moon_element_AMC);
+        vbo_moon_element_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object) For Moon
-    if (vao_moon_SAG)
+    if (vao_moon_AMC)
     {
-        glDeleteVertexArrays(1, &vao_moon_SAG);
-        vao_moon_SAG = 0;
+        glDeleteVertexArrays(1, &vao_moon_AMC);
+        vao_moon_AMC = 0;
     }
     
     // Delete Depth Render Buffer
@@ -919,10 +919,10 @@ enum
 -(void)onSingleTap:(UITapGestureRecognizer*)gestureRecognizer
 {
     // Code
-    changeFocus_SAG++;
-    if (changeFocus_SAG > 3)
+    changeFocus_AMC++;
+    if (changeFocus_AMC > 3)
     {
-        changeFocus_SAG = 0;
+        changeFocus_AMC = 0;
     }
 }
 

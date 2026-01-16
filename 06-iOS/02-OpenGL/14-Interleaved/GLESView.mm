@@ -23,15 +23,15 @@ enum
     AMC_ATTRIBUTE_TEXCOORD
 };
 
-GLfloat lightAmbient_SAG[] = { 0.5f, 0.5f, 0.5f, 1.0f }; // Grey Ambient Light
-GLfloat lightDiffuse_SAG[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // White Diffuse Light, It decides color intensity of the light
-GLfloat lightSpecular_SAG[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // White Specular Light
-GLfloat lightPosition_SAG[] = { 100.0f, 100.0f, 100.0f, 1.0f };
+GLfloat lightAmbient_AMC[] = { 0.5f, 0.5f, 0.5f, 1.0f }; // Grey Ambient Light
+GLfloat lightDiffuse_AMC[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // White Diffuse Light, It decides color intensity of the light
+GLfloat lightSpecular_AMC[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // White Specular Light
+GLfloat lightPosition_AMC[] = { 100.0f, 100.0f, 100.0f, 1.0f };
 
-GLfloat materialAmbient_SAG[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-GLfloat materialDiffuse_SAG[] = { 0.5f, 0.2f, 0.7f, 1.0f };
-GLfloat materialSpecular_SAG[] = { 0.7f, 0.7f, 0.7f, 1.0f };
-GLfloat materialShininess_SAG = 128.0f;
+GLfloat materialAmbient_AMC[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+GLfloat materialDiffuse_AMC[] = { 0.5f, 0.2f, 0.7f, 1.0f };
+GLfloat materialSpecular_AMC[] = { 0.7f, 0.7f, 0.7f, 1.0f };
+GLfloat materialShininess_AMC = 128.0f;
 
 @implementation GLESView
 {
@@ -44,39 +44,39 @@ GLfloat materialShininess_SAG = 128.0f;
     NSInteger framesPerSecond;
     BOOL isDisplayLink;
     
-    GLuint shaderProgramObject_SAG;
-    mat4 perspectiveProjectionMatrix_SAG;       // mat4 is in vmath.h
+    GLuint shaderProgramObject_AMC;
+    mat4 perspectiveProjectionMatrix_AMC;       // mat4 is in vmath.h
 
-    GLuint modelMatrixUniform_SAG;
-    GLuint viewMatrixUniform_SAG;
-    GLuint projectionMatrixUniform_SAG;
+    GLuint modelMatrixUniform_AMC;
+    GLuint viewMatrixUniform_AMC;
+    GLuint projectionMatrixUniform_AMC;
 
     // ------------------------------- VAO & VBO ---------------------------------
-    GLuint vao_SAG;
-    GLuint vbo_SAG;
+    GLuint vao_AMC;
+    GLuint vbo_AMC;
 
     // -------------------------- Variables For Texture --------------------------
-    GLuint textureSamplerUniform_SAG;
-    GLuint texture_marble_SAG;
+    GLuint textureSamplerUniform_AMC;
+    GLuint texture_marble_AMC;
 
     // --------------------------- Variables for Light ---------------------------
-    GLuint lightAmbientUniform_SAG;
-    GLuint lightDiffuseUniform_SAG;
-    GLuint lightSpecularUniform_SAG;
-    GLuint lightPositionUniform_SAG;
+    GLuint lightAmbientUniform_AMC;
+    GLuint lightDiffuseUniform_AMC;
+    GLuint lightSpecularUniform_AMC;
+    GLuint lightPositionUniform_AMC;
 
-    GLuint materialAmbientUniform_SAG;
-    GLuint materialDiffuseUniform_SAG;
-    GLuint materialSpecularUniform_SAG;
-    GLuint materialShininessUniform_SAG;
+    GLuint materialAmbientUniform_AMC;
+    GLuint materialDiffuseUniform_AMC;
+    GLuint materialSpecularUniform_AMC;
+    GLuint materialShininessUniform_AMC;
 
-    GLuint screenTouchedUniform_SAG;
+    GLuint screenTouchedUniform_AMC;
 
-    BOOL bLightningEnabled_SAG;
-    BOOL doubleTab_SAG;
+    BOOL bLightningEnabled_AMC;
+    BOOL doubleTab_AMC;
 
     // --------------------------- Global Variable For Rotation ---------------------------
-    GLfloat cAngle_SAG;
+    GLfloat cAngle_AMC;
 }
 
 -(id)initWithFrame:(CGRect)frame
@@ -86,9 +86,9 @@ GLfloat materialShininess_SAG = 128.0f;
     if (self)
     {
         // Variable Initialization
-        bLightningEnabled_SAG = FALSE;
-        doubleTab_SAG = FALSE;
-        cAngle_SAG = 0.0f;
+        bLightningEnabled_AMC = FALSE;
+        doubleTab_AMC = FALSE;
+        cAngle_AMC = 0.0f;
         
         // Set The Background To Black
         [self setBackgroundColor:[UIColor blackColor]];
@@ -336,7 +336,7 @@ GLfloat materialShininess_SAG = 128.0f;
     [self printGLInfo];
     
     // Vertex Shader
-    const GLchar* vertexShaderSourceCode_SAG =
+    const GLchar* vertexShaderSourceCode_AMC =
         "#version 300 core"\
         "\n"\
         "in vec4 aPosition;" \
@@ -373,38 +373,38 @@ GLfloat materialShininess_SAG = 128.0f;
             "oTexCoord=aTexCoord;" \
         "}";
 
-    GLuint vertexShaderObject_SAG = glCreateShader(GL_VERTEX_SHADER); // Creates empty shader object
+    GLuint vertexShaderObject_AMC = glCreateShader(GL_VERTEX_SHADER); // Creates empty shader object
 
     // below function is made to receive shader source code
     glShaderSource(
-        vertexShaderObject_SAG,
+        vertexShaderObject_AMC,
         1, // Number Of Strings passed in 3rd parameter (Can pass multiple strings we passed only one)
-        (const GLchar**)&vertexShaderSourceCode_SAG,
+        (const GLchar**)&vertexShaderSourceCode_AMC,
         NULL // If multiple strings are there in 3rd param then it will be array of lengths of those multiple strings(We have only one so consider whole string)
     );
 
     // To compile shader source code(To convert human understandable to m/c i.e. GPU)
-    glCompileShader(vertexShaderObject_SAG);
+    glCompileShader(vertexShaderObject_AMC);
 
-    GLint status_SAG = 0;
-    GLint infoLogLength_SAG = 0;
-    GLchar* szInfoLog_SAG = NULL;
+    GLint status_AMC = 0;
+    GLint infoLogLength_AMC = 0;
+    GLchar* szInfoLog_AMC = NULL;
 
     // To get Error in our own variable
-    glGetShaderiv(vertexShaderObject_SAG, GL_COMPILE_STATUS, &status_SAG);
+    glGetShaderiv(vertexShaderObject_AMC, GL_COMPILE_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetShaderiv(vertexShaderObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG);
-        if (infoLogLength_SAG > 0)
+        glGetShaderiv(vertexShaderObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC);
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG + 1);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC + 1);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetShaderInfoLog(vertexShaderObject_SAG, infoLogLength_SAG + 1, NULL, szInfoLog_SAG);
-                printf("Vertex Shader Compilation Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetShaderInfoLog(vertexShaderObject_AMC, infoLogLength_AMC + 1, NULL, szInfoLog_AMC);
+                printf("Vertex Shader Compilation Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize];
@@ -413,7 +413,7 @@ GLfloat materialShininess_SAG = 128.0f;
     }
 
     // Fragment Shader
-    const GLchar* fragmentShaderSourceCode_SAG =
+    const GLchar* fragmentShaderSourceCode_AMC =
         "#version 300 core"\
         "\n"\
         "precision highp float;"\
@@ -454,30 +454,30 @@ GLfloat materialShininess_SAG = 128.0f;
             "FragColor = vec4(tex * vec3(oColor) * Phong_ADS_Light, 1.0);" \
         "}";
 
-    GLuint fragmentShaderObject_SAG = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint fragmentShaderObject_AMC = glCreateShader(GL_FRAGMENT_SHADER);
 
-    glShaderSource(fragmentShaderObject_SAG, 1, (const GLchar**)&fragmentShaderSourceCode_SAG, NULL);
+    glShaderSource(fragmentShaderObject_AMC, 1, (const GLchar**)&fragmentShaderSourceCode_AMC, NULL);
 
-    glCompileShader(fragmentShaderObject_SAG);
+    glCompileShader(fragmentShaderObject_AMC);
 
-    status_SAG = 0;
-    infoLogLength_SAG = 0;
-    szInfoLog_SAG = NULL;
+    status_AMC = 0;
+    infoLogLength_AMC = 0;
+    szInfoLog_AMC = NULL;
 
-    glGetShaderiv(fragmentShaderObject_SAG, GL_COMPILE_STATUS, &status_SAG);
+    glGetShaderiv(fragmentShaderObject_AMC, GL_COMPILE_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetShaderiv(fragmentShaderObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG); // GL_SHADER_INFO_LOG_LENGTH
-        if (infoLogLength_SAG > 0)
+        glGetShaderiv(fragmentShaderObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC); // GL_SHADER_INFO_LOG_LENGTH
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetShaderInfoLog(fragmentShaderObject_SAG, infoLogLength_SAG, NULL, szInfoLog_SAG);
-                printf("Fragment Shader Compilation Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetShaderInfoLog(fragmentShaderObject_AMC, infoLogLength_AMC, NULL, szInfoLog_AMC);
+                printf("Fragment Shader Compilation Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize];                                            // Change In mm
@@ -486,35 +486,35 @@ GLfloat materialShininess_SAG = 128.0f;
     }
 
     // Shader Program
-    shaderProgramObject_SAG = glCreateProgram();
-    glAttachShader(shaderProgramObject_SAG, vertexShaderObject_SAG);
-    glAttachShader(shaderProgramObject_SAG, fragmentShaderObject_SAG);
+    shaderProgramObject_AMC = glCreateProgram();
+    glAttachShader(shaderProgramObject_AMC, vertexShaderObject_AMC);
+    glAttachShader(shaderProgramObject_AMC, fragmentShaderObject_AMC);
 
-    glBindAttribLocation(shaderProgramObject_SAG, AMC_ATTRIBUTE_POSITION, "aPosition");
-    glBindAttribLocation(shaderProgramObject_SAG, AMC_ATTRIBUTE_COLOR, "aColor");
-    glBindAttribLocation(shaderProgramObject_SAG, AMC_ATTRIBUTE_TEXCOORD, "aTexCoord");
-    glBindAttribLocation(shaderProgramObject_SAG, AMC_ATTRIBUTE_NORMAL, "aNormal");
+    glBindAttribLocation(shaderProgramObject_AMC, AMC_ATTRIBUTE_POSITION, "aPosition");
+    glBindAttribLocation(shaderProgramObject_AMC, AMC_ATTRIBUTE_COLOR, "aColor");
+    glBindAttribLocation(shaderProgramObject_AMC, AMC_ATTRIBUTE_TEXCOORD, "aTexCoord");
+    glBindAttribLocation(shaderProgramObject_AMC, AMC_ATTRIBUTE_NORMAL, "aNormal");
 
-    glLinkProgram(shaderProgramObject_SAG);
+    glLinkProgram(shaderProgramObject_AMC);
 
-    status_SAG = 0;
-    infoLogLength_SAG = 0;
-    szInfoLog_SAG = NULL;
+    status_AMC = 0;
+    infoLogLength_AMC = 0;
+    szInfoLog_AMC = NULL;
 
-    glGetProgramiv(shaderProgramObject_SAG, GL_LINK_STATUS, &status_SAG);
+    glGetProgramiv(shaderProgramObject_AMC, GL_LINK_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetProgramiv(shaderProgramObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG);
-        if (infoLogLength_SAG > 0)
+        glGetProgramiv(shaderProgramObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC);
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetProgramInfoLog(shaderProgramObject_SAG, infoLogLength_SAG, NULL, szInfoLog_SAG);
-                printf("Shader Program Linking Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetProgramInfoLog(shaderProgramObject_AMC, infoLogLength_AMC, NULL, szInfoLog_AMC);
+                printf("Shader Program Linking Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize];                                            // Change In mm
@@ -523,25 +523,25 @@ GLfloat materialShininess_SAG = 128.0f;
     }
 
     // Get Shader Uniform Locations
-    modelMatrixUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uModelMatrix");
-    viewMatrixUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uViewMatrix");
-    projectionMatrixUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uProjectionMatrix");
+    modelMatrixUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uModelMatrix");
+    viewMatrixUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uViewMatrix");
+    projectionMatrixUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uProjectionMatrix");
 
-    textureSamplerUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uTextureSampler");
+    textureSamplerUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uTextureSampler");
 
-    lightAmbientUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uLightAmbient");
-    lightDiffuseUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uLightDiffuse");
-    lightSpecularUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uLightSpecular");
-    lightPositionUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uLightPosition");
+    lightAmbientUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uLightAmbient");
+    lightDiffuseUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uLightDiffuse");
+    lightSpecularUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uLightSpecular");
+    lightPositionUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uLightPosition");
 
-    materialAmbientUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uMaterialAmbient");
-    materialDiffuseUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uMaterialDiffuse");
-    materialSpecularUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uMaterialSpecular");
-    materialShininessUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uMaterialShininess");
+    materialAmbientUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uMaterialAmbient");
+    materialDiffuseUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uMaterialDiffuse");
+    materialSpecularUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uMaterialSpecular");
+    materialShininessUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uMaterialShininess");
 
-    screenTouchedUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uScreenTouched");
+    screenTouchedUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uScreenTouched");
 
-    GLfloat cube_PCNT_SAG[] =
+    GLfloat cube_PCNT_AMC[] =
     {
         // front
         // position                // color             // normals                // texcoords
@@ -589,13 +589,13 @@ GLfloat materialShininess_SAG = 128.0f;
     // ======================== CUBE =====================================
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_SAG);
-    glBindVertexArray(vao_SAG);
+    glGenVertexArrays(1, &vao_AMC);
+    glBindVertexArray(vao_AMC);
 
     // VBO (Vertex Buffer Object)
-    glGenBuffers(1, &vbo_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_SAG);
-    glBufferData(GL_ARRAY_BUFFER, 24 * 11 * sizeof(float), cube_PCNT_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_AMC);
+    glBufferData(GL_ARRAY_BUFFER, 24 * 11 * sizeof(float), cube_PCNT_AMC, GL_STATIC_DRAW);
 
     // POSITION
     glVertexAttribPointer(
@@ -645,7 +645,7 @@ GLfloat materialShininess_SAG = 128.0f;
     glBindVertexArray(0);                    // VAO Unbind
     
     // Loading Images/ Create Texture
-    texture_marble_SAG = [self loadTextureFromImage:@"Marble" :@"bmp"];
+    texture_marble_AMC = [self loadTextureFromImage:@"Marble" :@"bmp"];
 
     // Tell OpenGL to Enable Texture
     glEnable(GL_TEXTURE_2D);
@@ -659,7 +659,7 @@ GLfloat materialShininess_SAG = 128.0f;
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     // initialize ortho mat
-    perspectiveProjectionMatrix_SAG = vmath::mat4::identity();
+    perspectiveProjectionMatrix_AMC = vmath::mat4::identity();
 
     [self resize:WIN_WIDTH :WIN_HEIGHT];
     
@@ -722,8 +722,8 @@ GLfloat materialShininess_SAG = 128.0f;
 -(void)printGLInfo
 {
     // Variable Declarations
-    GLint i_SAG;
-    GLint numExtensions_SAG;
+    GLint i_AMC;
+    GLint numExtensions_AMC;
 
     // Code
     printf(":::::::::::::::::::::::::::::::::::::::::::::::\n");
@@ -734,29 +734,29 @@ GLfloat materialShininess_SAG = 128.0f;
     printf("OpenGL Version     : %s\n",        glGetString(GL_VERSION));
     printf("GLSL Version       : %s\n",        glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions_SAG);
-    for (i_SAG = 0; i_SAG < numExtensions_SAG; i_SAG++)
+    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions_AMC);
+    for (i_AMC = 0; i_AMC < numExtensions_AMC; i_AMC++)
     {
-        printf("%s\n", glGetStringi(GL_EXTENSIONS, i_SAG));
+        printf("%s\n", glGetStringi(GL_EXTENSIONS, i_AMC));
     }
  
     printf(":::::::::::::::::::::::::::::::::::::::::::::::\n");
 }
 
--(void)resize:(int)width_SAG :(int)height_SAG
+-(void)resize:(int)width_AMC :(int)height_AMC
 {
     // Code
-    if(height_SAG <= 0)
+    if(height_AMC <= 0)
     {
-        height_SAG = 1;
+        height_AMC = 1;
     }
     
-    glViewport(0, 0, (GLsizei)width_SAG, (GLsizei)height_SAG);
+    glViewport(0, 0, (GLsizei)width_AMC, (GLsizei)height_AMC);
     
     // Set perspective projection matrix
-    perspectiveProjectionMatrix_SAG = vmath::perspective(   // glFrustum()
+    perspectiveProjectionMatrix_AMC = vmath::perspective(   // glFrustum()
         45.0f,                                              // Field Of View (fovy) Radian considered
-        (GLfloat)width_SAG / (GLfloat)height_SAG,           // Aspect Ratio
+        (GLfloat)width_AMC / (GLfloat)height_AMC,           // Aspect Ratio
         0.1f,                                               // Near standered Value
         100.0f                                              // Far Standered Value
     );
@@ -767,62 +767,62 @@ GLfloat materialShininess_SAG = 128.0f;
     // Code
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                                     // Step-3 Depth
     
-    glUseProgram(shaderProgramObject_SAG);
+    glUseProgram(shaderProgramObject_AMC);
 
     // =============================== CUBE ===================================
-    mat4 viewMatrix_SAG = mat4::identity();
-    mat4 modelMatrix_SAG = mat4::identity();
+    mat4 viewMatrix_AMC = mat4::identity();
+    mat4 modelMatrix_AMC = mat4::identity();
 
-    mat4 translationMatrix_SAG = mat4::identity();
-    translationMatrix_SAG = vmath::translate(0.0f, 0.0f, -5.0f);
+    mat4 translationMatrix_AMC = mat4::identity();
+    translationMatrix_AMC = vmath::translate(0.0f, 0.0f, -5.0f);
 
-    mat4 scaleMatrix_SAG = mat4::identity();
-    scaleMatrix_SAG = vmath::scale(0.75f, 0.75f, 0.75f);
+    mat4 scaleMatrix_AMC = mat4::identity();
+    scaleMatrix_AMC = vmath::scale(0.75f, 0.75f, 0.75f);
 
-    mat4 rotationMatrix1_SAG = mat4::identity();
-    rotationMatrix1_SAG = vmath::rotate(cAngle_SAG, 1.0f, 0.0f, 0.0f);
+    mat4 rotationMatrix1_AMC = mat4::identity();
+    rotationMatrix1_AMC = vmath::rotate(cAngle_AMC, 1.0f, 0.0f, 0.0f);
 
-    mat4 rotationMatrix2_SAG = mat4::identity();
-    rotationMatrix2_SAG = vmath::rotate(cAngle_SAG, 0.0f, 1.0f, 0.0f);
+    mat4 rotationMatrix2_AMC = mat4::identity();
+    rotationMatrix2_AMC = vmath::rotate(cAngle_AMC, 0.0f, 1.0f, 0.0f);
 
-    mat4 rotationMatrix3_SAG = mat4::identity();
-    rotationMatrix3_SAG = vmath::rotate(cAngle_SAG, 0.0f, 0.0f, 1.0f);
+    mat4 rotationMatrix3_AMC = mat4::identity();
+    rotationMatrix3_AMC = vmath::rotate(cAngle_AMC, 0.0f, 0.0f, 1.0f);
 
-    mat4 rotationMatrix_SAG = rotationMatrix1_SAG * rotationMatrix2_SAG * rotationMatrix3_SAG;
+    mat4 rotationMatrix_AMC = rotationMatrix1_AMC * rotationMatrix2_AMC * rotationMatrix3_AMC;
 
-    modelMatrix_SAG = translationMatrix_SAG * scaleMatrix_SAG * rotationMatrix_SAG; // here order of multiplication is VVIMP.
+    modelMatrix_AMC = translationMatrix_AMC * scaleMatrix_AMC * rotationMatrix_AMC; // here order of multiplication is VVIMP.
 
     // Push above MVP into vertex Shader's MVP uniform
-    glUniformMatrix4fv(modelMatrixUniform_SAG, 1, GL_FALSE, modelMatrix_SAG);
-    glUniformMatrix4fv(viewMatrixUniform_SAG, 1, GL_FALSE, viewMatrix_SAG);
-    glUniformMatrix4fv(projectionMatrixUniform_SAG, 1, GL_FALSE, perspectiveProjectionMatrix_SAG);
+    glUniformMatrix4fv(modelMatrixUniform_AMC, 1, GL_FALSE, modelMatrix_AMC);
+    glUniformMatrix4fv(viewMatrixUniform_AMC, 1, GL_FALSE, viewMatrix_AMC);
+    glUniformMatrix4fv(projectionMatrixUniform_AMC, 1, GL_FALSE, perspectiveProjectionMatrix_AMC);
 
     // For Texture
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture_marble_SAG);
-    glUniform1i(textureSamplerUniform_SAG, 0); // Tell uniformSampler in fragment shader which numbered texture
+    glBindTexture(GL_TEXTURE_2D, texture_marble_AMC);
+    glUniform1i(textureSamplerUniform_AMC, 0); // Tell uniformSampler in fragment shader which numbered texture
 
     // For Light
-    if (bLightningEnabled_SAG == TRUE)
+    if (bLightningEnabled_AMC == TRUE)
     {
-        glUniform1i(screenTouchedUniform_SAG, 1);
+        glUniform1i(screenTouchedUniform_AMC, 1);
 
-        glUniform3fv(lightAmbientUniform_SAG, 1, lightAmbient_SAG);
-        glUniform3fv(lightDiffuseUniform_SAG, 1, lightDiffuse_SAG);
-        glUniform3fv(lightSpecularUniform_SAG, 1, lightSpecular_SAG);
-        glUniform4fv(lightPositionUniform_SAG, 1, lightPosition_SAG);
+        glUniform3fv(lightAmbientUniform_AMC, 1, lightAmbient_AMC);
+        glUniform3fv(lightDiffuseUniform_AMC, 1, lightDiffuse_AMC);
+        glUniform3fv(lightSpecularUniform_AMC, 1, lightSpecular_AMC);
+        glUniform4fv(lightPositionUniform_AMC, 1, lightPosition_AMC);
 
-        glUniform3fv(materialAmbientUniform_SAG, 1, materialAmbient_SAG);
-        glUniform3fv(materialDiffuseUniform_SAG, 1, materialDiffuse_SAG);
-        glUniform3fv(materialSpecularUniform_SAG, 1, materialSpecular_SAG);
-        glUniform1f(materialShininessUniform_SAG, materialShininess_SAG);
+        glUniform3fv(materialAmbientUniform_AMC, 1, materialAmbient_AMC);
+        glUniform3fv(materialDiffuseUniform_AMC, 1, materialDiffuse_AMC);
+        glUniform3fv(materialSpecularUniform_AMC, 1, materialSpecular_AMC);
+        glUniform1f(materialShininessUniform_AMC, materialShininess_AMC);
     }
     else
     {
-        glUniform1i(screenTouchedUniform_SAG, 0);
+        glUniform1i(screenTouchedUniform_AMC, 0);
     }
 
-    glBindVertexArray(vao_SAG);
+    glBindVertexArray(vao_AMC);
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     glDrawArrays(GL_TRIANGLE_FAN, 4, 4);
@@ -840,11 +840,11 @@ GLfloat materialShininess_SAG = 128.0f;
 {
     // Code
     
-    cAngle_SAG = cAngle_SAG - 1.0;
+    cAngle_AMC = cAngle_AMC - 1.0;
 
-    if (cAngle_SAG <= 0.0f)
+    if (cAngle_AMC <= 0.0f)
     {
-        cAngle_SAG = cAngle_SAG + 360.0f;
+        cAngle_AMC = cAngle_AMC + 360.0f;
     }
 }
 
@@ -852,47 +852,47 @@ GLfloat materialShininess_SAG = 128.0f;
 {
     // Code
     
-    if (shaderProgramObject_SAG)
+    if (shaderProgramObject_AMC)
     {
-        glUseProgram(shaderProgramObject_SAG);
+        glUseProgram(shaderProgramObject_AMC);
 
-        GLint numShaders_SAG = 0;
-        glGetProgramiv(shaderProgramObject_SAG, GL_ATTACHED_SHADERS, &numShaders_SAG);
+        GLint numShaders_AMC = 0;
+        glGetProgramiv(shaderProgramObject_AMC, GL_ATTACHED_SHADERS, &numShaders_AMC);
 
-        if (numShaders_SAG > 0)
+        if (numShaders_AMC > 0)
         {
-            GLuint* pShaders_SAG = (GLuint*)malloc(numShaders_SAG * sizeof(GLuint));
-            if (pShaders_SAG != NULL)
+            GLuint* pShaders_AMC = (GLuint*)malloc(numShaders_AMC * sizeof(GLuint));
+            if (pShaders_AMC != NULL)
             {
-                glGetAttachedShaders(shaderProgramObject_SAG, numShaders_SAG, NULL, pShaders_SAG);
-                for (GLint i = 0; i < numShaders_SAG; i++)
+                glGetAttachedShaders(shaderProgramObject_AMC, numShaders_AMC, NULL, pShaders_AMC);
+                for (GLint i = 0; i < numShaders_AMC; i++)
                 {
-                    glDetachShader(shaderProgramObject_SAG, pShaders_SAG[i]);
-                    glDeleteShader(pShaders_SAG[i]);
-                    pShaders_SAG[i] = 0;
+                    glDetachShader(shaderProgramObject_AMC, pShaders_AMC[i]);
+                    glDeleteShader(pShaders_AMC[i]);
+                    pShaders_AMC[i] = 0;
                 }
-                free(pShaders_SAG);
-                pShaders_SAG = NULL;
+                free(pShaders_AMC);
+                pShaders_AMC = NULL;
             }
         }
 
         glUseProgram(0);
-        glDeleteProgram(shaderProgramObject_SAG);
-        shaderProgramObject_SAG = 0;
+        glDeleteProgram(shaderProgramObject_AMC);
+        shaderProgramObject_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for position
-    if (vbo_SAG)
+    if (vbo_AMC)
     {
-        glDeleteBuffers(1, &vbo_SAG);
-        vbo_SAG = 0;
+        glDeleteBuffers(1, &vbo_AMC);
+        vbo_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object)
-    if (vao_SAG)
+    if (vao_AMC)
     {
-        glDeleteVertexArrays(1, &vao_SAG);
-        vao_SAG = 0;
+        glDeleteVertexArrays(1, &vao_AMC);
+        vao_AMC = 0;
     }
     
     // Delete Depth Render Buffer
@@ -945,15 +945,15 @@ GLfloat materialShininess_SAG = 128.0f;
 {
     // Code
     
-    if (doubleTab_SAG == FALSE)
+    if (doubleTab_AMC == FALSE)
     {
-        bLightningEnabled_SAG = TRUE;
-        doubleTab_SAG = TRUE;
+        bLightningEnabled_AMC = TRUE;
+        doubleTab_AMC = TRUE;
     }
     else
     {
-        bLightningEnabled_SAG = FALSE;
-        doubleTab_SAG = FALSE;
+        bLightningEnabled_AMC = FALSE;
+        doubleTab_AMC = FALSE;
     }
 }
 

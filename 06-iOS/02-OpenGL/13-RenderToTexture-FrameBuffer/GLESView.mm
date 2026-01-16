@@ -31,17 +31,17 @@ enum
 
 struct Light
 {
-    vec3 ambient_sphere_SAG;
-    vec3 diffuse_sphere_SAG;
-    vec3 speculer_sphere_SAG;
-    vec4 position_sphere_SAG;
+    vec3 ambient_sphere_AMC;
+    vec3 diffuse_sphere_AMC;
+    vec3 speculer_sphere_AMC;
+    vec4 position_sphere_AMC;
 };
-struct Light light_sphere_SAG[3];
+struct Light light_sphere_AMC[3];
 
-GLfloat materialAmbient_sphere_SAG[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-GLfloat materialDiffuse_sphere_SAG[] = { 0.5f, 0.2f, 0.7f, 1.0f };
-GLfloat materialSpecular_sphere_SAG[] = { 0.7f, 0.7f, 0.7f, 1.0f };
-GLfloat materialShininess_sphere_SAG = 128.0f;
+GLfloat materialAmbient_sphere_AMC[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+GLfloat materialDiffuse_sphere_AMC[] = { 0.5f, 0.2f, 0.7f, 1.0f };
+GLfloat materialSpecular_sphere_AMC[] = { 0.7f, 0.7f, 0.7f, 1.0f };
+GLfloat materialShininess_sphere_AMC = 128.0f;
 
 @implementation GLESView
 {
@@ -55,71 +55,71 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     BOOL isDisplayLink;
     
     // ================= Cube Releated Variable ========================
-    GLuint shaderProgramObject_cube_SAG;
+    GLuint shaderProgramObject_cube_AMC;
     
-    GLuint vao_cube_SAG;
-    GLuint vbo_position_cube_SAG;
-    GLuint vbo_texcoord_cube_SAG;
+    GLuint vao_cube_AMC;
+    GLuint vbo_position_cube_AMC;
+    GLuint vbo_texcoord_cube_AMC;
 
-    GLuint mvpMatrixUniform_cube_SAG;
-    GLuint textureSamplerUniform_cube_SAG;
+    GLuint mvpMatrixUniform_cube_AMC;
+    GLuint textureSamplerUniform_cube_AMC;
 
-    mat4 perspectiveProjectionMatrix_cube_SAG;       // mat4 is in vmath.h
+    mat4 perspectiveProjectionMatrix_cube_AMC;       // mat4 is in vmath.h
 
     // Variable For Shape Rotation
-    GLfloat angle_cube_SAG;
+    GLfloat angle_cube_AMC;
 
     // ================= Sphere Related Variables =======================
 
-    GLuint shaderProgramObject_sphere_SAG;
-    mat4 perspectiveProjectionMatrix_sphere_SAG;       // mat4 is in vmath.h
+    GLuint shaderProgramObject_sphere_AMC;
+    mat4 perspectiveProjectionMatrix_sphere_AMC;       // mat4 is in vmath.h
 
-    GLuint gNumVertices_SAG;
-    GLuint gNumElements_SAG;
+    GLuint gNumVertices_AMC;
+    GLuint gNumElements_AMC;
 
-    float sphere_vertices_SAG[1146];
-    float sphere_normals_SAG[1146];
-    float sphere_texcoords_SAG[764];
-    unsigned short sphere_elements_SAG[2280];
+    float sphere_vertices_AMC[1146];
+    float sphere_normals_AMC[1146];
+    float sphere_texcoords_AMC[764];
+    unsigned short sphere_elements_AMC[2280];
 
-    GLuint vao_sphere_SAG;
-    GLuint vbo_position_sphere_SAG;
-    GLuint vbo_normals_sphere_SAG;
-    GLuint vbo_texcoord_sphere_SAG;
-    GLuint vbo_element_sphere_SAG;
+    GLuint vao_sphere_AMC;
+    GLuint vbo_position_sphere_AMC;
+    GLuint vbo_normals_sphere_AMC;
+    GLuint vbo_texcoord_sphere_AMC;
+    GLuint vbo_element_sphere_AMC;
 
-    GLuint modelMatrixUniform_sphere_SAG;
-    GLuint viewMatrixUniform_sphere_SAG;
-    GLuint projectionMatrixUniform_sphere_SAG;
+    GLuint modelMatrixUniform_sphere_AMC;
+    GLuint viewMatrixUniform_sphere_AMC;
+    GLuint projectionMatrixUniform_sphere_AMC;
 
     // Variables For Light
-    GLuint lightAmbientUniform_sphere_SAG[3];
-    GLuint lightDiffuseUniform_sphere_SAG[3];
-    GLuint lightSpecularUniform_sphere_SAG[3];
-    GLuint lightPositionUniform_sphere_SAG[3];
+    GLuint lightAmbientUniform_sphere_AMC[3];
+    GLuint lightDiffuseUniform_sphere_AMC[3];
+    GLuint lightSpecularUniform_sphere_AMC[3];
+    GLuint lightPositionUniform_sphere_AMC[3];
 
-    GLuint materialAmbientUniform_sphere_SAG;
-    GLuint materialDiffuseUniform_sphere_SAG;
-    GLuint materialSpecularUniform_sphere_SAG;
-    GLuint materialShininessUniform_sphere_SAG;
+    GLuint materialAmbientUniform_sphere_AMC;
+    GLuint materialDiffuseUniform_sphere_AMC;
+    GLuint materialSpecularUniform_sphere_AMC;
+    GLuint materialShininessUniform_sphere_AMC;
 
-    GLuint keyPressedUniform_sphere_SAG;
+    GLuint keyPressedUniform_sphere_AMC;
 
-    BOOL bLightningEnabled_sphere_SAG;
-    BOOL isPerFragmentChoosed_sphere_SAG;
+    BOOL bLightningEnabled_sphere_AMC;
+    BOOL isPerFragmentChoosed_sphere_AMC;
 
-    GLfloat lightAngleZero_sphere_SAG;
-    GLfloat lightAngleOne_sphere_SAG;
-    GLfloat lightAngleTwo_sphere_SAG;
+    GLfloat lightAngleZero_sphere_AMC;
+    GLfloat lightAngleOne_sphere_AMC;
+    GLfloat lightAngleTwo_sphere_AMC;
 
     // FBO Related Variables
-    GLint winWidth_SAG;
-    GLint winHeight_SAG;
+    GLint winWidth_AMC;
+    GLint winHeight_AMC;
 
-    GLuint fbo_SAG;
-    GLuint rbo_SAG;
-    GLuint textureFBO_SAG;
-    BOOL bFboResult_SAG;
+    GLuint fbo_AMC;
+    GLuint rbo_AMC;
+    GLuint textureFBO_AMC;
+    BOOL bFboResult_AMC;
 }
 
 -(id)initWithFrame:(CGRect)frame
@@ -129,13 +129,13 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     if (self)
     {
         // Initialize Variables
-        winWidth_SAG = 0;
-        winHeight_SAG = 0;
+        winWidth_AMC = 0;
+        winHeight_AMC = 0;
 
-        fbo_SAG = 0;
-        rbo_SAG = 0;
-        textureFBO_SAG = 0;
-        bFboResult_SAG = FALSE;
+        fbo_AMC = 0;
+        rbo_AMC = 0;
+        textureFBO_AMC = 0;
+        bFboResult_AMC = FALSE;
         
         // Set The Background To Black
         [self setBackgroundColor:[UIColor blackColor]];
@@ -383,7 +383,7 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     [self printGLInfo];
     
     // Vertex Shader
-    const GLchar* vertexShaderSourceCode_SAG =
+    const GLchar* vertexShaderSourceCode_AMC =
         "#version 300 core                          "\
         "\n                                         "\
         "in vec4 aPosition;                         "\
@@ -396,38 +396,38 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
         "   oTexCoord=aTexCoord;                    "\
         "}                                          ";
 
-    GLuint vertexShaderObject_SAG = glCreateShader(GL_VERTEX_SHADER); // Creates empty shader object
+    GLuint vertexShaderObject_AMC = glCreateShader(GL_VERTEX_SHADER); // Creates empty shader object
 
     // below function is made to receive shader source code
     glShaderSource(
-        vertexShaderObject_SAG,
+        vertexShaderObject_AMC,
         1, // Number Of Strings passed in 3rd parameter (Can pass multiple strings we passed only one)
-        (const GLchar**)&vertexShaderSourceCode_SAG,
+        (const GLchar**)&vertexShaderSourceCode_AMC,
         NULL // If multiple strings are there in 3rd param then it will be array of lengths of those multiple strings(We have only one so consider whole string)
     );
 
     // To compile shader source code(To convert human understandable to m/c i.e. GPU)
-    glCompileShader(vertexShaderObject_SAG);
+    glCompileShader(vertexShaderObject_AMC);
 
-    GLint status_SAG = 0;
-    GLint infoLogLength_SAG = 0;
-    GLchar* szInfoLog_SAG = NULL;
+    GLint status_AMC = 0;
+    GLint infoLogLength_AMC = 0;
+    GLchar* szInfoLog_AMC = NULL;
 
     // To get Error in our own variable
-    glGetShaderiv(vertexShaderObject_SAG, GL_COMPILE_STATUS, &status_SAG);
+    glGetShaderiv(vertexShaderObject_AMC, GL_COMPILE_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetShaderiv(vertexShaderObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG);
-        if (infoLogLength_SAG > 0)
+        glGetShaderiv(vertexShaderObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC);
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG + 1);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC + 1);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetShaderInfoLog(vertexShaderObject_SAG, infoLogLength_SAG + 1, NULL, szInfoLog_SAG);
-                printf("Vertex Shader Compilation Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetShaderInfoLog(vertexShaderObject_AMC, infoLogLength_AMC + 1, NULL, szInfoLog_AMC);
+                printf("Vertex Shader Compilation Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize_cube];
@@ -436,7 +436,7 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     }
 
     // Fragment Shader
-    const GLchar* fragmentShaderSourceCode_SAG =
+    const GLchar* fragmentShaderSourceCode_AMC =
         "#version 300 core                                  "\
         "\n                                                 "\
         "precision highp float;                             "\
@@ -448,30 +448,30 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
         "   FragColor=texture(uTextureSampler, oTexCoord);  "\
         "}                                                  ";
 
-    GLuint fragmentShaderObject_SAG = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint fragmentShaderObject_AMC = glCreateShader(GL_FRAGMENT_SHADER);
 
-    glShaderSource(fragmentShaderObject_SAG, 1, (const GLchar**)&fragmentShaderSourceCode_SAG, NULL);
+    glShaderSource(fragmentShaderObject_AMC, 1, (const GLchar**)&fragmentShaderSourceCode_AMC, NULL);
 
-    glCompileShader(fragmentShaderObject_SAG);
+    glCompileShader(fragmentShaderObject_AMC);
 
-    status_SAG = 0;
-    infoLogLength_SAG = 0;
-    szInfoLog_SAG = NULL;
+    status_AMC = 0;
+    infoLogLength_AMC = 0;
+    szInfoLog_AMC = NULL;
 
-    glGetShaderiv(fragmentShaderObject_SAG, GL_COMPILE_STATUS, &status_SAG);
+    glGetShaderiv(fragmentShaderObject_AMC, GL_COMPILE_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetShaderiv(fragmentShaderObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG); // GL_SHADER_INFO_LOG_LENGTH
-        if (infoLogLength_SAG > 0)
+        glGetShaderiv(fragmentShaderObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC); // GL_SHADER_INFO_LOG_LENGTH
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetShaderInfoLog(fragmentShaderObject_SAG, infoLogLength_SAG, NULL, szInfoLog_SAG);
-                printf("Fragment Shader Compilation Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetShaderInfoLog(fragmentShaderObject_AMC, infoLogLength_AMC, NULL, szInfoLog_AMC);
+                printf("Fragment Shader Compilation Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize_cube];                                               // Change In mm
@@ -480,33 +480,33 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     }
 
     // Shader Program
-    shaderProgramObject_cube_SAG = glCreateProgram();
-    glAttachShader(shaderProgramObject_cube_SAG, vertexShaderObject_SAG);
-    glAttachShader(shaderProgramObject_cube_SAG, fragmentShaderObject_SAG);
+    shaderProgramObject_cube_AMC = glCreateProgram();
+    glAttachShader(shaderProgramObject_cube_AMC, vertexShaderObject_AMC);
+    glAttachShader(shaderProgramObject_cube_AMC, fragmentShaderObject_AMC);
 
-    glBindAttribLocation(shaderProgramObject_cube_SAG, AMC_ATTRIBUTE_POSITION, "aPosition");
-    glBindAttribLocation(shaderProgramObject_cube_SAG, AMC_ATTRIBUTE_TEXCOORD, "aTexCoord");
+    glBindAttribLocation(shaderProgramObject_cube_AMC, AMC_ATTRIBUTE_POSITION, "aPosition");
+    glBindAttribLocation(shaderProgramObject_cube_AMC, AMC_ATTRIBUTE_TEXCOORD, "aTexCoord");
 
-    glLinkProgram(shaderProgramObject_cube_SAG);
+    glLinkProgram(shaderProgramObject_cube_AMC);
 
-    status_SAG = 0;
-    infoLogLength_SAG = 0;
-    szInfoLog_SAG = NULL;
+    status_AMC = 0;
+    infoLogLength_AMC = 0;
+    szInfoLog_AMC = NULL;
 
-    glGetProgramiv(shaderProgramObject_cube_SAG, GL_LINK_STATUS, &status_SAG);
+    glGetProgramiv(shaderProgramObject_cube_AMC, GL_LINK_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetProgramiv(shaderProgramObject_cube_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG);
-        if (infoLogLength_SAG > 0)
+        glGetProgramiv(shaderProgramObject_cube_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC);
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetProgramInfoLog(shaderProgramObject_cube_SAG, infoLogLength_SAG, NULL, szInfoLog_SAG);
-                printf("Shader Program Linking Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetProgramInfoLog(shaderProgramObject_cube_AMC, infoLogLength_AMC, NULL, szInfoLog_AMC);
+                printf("Shader Program Linking Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize_cube];                                            // Change In mm
@@ -515,10 +515,10 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     }
 
     // Get Shader Uniform Locations
-    mvpMatrixUniform_cube_SAG = glGetUniformLocation(shaderProgramObject_cube_SAG, "uMVPMatrix");
-    textureSamplerUniform_cube_SAG = glGetUniformLocation(shaderProgramObject_cube_SAG, "uTextureSampler");
+    mvpMatrixUniform_cube_AMC = glGetUniformLocation(shaderProgramObject_cube_AMC, "uMVPMatrix");
+    textureSamplerUniform_cube_AMC = glGetUniformLocation(shaderProgramObject_cube_AMC, "uTextureSampler");
 
-    const GLfloat cube_position_SAG[] =
+    const GLfloat cube_position_AMC[] =
     {
          // front
          1.0f,  1.0f,  1.0f, // top-right of front
@@ -557,7 +557,7 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
          1.0f, -1.0f, -1.0f, // bottom-right of bottom
     };
 
-    GLfloat cube_texcoords_SAG[] =
+    GLfloat cube_texcoords_AMC[] =
     {
         // front
         1.0f, 1.0f, // top-right of front
@@ -597,13 +597,13 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     };
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_cube_SAG);
-    glBindVertexArray(vao_cube_SAG);
+    glGenVertexArrays(1, &vao_cube_AMC);
+    glBindVertexArray(vao_cube_AMC);
 
     // VBO (Vertex Buffer Object) For Position
-    glGenBuffers(1, &vbo_position_cube_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_position_cube_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cube_position_SAG), cube_position_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_position_cube_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_position_cube_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cube_position_AMC), cube_position_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
         3,
@@ -616,9 +616,9 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // VBO (Vertex Buffer Object) For Cube Texcoord
-    glGenBuffers(1, &vbo_texcoord_cube_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord_cube_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cube_texcoords_SAG), cube_texcoords_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_texcoord_cube_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord_cube_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cube_texcoords_AMC), cube_texcoords_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_TEXCOORD,
         2,
@@ -644,14 +644,14 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     // initialize_cube ortho mat
-    perspectiveProjectionMatrix_cube_SAG = vmath::mat4::identity();
+    perspectiveProjectionMatrix_cube_AMC = vmath::mat4::identity();
 
     [self resize_cube:WIN_WIDTH :WIN_HEIGHT];                            // resize(WIN_WIDTH, WIN_HEIGHT); change mm
 
     // =================== FBO Releated Code ===================================
     if ([self createFBO:FBO_WIDTH :FBO_HEIGHT] == TRUE)
     {
-        bFboResult_SAG = [self initialize_sphere:FBO_WIDTH :FBO_HEIGHT];
+        bFboResult_AMC = [self initialize_sphere:FBO_WIDTH :FBO_HEIGHT];
     }
     
     return(0);
@@ -660,8 +660,8 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
 -(void)printGLInfo
 {
     // Variable Declarations
-    GLint i_SAG;
-    GLint numExtensions_SAG;
+    GLint i_AMC;
+    GLint numExtensions_AMC;
 
     // Code
     printf(":::::::::::::::::::::::::::::::::::::::::::::::\n");
@@ -672,21 +672,21 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     printf("OpenGL Version     : %s\n",        glGetString(GL_VERSION));
     printf("GLSL Version       : %s\n",        glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions_SAG);
-    for (i_SAG = 0; i_SAG < numExtensions_SAG; i_SAG++)
+    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions_AMC);
+    for (i_AMC = 0; i_AMC < numExtensions_AMC; i_AMC++)
     {
-        printf("%s\n", glGetStringi(GL_EXTENSIONS, i_SAG));
+        printf("%s\n", glGetStringi(GL_EXTENSIONS, i_AMC));
     }
  
     printf(":::::::::::::::::::::::::::::::::::::::::::::::\n");
 }
 
--(BOOL)initialize_sphere:(GLint)textureWidth_SAG :(GLint)textureHeight_SAG
+-(BOOL)initialize_sphere:(GLint)textureWidth_AMC :(GLint)textureHeight_AMC
 {
     // ---Code---------------
 
     // Vertex Shader
-    const GLchar* vertexShaderSourceCode_SAG =
+    const GLchar* vertexShaderSourceCode_AMC =
         "#version 300 core" \
         "\n" \
         "in vec4 aPosition;" \
@@ -761,38 +761,38 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
             "gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * aPosition;" \
         "}";
 
-    GLuint vertexShaderObject_SAG = glCreateShader(GL_VERTEX_SHADER); // Creates empty shader object
+    GLuint vertexShaderObject_AMC = glCreateShader(GL_VERTEX_SHADER); // Creates empty shader object
 
     // below function is made to receive shader source code
     glShaderSource(
-        vertexShaderObject_SAG,
+        vertexShaderObject_AMC,
         1, // Number Of Strings passed in 3rd parameter (Can pass multiple strings we passed only one)
-        (const GLchar**)&vertexShaderSourceCode_SAG,
+        (const GLchar**)&vertexShaderSourceCode_AMC,
         NULL // If multiple strings are there in 3rd param then it will be array of lengths of those multiple strings(We have only one so consider whole string)
     );
 
     // To compile shader source code(To convert human understandable to m/c i.e. GPU)
-    glCompileShader(vertexShaderObject_SAG);
+    glCompileShader(vertexShaderObject_AMC);
 
-    GLint status_SAG = 0;
-    GLint infoLogLength_SAG = 0;
-    GLchar* szInfoLog_SAG = NULL;
+    GLint status_AMC = 0;
+    GLint infoLogLength_AMC = 0;
+    GLchar* szInfoLog_AMC = NULL;
 
     // To get Error in our own variable
-    glGetShaderiv(vertexShaderObject_SAG, GL_COMPILE_STATUS, &status_SAG);
+    glGetShaderiv(vertexShaderObject_AMC, GL_COMPILE_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetShaderiv(vertexShaderObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG);
-        if (infoLogLength_SAG > 0)
+        glGetShaderiv(vertexShaderObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC);
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG + 1);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC + 1);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetShaderInfoLog(vertexShaderObject_SAG, infoLogLength_SAG + 1, NULL, szInfoLog_SAG);
-                printf("Vertex Shader Compilation Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetShaderInfoLog(vertexShaderObject_AMC, infoLogLength_AMC + 1, NULL, szInfoLog_AMC);
+                printf("Vertex Shader Compilation Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize_sphere];
@@ -801,7 +801,7 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     }
 
     // Fragment Shader
-    const GLchar* fragmentShaderSourceCode_SAG =
+    const GLchar* fragmentShaderSourceCode_AMC =
         "#version 300 core" \
         "\n" \
         "precision highp float;"\
@@ -861,30 +861,30 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
             "}" \
         "}";
 
-    GLuint fragmentShaderObject_SAG = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint fragmentShaderObject_AMC = glCreateShader(GL_FRAGMENT_SHADER);
 
-    glShaderSource(fragmentShaderObject_SAG, 1, (const GLchar**)&fragmentShaderSourceCode_SAG, NULL);
+    glShaderSource(fragmentShaderObject_AMC, 1, (const GLchar**)&fragmentShaderSourceCode_AMC, NULL);
 
-    glCompileShader(fragmentShaderObject_SAG);
+    glCompileShader(fragmentShaderObject_AMC);
 
-    status_SAG = 0;
-    infoLogLength_SAG = 0;
-    szInfoLog_SAG = NULL;
+    status_AMC = 0;
+    infoLogLength_AMC = 0;
+    szInfoLog_AMC = NULL;
 
-    glGetShaderiv(fragmentShaderObject_SAG, GL_COMPILE_STATUS, &status_SAG);
+    glGetShaderiv(fragmentShaderObject_AMC, GL_COMPILE_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetShaderiv(fragmentShaderObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG); // GL_SHADER_INFO_LOG_LENGTH
-        if (infoLogLength_SAG > 0)
+        glGetShaderiv(fragmentShaderObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC); // GL_SHADER_INFO_LOG_LENGTH
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetShaderInfoLog(fragmentShaderObject_SAG, infoLogLength_SAG, NULL, szInfoLog_SAG);
-                printf("Fragment Shader Compilation Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetShaderInfoLog(fragmentShaderObject_AMC, infoLogLength_AMC, NULL, szInfoLog_AMC);
+                printf("Fragment Shader Compilation Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize_sphere];                                            // Change In mm
@@ -893,33 +893,33 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     }
 
     // Shader Program
-    shaderProgramObject_sphere_SAG = glCreateProgram();
-    glAttachShader(shaderProgramObject_sphere_SAG, vertexShaderObject_SAG);
-    glAttachShader(shaderProgramObject_sphere_SAG, fragmentShaderObject_SAG);
+    shaderProgramObject_sphere_AMC = glCreateProgram();
+    glAttachShader(shaderProgramObject_sphere_AMC, vertexShaderObject_AMC);
+    glAttachShader(shaderProgramObject_sphere_AMC, fragmentShaderObject_AMC);
 
-    glBindAttribLocation(shaderProgramObject_sphere_SAG, AMC_ATTRIBUTE_POSITION, "aPosition");
-    glBindAttribLocation(shaderProgramObject_sphere_SAG, AMC_ATTRIBUTE_NORMAL, "aNormal");
+    glBindAttribLocation(shaderProgramObject_sphere_AMC, AMC_ATTRIBUTE_POSITION, "aPosition");
+    glBindAttribLocation(shaderProgramObject_sphere_AMC, AMC_ATTRIBUTE_NORMAL, "aNormal");
 
-    glLinkProgram(shaderProgramObject_sphere_SAG);
+    glLinkProgram(shaderProgramObject_sphere_AMC);
 
-    status_SAG = 0;
-    infoLogLength_SAG = 0;
-    szInfoLog_SAG = NULL;
+    status_AMC = 0;
+    infoLogLength_AMC = 0;
+    szInfoLog_AMC = NULL;
 
-    glGetProgramiv(shaderProgramObject_sphere_SAG, GL_LINK_STATUS, &status_SAG);
+    glGetProgramiv(shaderProgramObject_sphere_AMC, GL_LINK_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetProgramiv(shaderProgramObject_sphere_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG);
-        if (infoLogLength_SAG > 0)
+        glGetProgramiv(shaderProgramObject_sphere_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC);
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetProgramInfoLog(shaderProgramObject_sphere_SAG, infoLogLength_SAG, NULL, szInfoLog_SAG);
-                printf("Shader Program Linking Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetProgramInfoLog(shaderProgramObject_sphere_AMC, infoLogLength_AMC, NULL, szInfoLog_AMC);
+                printf("Shader Program Linking Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize_sphere];                                            // Change In mm
@@ -929,49 +929,49 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
 
     // Get Shader Uniform Locations
     // Get Shader Uniform Locations
-    modelMatrixUniform_sphere_SAG = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uModelMatrix");
-    viewMatrixUniform_sphere_SAG = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uViewMatrix");
-    projectionMatrixUniform_sphere_SAG = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uProjectionMatrix");
+    modelMatrixUniform_sphere_AMC = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uModelMatrix");
+    viewMatrixUniform_sphere_AMC = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uViewMatrix");
+    projectionMatrixUniform_sphere_AMC = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uProjectionMatrix");
 
-    lightAmbientUniform_sphere_SAG[0] = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uLightAmbientOne");
-    lightDiffuseUniform_sphere_SAG[0] = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uLightDiffuseOne");
-    lightSpecularUniform_sphere_SAG[0] = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uLightSpecularOne");
-    lightPositionUniform_sphere_SAG[0] = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uLightPositionOne");
+    lightAmbientUniform_sphere_AMC[0] = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uLightAmbientOne");
+    lightDiffuseUniform_sphere_AMC[0] = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uLightDiffuseOne");
+    lightSpecularUniform_sphere_AMC[0] = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uLightSpecularOne");
+    lightPositionUniform_sphere_AMC[0] = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uLightPositionOne");
 
-    lightAmbientUniform_sphere_SAG[1] = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uLightAmbientTwo");
-    lightDiffuseUniform_sphere_SAG[1] = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uLightDiffuseTwo");
-    lightSpecularUniform_sphere_SAG[1] = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uLightSpecularTwo");
-    lightPositionUniform_sphere_SAG[1] = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uLightPositionTwo");
+    lightAmbientUniform_sphere_AMC[1] = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uLightAmbientTwo");
+    lightDiffuseUniform_sphere_AMC[1] = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uLightDiffuseTwo");
+    lightSpecularUniform_sphere_AMC[1] = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uLightSpecularTwo");
+    lightPositionUniform_sphere_AMC[1] = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uLightPositionTwo");
 
-    lightAmbientUniform_sphere_SAG[2] = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uLightAmbientThree");
-    lightDiffuseUniform_sphere_SAG[2] = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uLightDiffuseThree");
-    lightSpecularUniform_sphere_SAG[2] = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uLightSpecularThree");
-    lightPositionUniform_sphere_SAG[2] = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uLightPositionThree");
+    lightAmbientUniform_sphere_AMC[2] = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uLightAmbientThree");
+    lightDiffuseUniform_sphere_AMC[2] = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uLightDiffuseThree");
+    lightSpecularUniform_sphere_AMC[2] = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uLightSpecularThree");
+    lightPositionUniform_sphere_AMC[2] = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uLightPositionThree");
 
-    materialAmbientUniform_sphere_SAG = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uMaterialAmbient");
-    materialDiffuseUniform_sphere_SAG = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uMaterialDiffuse");
-    materialSpecularUniform_sphere_SAG = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uMaterialSpecular");
-    materialShininessUniform_sphere_SAG = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uMaterialShininess");
+    materialAmbientUniform_sphere_AMC = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uMaterialAmbient");
+    materialDiffuseUniform_sphere_AMC = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uMaterialDiffuse");
+    materialSpecularUniform_sphere_AMC = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uMaterialSpecular");
+    materialShininessUniform_sphere_AMC = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uMaterialShininess");
 
-    keyPressedUniform_sphere_SAG = glGetUniformLocation(shaderProgramObject_sphere_SAG, "uKeyPressed");
+    keyPressedUniform_sphere_AMC = glGetUniformLocation(shaderProgramObject_sphere_AMC, "uKeyPressed");
 
 
     Sphere *sphere = [[Sphere alloc]init];
-    [sphere getSphereVertexData:sphere_vertices_SAG :sphere_normals_SAG :sphere_texcoords_SAG :sphere_elements_SAG];
+    [sphere getSphereVertexData:sphere_vertices_AMC :sphere_normals_AMC :sphere_texcoords_AMC :sphere_elements_AMC];
     
-    gNumVertices_SAG = [sphere getNumberOfSphereVertices];
-    gNumElements_SAG = [sphere getNumberOfSphereElements];
+    gNumVertices_AMC = [sphere getNumberOfSphereVertices];
+    gNumElements_AMC = [sphere getNumberOfSphereElements];
 
     // ======================================= SPHERE VAO ================================================
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_sphere_SAG);
-    glBindVertexArray(vao_sphere_SAG);
+    glGenVertexArrays(1, &vao_sphere_AMC);
+    glBindVertexArray(vao_sphere_AMC);
 
     // VBO (Vertex Buffer Object) For Sphere Position
-    glGenBuffers(1, &vbo_position_sphere_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_position_sphere_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(sphere_vertices_SAG), sphere_vertices_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_position_sphere_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_position_sphere_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(sphere_vertices_AMC), sphere_vertices_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
         3,
@@ -984,9 +984,9 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // VBO (Vertex Buffer Object) For Normal
-    glGenBuffers(1, &vbo_normals_sphere_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_normals_sphere_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(sphere_normals_SAG), sphere_normals_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_normals_sphere_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_normals_sphere_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(sphere_normals_AMC), sphere_normals_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_NORMAL,
         3,
@@ -999,9 +999,9 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // VBO (Vertex Buffer Object) For Texture (This VBO added for future use not used in any of the Lights assignments)
-    glGenBuffers(1, &vbo_texcoord_sphere_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord_sphere_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(sphere_texcoords_SAG), sphere_texcoords_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_texcoord_sphere_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord_sphere_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(sphere_texcoords_AMC), sphere_texcoords_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_TEXCOORD,
         2,
@@ -1014,9 +1014,9 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // VBO (Vertex Buffer Object) For Elements
-    glGenBuffers(1, &vbo_element_sphere_SAG);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_element_sphere_SAG);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sphere_elements_SAG), sphere_elements_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_element_sphere_AMC);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_element_sphere_AMC);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sphere_elements_AMC), sphere_elements_AMC, GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     glBindVertexArray(0);
@@ -1029,51 +1029,51 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     // Set The Clear Color Of Window To Black
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-    light_sphere_SAG[0].ambient_sphere_SAG = vec3(0.0f, 0.0f, 0.0f);
-    light_sphere_SAG[1].ambient_sphere_SAG = vec3(0.0f, 0.0f, 0.0f);
-    light_sphere_SAG[2].ambient_sphere_SAG = vec3(0.0f, 0.0f, 0.0f);
+    light_sphere_AMC[0].ambient_sphere_AMC = vec3(0.0f, 0.0f, 0.0f);
+    light_sphere_AMC[1].ambient_sphere_AMC = vec3(0.0f, 0.0f, 0.0f);
+    light_sphere_AMC[2].ambient_sphere_AMC = vec3(0.0f, 0.0f, 0.0f);
 
-    light_sphere_SAG[0].diffuse_sphere_SAG = vec3(1.0f, 0.0f, 0.0f);
-    light_sphere_SAG[1].diffuse_sphere_SAG = vec3(0.0f, 0.0f, 1.0f);
-    light_sphere_SAG[2].diffuse_sphere_SAG = vec3(0.0f, 1.0f, 0.0f);
+    light_sphere_AMC[0].diffuse_sphere_AMC = vec3(1.0f, 0.0f, 0.0f);
+    light_sphere_AMC[1].diffuse_sphere_AMC = vec3(0.0f, 0.0f, 1.0f);
+    light_sphere_AMC[2].diffuse_sphere_AMC = vec3(0.0f, 1.0f, 0.0f);
 
-    light_sphere_SAG[0].speculer_sphere_SAG = vec3(1.0f, 0.0f, 0.0f);
-    light_sphere_SAG[1].speculer_sphere_SAG = vec3(0.0f, 0.0f, 1.0f);
-    light_sphere_SAG[2].speculer_sphere_SAG = vec3(0.0f, 1.0f, 0.0f);
+    light_sphere_AMC[0].speculer_sphere_AMC = vec3(1.0f, 0.0f, 0.0f);
+    light_sphere_AMC[1].speculer_sphere_AMC = vec3(0.0f, 0.0f, 1.0f);
+    light_sphere_AMC[2].speculer_sphere_AMC = vec3(0.0f, 1.0f, 0.0f);
 
-    light_sphere_SAG[0].position_sphere_SAG = vec4(-2.0f, 0.0f, 0.0f, 1.0f);
-    light_sphere_SAG[1].position_sphere_SAG = vec4(2.0f, 0.0f, 0.0f, 1.0f);
-    light_sphere_SAG[2].position_sphere_SAG = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    light_sphere_AMC[0].position_sphere_AMC = vec4(-2.0f, 0.0f, 0.0f, 1.0f);
+    light_sphere_AMC[1].position_sphere_AMC = vec4(2.0f, 0.0f, 0.0f, 1.0f);
+    light_sphere_AMC[2].position_sphere_AMC = vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
     // initialize_sphere ortho mat
-    perspectiveProjectionMatrix_sphere_SAG = vmath::mat4::identity();
+    perspectiveProjectionMatrix_sphere_AMC = vmath::mat4::identity();
 
     [self resize_sphere:WIN_WIDTH :WIN_HEIGHT];                            // resize_sphere(WIN_WIDTH, WIN_HEIGHT); change mm
     
     return(TRUE);
 }
 
--(BOOL)createFBO:(GLint)textureWidth_SAG :(GLint)textureHeight_SAG
+-(BOOL)createFBO:(GLint)textureWidth_AMC :(GLint)textureHeight_AMC
 {
     // Variable Declarations
-    GLint maxRenderBufferSize_SAG;
+    GLint maxRenderBufferSize_AMC;
 
     // Check capacity of Render Buffer
-    glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &maxRenderBufferSize_SAG);
+    glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &maxRenderBufferSize_AMC);
 
-    if (maxRenderBufferSize_SAG < textureWidth_SAG || maxRenderBufferSize_SAG < textureHeight_SAG)
+    if (maxRenderBufferSize_AMC < textureWidth_AMC || maxRenderBufferSize_AMC < textureHeight_AMC)
     {
         printf("Texture Size Overflow ...\n");
         return(FALSE);
     }
 
     // Create Custom Frame Buffer
-    glGenFramebuffers(1, &fbo_SAG);
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo_SAG);
+    glGenFramebuffers(1, &fbo_AMC);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_AMC);
 
     // Create Texture For FBO In Which We Are Going To Render 2nd Scene i.e. Sphere
-    glGenTextures(1, &textureFBO_SAG);
-    glBindTexture(GL_TEXTURE_2D, textureFBO_SAG);
+    glGenTextures(1, &textureFBO_AMC);
+    glBindTexture(GL_TEXTURE_2D, textureFBO_AMC);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -1084,8 +1084,8 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
         GL_TEXTURE_2D,
         0,
         GL_RGB,
-        textureWidth_SAG,
-        textureHeight_SAG,
+        textureWidth_AMC,
+        textureHeight_AMC,
         0,
         GL_RGB,
         GL_UNSIGNED_SHORT_5_6_5,    // 5+6+5 = 16 (For Mobile Compatibility)
@@ -1097,23 +1097,23 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
         GL_FRAMEBUFFER,
         GL_COLOR_ATTACHMENT0,
         GL_TEXTURE_2D,
-        textureFBO_SAG,
+        textureFBO_AMC,
         0                            // MipMap Level
     );
 
     // Now Create Render Buffer To Hold Depth Of Custom FBO
-    glGenRenderbuffers(1, &rbo_SAG);
+    glGenRenderbuffers(1, &rbo_AMC);
     glBindRenderbuffer(
         GL_RENDERBUFFER,            // GL_DRAW_RENDERBUFFER can use for more specific
-        rbo_SAG
+        rbo_AMC
     );
 
     // Set storage of above renderbuffer of texture size for depth
     glRenderbufferStorage(
         GL_RENDERBUFFER,
         GL_DEPTH_COMPONENT16,        // Why 16 ? .. 16 can work on Mobile as well as Desktop (Relevant with 5+6+5 above)
-        textureWidth_SAG,
-        textureHeight_SAG
+        textureWidth_AMC,
+        textureHeight_AMC
     );
 
     // Attach Above Depth Releated Render Buffer To FBO at DepthAttchment
@@ -1121,7 +1121,7 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
         GL_FRAMEBUFFER,
         GL_DEPTH_ATTACHMENT,
         GL_RENDERBUFFER,
-        rbo_SAG
+        rbo_AMC
     );
 
     // Check the FrameBuffer Status Success or Not
@@ -1137,42 +1137,42 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     return(TRUE);
 }
 
--(void)resize_cube:(int)width_SAG :(int)height_SAG
+-(void)resize_cube:(int)width_AMC :(int)height_AMC
 {
     // ---Code---------------
-    if(height_SAG <= 0)
+    if(height_AMC <= 0)
     {
-        height_SAG = 1;
+        height_AMC = 1;
     }
 
-    winWidth_SAG = width_SAG;
-    winHeight_SAG = height_SAG;
+    winWidth_AMC = width_AMC;
+    winHeight_AMC = height_AMC;
     
-    glViewport(0, 0, (GLsizei)width_SAG, (GLsizei)height_SAG);
+    glViewport(0, 0, (GLsizei)width_AMC, (GLsizei)height_AMC);
 
     // Set perspective projection matrix
-    perspectiveProjectionMatrix_cube_SAG = vmath::perspective(   // glFrustum()
+    perspectiveProjectionMatrix_cube_AMC = vmath::perspective(   // glFrustum()
         45.0f,                                              // Field Of View (fovy) Radian considered
-        (GLfloat)width_SAG / (GLfloat)height_SAG,           // Aspect Ratio
+        (GLfloat)width_AMC / (GLfloat)height_AMC,           // Aspect Ratio
         0.1f,                                               // Near standered Value
         100.0f                                              // Far Standered Value
     );
 }
 
--(void)resize_sphere:(int)width_SAG :(int)height_SAG
+-(void)resize_sphere:(int)width_AMC :(int)height_AMC
 {
     // ---Code---------------
-    if(height_SAG <= 0)
+    if(height_AMC <= 0)
     {
-        height_SAG = 1;
+        height_AMC = 1;
     }
     
-    glViewport(0, 0, (GLsizei)width_SAG, (GLsizei)height_SAG);
+    glViewport(0, 0, (GLsizei)width_AMC, (GLsizei)height_AMC);
 
     // Set perspective projection matrix
-    perspectiveProjectionMatrix_sphere_SAG = vmath::perspective(   // glFrustum()
+    perspectiveProjectionMatrix_sphere_AMC = vmath::perspective(   // glFrustum()
         45.0f,                                              // Field Of View (fovy) Radian considered
-        (GLfloat)width_SAG / (GLfloat)height_SAG,           // Aspect Ratio
+        (GLfloat)width_AMC / (GLfloat)height_AMC,           // Aspect Ratio
         0.1f,                                               // Near standered Value
         100.0f                                              // Far Standered Value
     );
@@ -1183,15 +1183,15 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     // ---Code---------------
 
     // =================================== Render FBO Scene ====================================
-    if (bFboResult_SAG == TRUE)
+    if (bFboResult_AMC == TRUE)
     {
         [self display_sphere:FBO_WIDTH :FBO_HEIGHT];
         [self update_sphere];
     }
 
     // Call Resize Cube Again To Compenset The Change By display_sphere()
-    [self resize_cube:winWidth_SAG :winHeight_SAG];
-    glViewport(winWidth_SAG/2, winHeight_SAG/2, (GLsizei)winWidth_SAG, (GLsizei)winHeight_SAG);
+    [self resize_cube:winWidth_AMC :winHeight_AMC];
+    glViewport(winWidth_AMC/2, winHeight_AMC/2, (GLsizei)winWidth_AMC, (GLsizei)winHeight_AMC);
 
     // Reset The Color To White To Compenset The Chnage Done By display_sphere()
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -1200,40 +1200,40 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                                     // Step-3 Depth
 
-    glUseProgram(shaderProgramObject_cube_SAG);
+    glUseProgram(shaderProgramObject_cube_AMC);
 
     // =============================== CUBE ===================================
-    mat4 modelViewMatrix_SAG = mat4::identity();
+    mat4 modelViewMatrix_AMC = mat4::identity();
 
-    mat4 translationMatrix_SAG = mat4::identity();
-    translationMatrix_SAG = vmath::translate(0.0f, 0.0f, -4.0f);
+    mat4 translationMatrix_AMC = mat4::identity();
+    translationMatrix_AMC = vmath::translate(0.0f, 0.0f, -4.0f);
 
-    mat4 scaleMatrix_SAG = mat4::identity();
-    scaleMatrix_SAG = vmath::scale(0.75f, 0.75f, 0.75f);
+    mat4 scaleMatrix_AMC = mat4::identity();
+    scaleMatrix_AMC = vmath::scale(0.75f, 0.75f, 0.75f);
 
-    mat4 rotationMatrix1_SAG = mat4::identity();
-    rotationMatrix1_SAG = vmath::rotate(angle_cube_SAG, 1.0f, 0.0f, 0.0f);
+    mat4 rotationMatrix1_AMC = mat4::identity();
+    rotationMatrix1_AMC = vmath::rotate(angle_cube_AMC, 1.0f, 0.0f, 0.0f);
 
-    mat4 rotationMatrix2_SAG = mat4::identity();
-    rotationMatrix2_SAG = vmath::rotate(angle_cube_SAG, 0.0f, 1.0f, 0.0f);
+    mat4 rotationMatrix2_AMC = mat4::identity();
+    rotationMatrix2_AMC = vmath::rotate(angle_cube_AMC, 0.0f, 1.0f, 0.0f);
 
-    mat4 rotationMatrix3_SAG = mat4::identity();
-    rotationMatrix3_SAG = vmath::rotate(angle_cube_SAG, 0.0f, 0.0f, 1.0f);
+    mat4 rotationMatrix3_AMC = mat4::identity();
+    rotationMatrix3_AMC = vmath::rotate(angle_cube_AMC, 0.0f, 0.0f, 1.0f);
 
-    mat4 rotationMatrix_SAG = rotationMatrix1_SAG * rotationMatrix2_SAG * rotationMatrix3_SAG;
+    mat4 rotationMatrix_AMC = rotationMatrix1_AMC * rotationMatrix2_AMC * rotationMatrix3_AMC;
 
-    modelViewMatrix_SAG = translationMatrix_SAG * scaleMatrix_SAG * rotationMatrix_SAG; // here order of multiplication is VVIMP.
-    mat4 modelViewProjectionMatrix_SAG = perspectiveProjectionMatrix_cube_SAG * modelViewMatrix_SAG; // here order of multiplication is VVIMP.
+    modelViewMatrix_AMC = translationMatrix_AMC * scaleMatrix_AMC * rotationMatrix_AMC; // here order of multiplication is VVIMP.
+    mat4 modelViewProjectionMatrix_AMC = perspectiveProjectionMatrix_cube_AMC * modelViewMatrix_AMC; // here order of multiplication is VVIMP.
 
     // Push above MVP into vertex shhadr's MVP uniform
-    glUniformMatrix4fv(mvpMatrixUniform_cube_SAG, 1, GL_FALSE, modelViewProjectionMatrix_SAG);
+    glUniformMatrix4fv(mvpMatrixUniform_cube_AMC, 1, GL_FALSE, modelViewProjectionMatrix_AMC);
 
     // For Texture
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureFBO_SAG);    // Here all sphere releated scene is rendering
-    glUniform1i(textureSamplerUniform_cube_SAG, 0); // Tell uniformSampler in fragment shader which numbered texture
+    glBindTexture(GL_TEXTURE_2D, textureFBO_AMC);    // Here all sphere releated scene is rendering
+    glUniform1i(textureSamplerUniform_cube_AMC, 0); // Tell uniformSampler in fragment shader which numbered texture
 
-    glBindVertexArray(vao_cube_SAG);
+    glBindVertexArray(vao_cube_AMC);
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     glDrawArrays(GL_TRIANGLE_FAN, 4, 4);
@@ -1249,16 +1249,16 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
     glUseProgram(0);
 }
 
--(void)display_sphere:(GLint)textureWidth_SAG :(GLint)textureHeight_SAG
+-(void)display_sphere:(GLint)textureWidth_AMC :(GLint)textureHeight_AMC
 {
     // ---Code---------------
 
     // =================================== FBO Related Code ====================================
     // Bind With FBO
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo_SAG);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo_AMC);
 
     // Call resize_sphere()
-    [self resize_sphere:textureWidth_SAG :textureHeight_SAG];
+    [self resize_sphere:textureWidth_AMC :textureHeight_AMC];
 
     // Reset The Color To Black To Compenset The Change Done By display_cube()
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1267,100 +1267,100 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                                     // Step-3 Depth
 
-    glUseProgram(shaderProgramObject_sphere_SAG);
+    glUseProgram(shaderProgramObject_sphere_AMC);
 
-    if (bLightningEnabled_sphere_SAG == TRUE)
+    if (bLightningEnabled_sphere_AMC == TRUE)
     {
-        light_sphere_SAG[0].position_sphere_SAG[0] = 0.0f;
-        light_sphere_SAG[0].position_sphere_SAG[1] = 5.0f * (float)sin(lightAngleZero_sphere_SAG);
-        light_sphere_SAG[0].position_sphere_SAG[2] = 5.0f * (float)cos(lightAngleZero_sphere_SAG);
-        light_sphere_SAG[0].position_sphere_SAG[3] = 1.0f;
+        light_sphere_AMC[0].position_sphere_AMC[0] = 0.0f;
+        light_sphere_AMC[0].position_sphere_AMC[1] = 5.0f * (float)sin(lightAngleZero_sphere_AMC);
+        light_sphere_AMC[0].position_sphere_AMC[2] = 5.0f * (float)cos(lightAngleZero_sphere_AMC);
+        light_sphere_AMC[0].position_sphere_AMC[3] = 1.0f;
 
-        light_sphere_SAG[1].position_sphere_SAG[0] = 5.0f * (float)sin(lightAngleOne_sphere_SAG);
-        light_sphere_SAG[1].position_sphere_SAG[1] = 0.0f;
-        light_sphere_SAG[1].position_sphere_SAG[2] = 5.0f * (float)cos(lightAngleOne_sphere_SAG);
-        light_sphere_SAG[1].position_sphere_SAG[3] = 1.0f;
+        light_sphere_AMC[1].position_sphere_AMC[0] = 5.0f * (float)sin(lightAngleOne_sphere_AMC);
+        light_sphere_AMC[1].position_sphere_AMC[1] = 0.0f;
+        light_sphere_AMC[1].position_sphere_AMC[2] = 5.0f * (float)cos(lightAngleOne_sphere_AMC);
+        light_sphere_AMC[1].position_sphere_AMC[3] = 1.0f;
 
-        light_sphere_SAG[2].position_sphere_SAG[0] = 5.0f * (float)sin(lightAngleTwo_sphere_SAG);
-        light_sphere_SAG[2].position_sphere_SAG[1] = 5.0f * (float)cos(lightAngleTwo_sphere_SAG);
-        light_sphere_SAG[2].position_sphere_SAG[2] = 0.0f;
-        light_sphere_SAG[2].position_sphere_SAG[3] = 1.0f;
+        light_sphere_AMC[2].position_sphere_AMC[0] = 5.0f * (float)sin(lightAngleTwo_sphere_AMC);
+        light_sphere_AMC[2].position_sphere_AMC[1] = 5.0f * (float)cos(lightAngleTwo_sphere_AMC);
+        light_sphere_AMC[2].position_sphere_AMC[2] = 0.0f;
+        light_sphere_AMC[2].position_sphere_AMC[3] = 1.0f;
     }
 
     // =========================================== SPHERE ========================================================
 
-    mat4 translationMatrix_SAG = mat4::identity();
-    translationMatrix_SAG = vmath::translate(0.0f, 0.0f, -2.0f);
+    mat4 translationMatrix_AMC = mat4::identity();
+    translationMatrix_AMC = vmath::translate(0.0f, 0.0f, -2.0f);
 
-    mat4 modelMatrix_SAG = translationMatrix_SAG;
-    mat4 viewMatrix_SAG = mat4::identity();
+    mat4 modelMatrix_AMC = translationMatrix_AMC;
+    mat4 viewMatrix_AMC = mat4::identity();
 
     // Push above MVP into vertex shhadr's MVP uniform
 
-    glUniformMatrix4fv(modelMatrixUniform_sphere_SAG, 1, GL_FALSE, modelMatrix_SAG);
-    glUniformMatrix4fv(viewMatrixUniform_sphere_SAG, 1, GL_FALSE, viewMatrix_SAG);
-    glUniformMatrix4fv(projectionMatrixUniform_sphere_SAG, 1, GL_FALSE, perspectiveProjectionMatrix_sphere_SAG);
+    glUniformMatrix4fv(modelMatrixUniform_sphere_AMC, 1, GL_FALSE, modelMatrix_AMC);
+    glUniformMatrix4fv(viewMatrixUniform_sphere_AMC, 1, GL_FALSE, viewMatrix_AMC);
+    glUniformMatrix4fv(projectionMatrixUniform_sphere_AMC, 1, GL_FALSE, perspectiveProjectionMatrix_sphere_AMC);
 
-    if (bLightningEnabled_sphere_SAG == TRUE)
+    if (bLightningEnabled_sphere_AMC == TRUE)
     {
-        if (isPerFragmentChoosed_sphere_SAG == TRUE)
+        if (isPerFragmentChoosed_sphere_AMC == TRUE)
         {
-            glUniform1i(keyPressedUniform_sphere_SAG, 2);
+            glUniform1i(keyPressedUniform_sphere_AMC, 2);
 
-            glUniform3fv(lightAmbientUniform_sphere_SAG[0], 1, light_sphere_SAG[0].ambient_sphere_SAG);
-            glUniform3fv(lightDiffuseUniform_sphere_SAG[0], 1, light_sphere_SAG[0].diffuse_sphere_SAG);
-            glUniform3fv(lightSpecularUniform_sphere_SAG[0], 1, light_sphere_SAG[0].speculer_sphere_SAG);
-            glUniform4fv(lightPositionUniform_sphere_SAG[0], 1, light_sphere_SAG[0].position_sphere_SAG);
+            glUniform3fv(lightAmbientUniform_sphere_AMC[0], 1, light_sphere_AMC[0].ambient_sphere_AMC);
+            glUniform3fv(lightDiffuseUniform_sphere_AMC[0], 1, light_sphere_AMC[0].diffuse_sphere_AMC);
+            glUniform3fv(lightSpecularUniform_sphere_AMC[0], 1, light_sphere_AMC[0].speculer_sphere_AMC);
+            glUniform4fv(lightPositionUniform_sphere_AMC[0], 1, light_sphere_AMC[0].position_sphere_AMC);
 
-            glUniform3fv(lightAmbientUniform_sphere_SAG[1], 1, light_sphere_SAG[1].ambient_sphere_SAG);
-            glUniform3fv(lightDiffuseUniform_sphere_SAG[1], 1, light_sphere_SAG[1].diffuse_sphere_SAG);
-            glUniform3fv(lightSpecularUniform_sphere_SAG[1], 1, light_sphere_SAG[1].speculer_sphere_SAG);
-            glUniform4fv(lightPositionUniform_sphere_SAG[1], 1, light_sphere_SAG[1].position_sphere_SAG);
+            glUniform3fv(lightAmbientUniform_sphere_AMC[1], 1, light_sphere_AMC[1].ambient_sphere_AMC);
+            glUniform3fv(lightDiffuseUniform_sphere_AMC[1], 1, light_sphere_AMC[1].diffuse_sphere_AMC);
+            glUniform3fv(lightSpecularUniform_sphere_AMC[1], 1, light_sphere_AMC[1].speculer_sphere_AMC);
+            glUniform4fv(lightPositionUniform_sphere_AMC[1], 1, light_sphere_AMC[1].position_sphere_AMC);
 
-            glUniform3fv(lightAmbientUniform_sphere_SAG[2], 1, light_sphere_SAG[2].ambient_sphere_SAG);
-            glUniform3fv(lightDiffuseUniform_sphere_SAG[2], 1, light_sphere_SAG[2].diffuse_sphere_SAG);
-            glUniform3fv(lightSpecularUniform_sphere_SAG[2], 1, light_sphere_SAG[2].speculer_sphere_SAG);
-            glUniform4fv(lightPositionUniform_sphere_SAG[2], 1, light_sphere_SAG[2].position_sphere_SAG);
+            glUniform3fv(lightAmbientUniform_sphere_AMC[2], 1, light_sphere_AMC[2].ambient_sphere_AMC);
+            glUniform3fv(lightDiffuseUniform_sphere_AMC[2], 1, light_sphere_AMC[2].diffuse_sphere_AMC);
+            glUniform3fv(lightSpecularUniform_sphere_AMC[2], 1, light_sphere_AMC[2].speculer_sphere_AMC);
+            glUniform4fv(lightPositionUniform_sphere_AMC[2], 1, light_sphere_AMC[2].position_sphere_AMC);
 
-            glUniform3fv(materialAmbientUniform_sphere_SAG, 1, materialAmbient_sphere_SAG);
-            glUniform3fv(materialDiffuseUniform_sphere_SAG, 1, materialDiffuse_sphere_SAG);
-            glUniform3fv(materialSpecularUniform_sphere_SAG, 1, materialSpecular_sphere_SAG);
-            glUniform1f(materialShininessUniform_sphere_SAG, materialShininess_sphere_SAG);
+            glUniform3fv(materialAmbientUniform_sphere_AMC, 1, materialAmbient_sphere_AMC);
+            glUniform3fv(materialDiffuseUniform_sphere_AMC, 1, materialDiffuse_sphere_AMC);
+            glUniform3fv(materialSpecularUniform_sphere_AMC, 1, materialSpecular_sphere_AMC);
+            glUniform1f(materialShininessUniform_sphere_AMC, materialShininess_sphere_AMC);
         }
         else
         {
-            glUniform1i(keyPressedUniform_sphere_SAG, 1);
+            glUniform1i(keyPressedUniform_sphere_AMC, 1);
 
-            glUniform3fv(lightAmbientUniform_sphere_SAG[0], 1, light_sphere_SAG[0].ambient_sphere_SAG);
-            glUniform3fv(lightDiffuseUniform_sphere_SAG[0], 1, light_sphere_SAG[0].diffuse_sphere_SAG);
-            glUniform3fv(lightSpecularUniform_sphere_SAG[0], 1, light_sphere_SAG[0].speculer_sphere_SAG);
-            glUniform4fv(lightPositionUniform_sphere_SAG[0], 1, light_sphere_SAG[0].position_sphere_SAG);
+            glUniform3fv(lightAmbientUniform_sphere_AMC[0], 1, light_sphere_AMC[0].ambient_sphere_AMC);
+            glUniform3fv(lightDiffuseUniform_sphere_AMC[0], 1, light_sphere_AMC[0].diffuse_sphere_AMC);
+            glUniform3fv(lightSpecularUniform_sphere_AMC[0], 1, light_sphere_AMC[0].speculer_sphere_AMC);
+            glUniform4fv(lightPositionUniform_sphere_AMC[0], 1, light_sphere_AMC[0].position_sphere_AMC);
 
-            glUniform3fv(lightAmbientUniform_sphere_SAG[1], 1, light_sphere_SAG[1].ambient_sphere_SAG);
-            glUniform3fv(lightDiffuseUniform_sphere_SAG[1], 1, light_sphere_SAG[1].diffuse_sphere_SAG);
-            glUniform3fv(lightSpecularUniform_sphere_SAG[1], 1, light_sphere_SAG[1].speculer_sphere_SAG);
-            glUniform4fv(lightPositionUniform_sphere_SAG[1], 1, light_sphere_SAG[1].position_sphere_SAG);
+            glUniform3fv(lightAmbientUniform_sphere_AMC[1], 1, light_sphere_AMC[1].ambient_sphere_AMC);
+            glUniform3fv(lightDiffuseUniform_sphere_AMC[1], 1, light_sphere_AMC[1].diffuse_sphere_AMC);
+            glUniform3fv(lightSpecularUniform_sphere_AMC[1], 1, light_sphere_AMC[1].speculer_sphere_AMC);
+            glUniform4fv(lightPositionUniform_sphere_AMC[1], 1, light_sphere_AMC[1].position_sphere_AMC);
 
-            glUniform3fv(lightAmbientUniform_sphere_SAG[2], 1, light_sphere_SAG[2].ambient_sphere_SAG);
-            glUniform3fv(lightDiffuseUniform_sphere_SAG[2], 1, light_sphere_SAG[2].diffuse_sphere_SAG);
-            glUniform3fv(lightSpecularUniform_sphere_SAG[2], 1, light_sphere_SAG[2].speculer_sphere_SAG);
-            glUniform4fv(lightPositionUniform_sphere_SAG[2], 1, light_sphere_SAG[2].position_sphere_SAG);
+            glUniform3fv(lightAmbientUniform_sphere_AMC[2], 1, light_sphere_AMC[2].ambient_sphere_AMC);
+            glUniform3fv(lightDiffuseUniform_sphere_AMC[2], 1, light_sphere_AMC[2].diffuse_sphere_AMC);
+            glUniform3fv(lightSpecularUniform_sphere_AMC[2], 1, light_sphere_AMC[2].speculer_sphere_AMC);
+            glUniform4fv(lightPositionUniform_sphere_AMC[2], 1, light_sphere_AMC[2].position_sphere_AMC);
 
-            glUniform3fv(materialAmbientUniform_sphere_SAG, 1, materialAmbient_sphere_SAG);
-            glUniform3fv(materialDiffuseUniform_sphere_SAG, 1, materialDiffuse_sphere_SAG);
-            glUniform3fv(materialSpecularUniform_sphere_SAG, 1, materialSpecular_sphere_SAG);
-            glUniform1f(materialShininessUniform_sphere_SAG, materialShininess_sphere_SAG);
+            glUniform3fv(materialAmbientUniform_sphere_AMC, 1, materialAmbient_sphere_AMC);
+            glUniform3fv(materialDiffuseUniform_sphere_AMC, 1, materialDiffuse_sphere_AMC);
+            glUniform3fv(materialSpecularUniform_sphere_AMC, 1, materialSpecular_sphere_AMC);
+            glUniform1f(materialShininessUniform_sphere_AMC, materialShininess_sphere_AMC);
         }
     }
     else
     {
-        glUniform1i(keyPressedUniform_sphere_SAG, 0);
+        glUniform1i(keyPressedUniform_sphere_AMC, 0);
     }
 
-    glBindVertexArray(vao_sphere_SAG); // VAO Binding
+    glBindVertexArray(vao_sphere_AMC); // VAO Binding
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_element_sphere_SAG);
-    glDrawElements(GL_TRIANGLES, gNumElements_SAG, GL_UNSIGNED_SHORT, 0); // 3rd Param is of type Element's Array's Type
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo_element_sphere_AMC);
+    glDrawElements(GL_TRIANGLES, gNumElements_AMC, GL_UNSIGNED_SHORT, 0); // 3rd Param is of type Element's Array's Type
 
     glBindVertexArray(0); // VAO UnBinding
 
@@ -1374,11 +1374,11 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
 {
     // ---Code---------------
 
-    angle_cube_SAG = angle_cube_SAG - 1.0;
+    angle_cube_AMC = angle_cube_AMC - 1.0;
 
-    if (angle_cube_SAG <= 0.0f)
+    if (angle_cube_AMC <= 0.0f)
     {
-        angle_cube_SAG = angle_cube_SAG + 360.0f;
+        angle_cube_AMC = angle_cube_AMC + 360.0f;
     }
 }
 
@@ -1386,24 +1386,24 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
 {
     // ---Code---------------
 
-    if (bLightningEnabled_sphere_SAG == TRUE)
+    if (bLightningEnabled_sphere_AMC == TRUE)
     {
-        lightAngleZero_sphere_SAG = lightAngleZero_sphere_SAG + 0.1f;
-        if (lightAngleZero_sphere_SAG >= 360.0f)
+        lightAngleZero_sphere_AMC = lightAngleZero_sphere_AMC + 0.1f;
+        if (lightAngleZero_sphere_AMC >= 360.0f)
         {
-            lightAngleZero_sphere_SAG = lightAngleZero_sphere_SAG - 360.0f;
+            lightAngleZero_sphere_AMC = lightAngleZero_sphere_AMC - 360.0f;
         }
 
-        lightAngleOne_sphere_SAG = lightAngleOne_sphere_SAG + 0.1f;
-        if (lightAngleOne_sphere_SAG >= 360.0f)
+        lightAngleOne_sphere_AMC = lightAngleOne_sphere_AMC + 0.1f;
+        if (lightAngleOne_sphere_AMC >= 360.0f)
         {
-            lightAngleOne_sphere_SAG = lightAngleOne_sphere_SAG - 360.0f;
+            lightAngleOne_sphere_AMC = lightAngleOne_sphere_AMC - 360.0f;
         }
 
-        lightAngleTwo_sphere_SAG = lightAngleTwo_sphere_SAG + 0.1f;
-        if (lightAngleTwo_sphere_SAG >= 360.0f)
+        lightAngleTwo_sphere_AMC = lightAngleTwo_sphere_AMC + 0.1f;
+        if (lightAngleTwo_sphere_AMC >= 360.0f)
         {
-            lightAngleTwo_sphere_SAG = lightAngleTwo_sphere_SAG - 360.0f;
+            lightAngleTwo_sphere_AMC = lightAngleTwo_sphere_AMC - 360.0f;
         }
     }
 }
@@ -1414,75 +1414,75 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
 
     [self uninitialize_sphere];
 
-    if (shaderProgramObject_cube_SAG)
+    if (shaderProgramObject_cube_AMC)
     {
-        glUseProgram(shaderProgramObject_cube_SAG);
+        glUseProgram(shaderProgramObject_cube_AMC);
 
-        GLint numShaders_SAG = 0;
-        glGetProgramiv(shaderProgramObject_cube_SAG, GL_ATTACHED_SHADERS, &numShaders_SAG);
+        GLint numShaders_AMC = 0;
+        glGetProgramiv(shaderProgramObject_cube_AMC, GL_ATTACHED_SHADERS, &numShaders_AMC);
 
-        if (numShaders_SAG > 0)
+        if (numShaders_AMC > 0)
         {
-            GLuint* pShaders_SAG = (GLuint*)malloc(numShaders_SAG * sizeof(GLuint));
-            if (pShaders_SAG != NULL)
+            GLuint* pShaders_AMC = (GLuint*)malloc(numShaders_AMC * sizeof(GLuint));
+            if (pShaders_AMC != NULL)
             {
-                glGetAttachedShaders(shaderProgramObject_cube_SAG, numShaders_SAG, NULL, pShaders_SAG);
-                for (GLint i = 0; i < numShaders_SAG; i++)
+                glGetAttachedShaders(shaderProgramObject_cube_AMC, numShaders_AMC, NULL, pShaders_AMC);
+                for (GLint i = 0; i < numShaders_AMC; i++)
                 {
-                    glDetachShader(shaderProgramObject_cube_SAG, pShaders_SAG[i]);
-                    glDeleteShader(pShaders_SAG[i]);
-                    pShaders_SAG[i] = 0;
+                    glDetachShader(shaderProgramObject_cube_AMC, pShaders_AMC[i]);
+                    glDeleteShader(pShaders_AMC[i]);
+                    pShaders_AMC[i] = 0;
                 }
-                free(pShaders_SAG);
-                pShaders_SAG = NULL;
+                free(pShaders_AMC);
+                pShaders_AMC = NULL;
             }
         }
 
         glUseProgram(0);
-        glDeleteProgram(shaderProgramObject_cube_SAG);
-        shaderProgramObject_cube_SAG = 0;
+        glDeleteProgram(shaderProgramObject_cube_AMC);
+        shaderProgramObject_cube_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for texture
-    if (vbo_texcoord_cube_SAG)
+    if (vbo_texcoord_cube_AMC)
     {
-        glDeleteBuffers(1, &vbo_texcoord_cube_SAG);
-        vbo_texcoord_cube_SAG = 0;
+        glDeleteBuffers(1, &vbo_texcoord_cube_AMC);
+        vbo_texcoord_cube_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for position
-    if (vbo_position_cube_SAG)
+    if (vbo_position_cube_AMC)
     {
-        glDeleteBuffers(1, &vbo_position_cube_SAG);
-        vbo_position_cube_SAG = 0;
+        glDeleteBuffers(1, &vbo_position_cube_AMC);
+        vbo_position_cube_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object)
-    if (vao_cube_SAG)
+    if (vao_cube_AMC)
     {
-        glDeleteVertexArrays(1, &vao_cube_SAG);
-        vao_cube_SAG = 0;
+        glDeleteVertexArrays(1, &vao_cube_AMC);
+        vao_cube_AMC = 0;
     }
 
     // Delete Textures
-    if (textureFBO_SAG)
+    if (textureFBO_AMC)
     {
-        glDeleteTextures(1, &textureFBO_SAG);
-        textureFBO_SAG = 0;
+        glDeleteTextures(1, &textureFBO_AMC);
+        textureFBO_AMC = 0;
     }
 
     // Delete Render Buffer
-    if (rbo_SAG)
+    if (rbo_AMC)
     {
-        glDeleteRenderbuffers(1, &rbo_SAG);
-        rbo_SAG = 0;
+        glDeleteRenderbuffers(1, &rbo_AMC);
+        rbo_AMC = 0;
     }
 
     // Delete Frame Buffer
-    if (fbo_SAG)
+    if (fbo_AMC)
     {
-        glDeleteFramebuffers(1, &fbo_SAG);
-        fbo_SAG = 0;
+        glDeleteFramebuffers(1, &fbo_AMC);
+        fbo_AMC = 0;
     }
 }
 
@@ -1490,65 +1490,65 @@ GLfloat materialShininess_sphere_SAG = 128.0f;
 {
     // ---Code---------------
 
-    if (shaderProgramObject_sphere_SAG)
+    if (shaderProgramObject_sphere_AMC)
     {
-        glUseProgram(shaderProgramObject_sphere_SAG);
+        glUseProgram(shaderProgramObject_sphere_AMC);
 
-        GLint numShaders_SAG = 0;
-        glGetProgramiv(shaderProgramObject_sphere_SAG, GL_ATTACHED_SHADERS, &numShaders_SAG);
+        GLint numShaders_AMC = 0;
+        glGetProgramiv(shaderProgramObject_sphere_AMC, GL_ATTACHED_SHADERS, &numShaders_AMC);
 
-        if (numShaders_SAG > 0)
+        if (numShaders_AMC > 0)
         {
-            GLuint* pShaders_SAG = (GLuint*)malloc(numShaders_SAG * sizeof(GLuint));
-            if (pShaders_SAG != NULL)
+            GLuint* pShaders_AMC = (GLuint*)malloc(numShaders_AMC * sizeof(GLuint));
+            if (pShaders_AMC != NULL)
             {
-                glGetAttachedShaders(shaderProgramObject_sphere_SAG, numShaders_SAG, NULL, pShaders_SAG);
-                for (GLint i = 0; i < numShaders_SAG; i++)
+                glGetAttachedShaders(shaderProgramObject_sphere_AMC, numShaders_AMC, NULL, pShaders_AMC);
+                for (GLint i = 0; i < numShaders_AMC; i++)
                 {
-                    glDetachShader(shaderProgramObject_sphere_SAG, pShaders_SAG[i]);
-                    glDeleteShader(pShaders_SAG[i]);
-                    pShaders_SAG[i] = 0;
+                    glDetachShader(shaderProgramObject_sphere_AMC, pShaders_AMC[i]);
+                    glDeleteShader(pShaders_AMC[i]);
+                    pShaders_AMC[i] = 0;
                 }
-                free(pShaders_SAG);
-                pShaders_SAG = NULL;
+                free(pShaders_AMC);
+                pShaders_AMC = NULL;
             }
         }
 
         glUseProgram(0);
-        glDeleteProgram(shaderProgramObject_sphere_SAG);
-        shaderProgramObject_sphere_SAG = 0;
+        glDeleteProgram(shaderProgramObject_sphere_AMC);
+        shaderProgramObject_sphere_AMC = 0;
     }
 
     // ================= SPHERE ====================
     // Delete VBO (Vertex Buffer Object) for Elements
-    if (vbo_element_sphere_SAG)
+    if (vbo_element_sphere_AMC)
     {
-        glDeleteBuffers(1, &vbo_element_sphere_SAG);
-        vbo_element_sphere_SAG = 0;
+        glDeleteBuffers(1, &vbo_element_sphere_AMC);
+        vbo_element_sphere_AMC = 0;
     }
     // Delete VBO (Vertex Buffer Object) for Texcoords
-    if (vbo_texcoord_sphere_SAG)
+    if (vbo_texcoord_sphere_AMC)
     {
-        glDeleteBuffers(1, &vbo_texcoord_sphere_SAG);
-        vbo_texcoord_sphere_SAG = 0;
+        glDeleteBuffers(1, &vbo_texcoord_sphere_AMC);
+        vbo_texcoord_sphere_AMC = 0;
     }
     // Delete VBO (Vertex Buffer Object) for Normals
-    if (vbo_normals_sphere_SAG)
+    if (vbo_normals_sphere_AMC)
     {
-        glDeleteBuffers(1, &vbo_normals_sphere_SAG);
-        vbo_normals_sphere_SAG = 0;
+        glDeleteBuffers(1, &vbo_normals_sphere_AMC);
+        vbo_normals_sphere_AMC = 0;
     }
     // Delete VBO (Vertex Buffer Object) for Position
-    if (vbo_position_sphere_SAG)
+    if (vbo_position_sphere_AMC)
     {
-        glDeleteBuffers(1, &vbo_position_sphere_SAG);
-        vbo_position_sphere_SAG = 0;
+        glDeleteBuffers(1, &vbo_position_sphere_AMC);
+        vbo_position_sphere_AMC = 0;
     }
     // Delete VAO (Vertex Array Object)
-    if (vao_sphere_SAG)
+    if (vao_sphere_AMC)
     {
-        glDeleteVertexArrays(1, &vao_sphere_SAG);
-        vao_sphere_SAG = 0;
+        glDeleteVertexArrays(1, &vao_sphere_AMC);
+        vao_sphere_AMC = 0;
     }
 }
 
