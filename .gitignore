@@ -1,0 +1,28 @@
+# Archives
+*.zip
+*.7z
+*.rar
+
+# Windows binaries
+*.exe
+*.dll
+*.obj
+*.lib
+*.exp
+*.ilk
+*.pdb
+
+# Visual Studio
+.vs/
+Debug/
+Release/
+x64/
+Win32/
+
+# Build artifacts
+build/
+out/
+
+# OS junk
+.DS_Store
+Thumbs.db
