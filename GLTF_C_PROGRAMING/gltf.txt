@@ -1,0 +1,441 @@
+| Category           | Stored? |
+| ------------------ | ------- |
+| Mesh geometry      | ✅       |
+| Materials (PBR)    | ✅       |
+| Textures           | ✅       |
+| Scene hierarchy    | ✅       |
+| Transforms         | ✅       |
+| Animations         | ✅       |
+| Skins (bones)      | ✅       |
+| Cameras            | ✅       |
+| Lights (extension) | ✅       |
+
+
+This is a **very good question**, and you’re asking it at the **right depth** 👍
+Let’s answer it **clearly**, **concretely**, and **based on YOUR glTF file**.
+
+---
+
+# 1️⃣ Short direct answer (first)
+
+In **this type of glTF file**, **one vertex can have these things**:
+
+```
+POSITION   → mandatory
+NORMAL     → very common
+TEXCOORD_0 → very common
+INDICES    → not per-vertex, but per-mesh
+```
+
+So in YOUR file:
+👉 **Each vertex has 3 attributes**
+
+```
+Vertex =
+{
+  position (vec3),
+  normal   (vec3),
+  uv       (vec2)
+}
+```
+
+---
+
+# 2️⃣ What “vertex” actually means in glTF (important)
+
+glTF does **NOT** store a “vertex struct” like OBJ.
+
+Instead, it stores **separate arrays**:
+
+```
+positions[]  → accessor 0
+normals[]    → accessor 1
+uvs[]        → accessor 2
+indices[]    → accessor 3
+```
+
+They are **matched by index**.
+
+### Example:
+
+```text
+vertex 5:
+  position = positions[5]
+  normal   = normals[5]
+  uv       = uvs[5]
+```
+
+This is why **count = 24** for all attributes.
+
+---
+
+# 3️⃣ Exactly what YOUR glTF file contains (no guessing)
+
+From your JSON:
+
+```json
+"attributes": {
+  "POSITION": 0,
+  "NORMAL": 1,
+  "TEXCOORD_0": 2
+},
+"indices": 3
+```
+
+So this file has:
+
+| Attribute  | Accessor | Type        | Meaning          |
+| ---------- | -------- | ----------- | ---------------- |
+| POSITION   | 0        | VEC3 float  | Vertex position  |
+| NORMAL     | 1        | VEC3 float  | Vertex normal    |
+| TEXCOORD_0 | 2        | VEC2 float  | Texture UV       |
+| INDICES    | 3        | SCALAR uint | Triangle indices |
+
+---
+
+# 4️⃣ How many numbers does ONE vertex contain?
+
+Let’s count **numbers**, not bytes.
+
+### POSITION
+
+```text
+vec3 → x, y, z → 3 floats
+```
+
+### NORMAL
+
+```text
+vec3 → nx, ny, nz → 3 floats
+```
+
+### TEXCOORD_0
+
+```text
+vec2 → u, v → 2 floats
+```
+
+### Total per vertex
+
+```
+3 + 3 + 2 = 8 floats
+```
+
+That means:
+
+```
+8 floats × 4 bytes = 32 bytes per vertex
+```
+
+---
+
+# 5️⃣ Why indices exist (important concept)
+
+You see:
+
+```json
+"count": 36
+```
+
+That means:
+
+* 36 indices
+* 12 triangles
+* Cube has 8 corners but **24 vertices**
+
+### Why 24 vertices instead of 8?
+
+Because:
+
+* Each face has different normal
+* Each face has different UVs
+
+So vertices are **duplicated logically**.
+
+This is **correct and normal**.
+
+---
+
+# 6️⃣ Visualize ONE vertex in C (mental model)
+
+```c
+struct Vertex
+{
+    float px, py, pz;   // POSITION
+    float nx, ny, nz;   // NORMAL
+    float u, v;         // TEXCOORD
+};
+```
+
+But remember:
+👉 glTF stores these **in separate arrays**, not interleaved (unless exporter chooses to).
+
+Your file:
+
+* POSITION + NORMAL → same bufferView (interleaved)
+* UV → separate bufferView
+
+---
+
+# 7️⃣ How many total vertices are there?
+
+From accessors:
+
+```json
+"count": 24
+```
+
+So:
+
+```
+24 vertices
+```
+
+Each vertex has:
+
+* Position
+* Normal
+* UV
+
+---
+
+# 8️⃣ Are there other possible vertex attributes in glTF?
+
+YES, glTF supports many more.
+
+### Common vertex attributes
+
+| Attribute  | Meaning        |
+| ---------- | -------------- |
+| POSITION   | Required       |
+| NORMAL     | Lighting       |
+| TEXCOORD_0 | Base texture   |
+| TEXCOORD_1 | Lightmap       |
+| COLOR_0    | Vertex color   |
+| TANGENT    | Normal mapping |
+| JOINTS_0   | Skinning       |
+| WEIGHTS_0  | Skinning       |
+
+Your file uses **only the basics**.
+
+---
+
+# 9️⃣ Why glTF is designed this way (truth)
+
+glTF is designed for:
+
+* GPU vertex buffers
+* Modern APIs (OpenGL/Vulkan)
+* Zero guessing
+* Fast upload
+
+So it mirrors:
+
+```c
+glVertexAttribPointer(...)
+```
+
+---
+
+# 🔟 Final summary (lock this in)
+
+For **YOUR glTF file**:
+
+```
+Vertex =
+{
+  vec3 position,
+  vec3 normal,
+  vec2 uv
+}
+
+Vertices = 24
+Indices  = 36
+Triangles = 12
+```
+
+If this makes sense now — you’ve crossed a BIG milestone 💪
+
+---
+
+## 🔜 What should we do next?
+
+Choose one:
+
+👉 **Print NORMAL + UV together per vertex**
+👉 **Build an interleaved Vertex struct from glTF**
+👉 **Send this data to OpenGL and draw the cube**
+👉 **Explain why cube has 24 vertices, not 8 (deep)**
+
+======================================================================================================================
+======================================================================================================================
+======================================================================================================================
+======================================================================================================================
+======================================================================================================================
+======================================================================================================================
+======================================================================================================================
+======================================================================================================================
+
+Great 👍 — this is the **exact right checkpoint**.
+
+You have successfully:
+✔ Parsed `.gltf`
+✔ Read `.bin`
+✔ Printed **vertex positions**
+
+That means **you already understand the hardest part of glTF**.
+
+Now I’ll tell you **what comes next**, **why**, and **in which order** — like a real engine roadmap.
+
+---
+
+## 🧭 Where you are right now (important)
+
+You are here ⬇️
+
+```
+[ glTF file ] → [ accessors ] → [ raw vertex data ] → PRINTED ✔
+```
+
+Next steps turn this into:
+
+```
+PRINT → STRUCT → GPU → DRAW
+```
+
+---
+
+## ✅ STEP-BY-STEP ROADMAP (DO NOT SKIP ORDER)
+
+---
+
+## 🔹 STEP 1 (NEXT): Print **NORMAL + UV** together with POSITION
+
+### Why?
+
+Because a **vertex is not only position**.
+
+Before touching OpenGL, you must be able to **reconstruct one complete vertex**:
+
+```
+Vertex 0:
+  position (x y z)
+  normal   (nx ny nz)
+  uv       (u v)
+```
+
+### What you will learn
+
+✔ How multiple accessors map to the same vertex index
+✔ Why counts must match
+✔ How interleaved vs separate buffers work
+
+👉 **This step removes 80% confusion permanently**
+
+---
+
+## 🔹 STEP 2: Print **INDICES** and understand triangles
+
+### Why?
+
+Rendering uses **indices**, not vertices directly.
+
+You’ll see:
+
+```
+Triangle 0: 0 1 2
+Triangle 1: 2 3 0
+```
+
+### What you will learn
+
+✔ Why cube has 24 vertices
+✔ How faces are built
+✔ How glDrawElements works
+
+---
+
+## 🔹 STEP 3: Build a real `Vertex` struct in C
+
+After reading separate arrays, you **pack them**:
+
+```c
+struct Vertex {
+    float px, py, pz;
+    float nx, ny, nz;
+    float u, v;
+};
+```
+
+Then:
+
+```
+Vertex vertices[24];
+```
+
+### Why?
+
+Because GPUs like **interleaved data**.
+
+---
+
+## 🔹 STEP 4: Upload to OpenGL (FIRST TRIANGLE)
+
+Only now you touch OpenGL.
+
+Minimal:
+
+```c
+glGenBuffers
+glBindBuffer
+glBufferData
+```
+
+And draw:
+
+```c
+glDrawElements
+```
+
+---
+
+## 🔹 STEP 5: Apply node transform (matrix)
+
+Your glTF has:
+
+```json
+"matrix": [ ... ]
+```
+
+That becomes:
+
+```c
+modelMatrix = nodeMatrix;
+```
+
+This step makes models appear **correctly oriented and scaled**.
+
+---
+
+## 🧠 Why this order is CRITICAL
+
+If you skip steps:
+
+* You won’t know where bugs come from
+* You’ll blame OpenGL when data is wrong
+* Debugging becomes painful
+
+Engines follow **this exact order**.
+
+---
+
+## 🎯 What I recommend as your NEXT action
+
+Say one of these (I’ll give full code again):
+
+👉 **“Print NORMAL and UV per vertex”** ← BEST NEXT STEP
+👉 **“Print index buffer and triangles”**
+👉 **“Build Vertex struct from glTF data”**
+👉 **“Send this data to OpenGL and draw cube”**
+
+You are officially past the beginner phase now 💪
