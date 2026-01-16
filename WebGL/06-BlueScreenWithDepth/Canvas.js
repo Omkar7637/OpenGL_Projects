@@ -222,11 +222,11 @@ function initialize()
     uMVPMatrixUniform = gl.getUniformLocation(shaderProgramObject, "uMVPMatrix");
     uColorUniform = gl.getUniformLocation(shaderProgramObject, "uColor");   // NEW
 
-    var trianglePosition = new Float32Array
-    ([
-     0.0,  1.0, 0.0,
-    -1.0, -1.0, 0.0,
-     1.0, -1.0, 0.0
+    var rectangle_position = new Float32Array([
+        -1.0, -1.0, 0.0,
+        -1.0, 1.0, 0.0,
+        1.0, 1.0, 0.0,
+        1.0, -1.0, 0.0
     ]);
 
 
@@ -236,7 +236,7 @@ function initialize()
     // Position VBO
     vbo = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-    gl.bufferData(gl.ARRAY_BUFFER, trianglePosition, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, rectangle_position, gl.STATIC_DRAW);
     gl.vertexAttribPointer(MyAttributes.AMC_ATTRIBUTE_POSITION, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(MyAttributes.AMC_ATTRIBUTE_POSITION);
 
@@ -277,12 +277,6 @@ function display()
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.useProgram(shaderProgramObject);
 
-    // Time-based color animation
-    var t = performance.now() * 0.001; // seconds
-    var r = (Math.sin(t) + 1.0) * 0.5;
-    var g = (Math.sin(t + 2.0) + 1.0) * 0.5;
-    var b = (Math.sin(t + 4.0) + 1.0) * 0.5;
-    gl.uniform3f(uColorUniform, r, g, b);   // Send color to shader
 
     // ModelView Matrix (Translate)
     var modelViewMatrix = mat4.create();
@@ -295,7 +289,7 @@ function display()
     gl.uniformMatrix4fv(uMVPMatrixUniform, false, modelViewProjectionMatrix);
 
     gl.bindVertexArray(vao);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
     gl.bindVertexArray(null);
 
     gl.useProgram(null);
