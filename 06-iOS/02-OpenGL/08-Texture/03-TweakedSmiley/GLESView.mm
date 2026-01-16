@@ -25,23 +25,23 @@ enum
     NSInteger framesPerSecond;
     BOOL isDisplayLink;
     
-    GLuint shaderProgramObject_SAG;
+    GLuint shaderProgramObject_AMC;
     
-    GLuint vao_SAG;
-    GLuint vbo_position_SAG;
-    GLuint vbo_texcoord_SAG;
+    GLuint vao_AMC;
+    GLuint vbo_position_AMC;
+    GLuint vbo_texcoord_AMC;
 
-    GLuint mvpMatrixUniform_SAG;
-    GLuint textureSamplerUniform_SAG;
-    GLuint keyPressedUniform_SAG;
+    GLuint mvpMatrixUniform_AMC;
+    GLuint textureSamplerUniform_AMC;
+    GLuint keyPressedUniform_AMC;
 
-    mat4 perspectiveProjectionMatrix_SAG;
+    mat4 perspectiveProjectionMatrix_AMC;
     
     // Texture Variables
-    GLuint smiley_texture_SAG;
+    GLuint smiley_texture_AMC;
     
     // Variable To Handle Tap Event
-    int singleTap_SAG;
+    int singleTap_AMC;
 }
 
 -(id)initWithFrame:(CGRect)frame
@@ -51,7 +51,7 @@ enum
     if (self)
     {
         // Variable Initialization
-        singleTap_SAG = 0;
+        singleTap_AMC = 0;
         
         // Set The Background To Black
         [self setBackgroundColor:[UIColor blackColor]];
@@ -299,7 +299,7 @@ enum
     [self printGLInfo];
     
     // Vertex Shader
-    const GLchar* vertexShaderSourceCode_SAG =
+    const GLchar* vertexShaderSourceCode_AMC =
         "#version 300 core                          "\
         "\n                                         "\
         "in vec4 aPosition;                         "\
@@ -312,38 +312,38 @@ enum
         "   oTexCoord=aTexCoord;                    "\
         "}                                          ";
 
-    GLuint vertexShaderObject_SAG = glCreateShader(GL_VERTEX_SHADER); // Creates empty shader object
+    GLuint vertexShaderObject_AMC = glCreateShader(GL_VERTEX_SHADER); // Creates empty shader object
 
     // below function is made to receive shader source code
     glShaderSource(
-        vertexShaderObject_SAG,
+        vertexShaderObject_AMC,
         1, // Number Of Strings passed in 3rd parameter (Can pass multiple strings we passed only one)
-        (const GLchar**)&vertexShaderSourceCode_SAG,
+        (const GLchar**)&vertexShaderSourceCode_AMC,
         NULL // If multiple strings are there in 3rd param then it will be array of lengths of those multiple strings(We have only one so consider whole string)
     );
 
     // To compile shader source code(To convert human understandable to m/c i.e. GPU)
-    glCompileShader(vertexShaderObject_SAG);
+    glCompileShader(vertexShaderObject_AMC);
 
-    GLint status_SAG = 0;
-    GLint infoLogLength_SAG = 0;
-    GLchar* szInfoLog_SAG = NULL;
+    GLint status_AMC = 0;
+    GLint infoLogLength_AMC = 0;
+    GLchar* szInfoLog_AMC = NULL;
 
     // To get Error in our own variable
-    glGetShaderiv(vertexShaderObject_SAG, GL_COMPILE_STATUS, &status_SAG);
+    glGetShaderiv(vertexShaderObject_AMC, GL_COMPILE_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetShaderiv(vertexShaderObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG);
-        if (infoLogLength_SAG > 0)
+        glGetShaderiv(vertexShaderObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC);
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG + 1);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC + 1);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetShaderInfoLog(vertexShaderObject_SAG, infoLogLength_SAG + 1, NULL, szInfoLog_SAG);
-                printf("Vertex Shader Compilation Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetShaderInfoLog(vertexShaderObject_AMC, infoLogLength_AMC + 1, NULL, szInfoLog_AMC);
+                printf("Vertex Shader Compilation Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize];
@@ -352,7 +352,7 @@ enum
     }
 
     // Fragment Shader
-    const GLchar* fragmentShaderSourceCode_SAG =
+    const GLchar* fragmentShaderSourceCode_AMC =
         "#version 300 core                                          "\
         "\n                                                         "\
         "precision highp float;                                     "\
@@ -372,30 +372,30 @@ enum
         "   }                                                       "\
         "}                                                          ";
 
-    GLuint fragmentShaderObject_SAG = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint fragmentShaderObject_AMC = glCreateShader(GL_FRAGMENT_SHADER);
 
-    glShaderSource(fragmentShaderObject_SAG, 1, (const GLchar**)&fragmentShaderSourceCode_SAG, NULL);
+    glShaderSource(fragmentShaderObject_AMC, 1, (const GLchar**)&fragmentShaderSourceCode_AMC, NULL);
 
-    glCompileShader(fragmentShaderObject_SAG);
+    glCompileShader(fragmentShaderObject_AMC);
 
-    status_SAG = 0;
-    infoLogLength_SAG = 0;
-    szInfoLog_SAG = NULL;
+    status_AMC = 0;
+    infoLogLength_AMC = 0;
+    szInfoLog_AMC = NULL;
 
-    glGetShaderiv(fragmentShaderObject_SAG, GL_COMPILE_STATUS, &status_SAG);
+    glGetShaderiv(fragmentShaderObject_AMC, GL_COMPILE_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetShaderiv(fragmentShaderObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG); // GL_SHADER_INFO_LOG_LENGTH
-        if (infoLogLength_SAG > 0)
+        glGetShaderiv(fragmentShaderObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC); // GL_SHADER_INFO_LOG_LENGTH
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetShaderInfoLog(fragmentShaderObject_SAG, infoLogLength_SAG, NULL, szInfoLog_SAG);
-                printf("Fragment Shader Compilation Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetShaderInfoLog(fragmentShaderObject_AMC, infoLogLength_AMC, NULL, szInfoLog_AMC);
+                printf("Fragment Shader Compilation Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize];                                            // Change In mm
@@ -404,33 +404,33 @@ enum
     }
 
     // Shader Program
-    shaderProgramObject_SAG = glCreateProgram();
-    glAttachShader(shaderProgramObject_SAG, vertexShaderObject_SAG);
-    glAttachShader(shaderProgramObject_SAG, fragmentShaderObject_SAG);
+    shaderProgramObject_AMC = glCreateProgram();
+    glAttachShader(shaderProgramObject_AMC, vertexShaderObject_AMC);
+    glAttachShader(shaderProgramObject_AMC, fragmentShaderObject_AMC);
 
-    glBindAttribLocation(shaderProgramObject_SAG, AMC_ATTRIBUTE_POSITION, "aPosition");
-    glBindAttribLocation(shaderProgramObject_SAG, AMC_ATTRIBUTE_TEXCOORD, "aTexCoord");
+    glBindAttribLocation(shaderProgramObject_AMC, AMC_ATTRIBUTE_POSITION, "aPosition");
+    glBindAttribLocation(shaderProgramObject_AMC, AMC_ATTRIBUTE_TEXCOORD, "aTexCoord");
 
-    glLinkProgram(shaderProgramObject_SAG);
+    glLinkProgram(shaderProgramObject_AMC);
 
-    status_SAG = 0;
-    infoLogLength_SAG = 0;
-    szInfoLog_SAG = NULL;
+    status_AMC = 0;
+    infoLogLength_AMC = 0;
+    szInfoLog_AMC = NULL;
 
-    glGetProgramiv(shaderProgramObject_SAG, GL_LINK_STATUS, &status_SAG);
+    glGetProgramiv(shaderProgramObject_AMC, GL_LINK_STATUS, &status_AMC);
 
-    if (status_SAG == GL_FALSE)
+    if (status_AMC == GL_FALSE)
     {
-        glGetProgramiv(shaderProgramObject_SAG, GL_INFO_LOG_LENGTH, &infoLogLength_SAG);
-        if (infoLogLength_SAG > 0)
+        glGetProgramiv(shaderProgramObject_AMC, GL_INFO_LOG_LENGTH, &infoLogLength_AMC);
+        if (infoLogLength_AMC > 0)
         {
-            szInfoLog_SAG = (GLchar*)malloc(infoLogLength_SAG);
-            if (szInfoLog_SAG != NULL)
+            szInfoLog_AMC = (GLchar*)malloc(infoLogLength_AMC);
+            if (szInfoLog_AMC != NULL)
             {
-                glGetProgramInfoLog(shaderProgramObject_SAG, infoLogLength_SAG, NULL, szInfoLog_SAG);
-                printf("Shader Program Linking Error LOG : %s\n", szInfoLog_SAG);
-                free(szInfoLog_SAG);
-                szInfoLog_SAG = NULL;
+                glGetProgramInfoLog(shaderProgramObject_AMC, infoLogLength_AMC, NULL, szInfoLog_AMC);
+                printf("Shader Program Linking Error LOG : %s\n", szInfoLog_AMC);
+                free(szInfoLog_AMC);
+                szInfoLog_AMC = NULL;
             }
         }
         [self uninitialize];                                            // Change In mm
@@ -439,11 +439,11 @@ enum
     }
 
     // Get Shader Uniform Locations
-    mvpMatrixUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uMVPMatrix");
-    textureSamplerUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uTextureSampler");
-    keyPressedUniform_SAG = glGetUniformLocation(shaderProgramObject_SAG, "uKeyPressed");
+    mvpMatrixUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uMVPMatrix");
+    textureSamplerUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uTextureSampler");
+    keyPressedUniform_AMC = glGetUniformLocation(shaderProgramObject_AMC, "uKeyPressed");
 
-    const GLfloat square_position_SAG[] =
+    const GLfloat square_position_AMC[] =
     {
          1.0f,  1.0f,   0.0f,
         -1.0f,  1.0f,   0.0f,
@@ -451,7 +451,7 @@ enum
          1.0f, -1.0f,   0.0f
     };
 
-    const GLfloat square_texcoord_SAG[] =
+    const GLfloat square_texcoord_AMC[] =
     {
         1.0f,  1.0f,
         0.0f,  1.0f,
@@ -460,13 +460,13 @@ enum
     };
 
     // VAO (Vertex Array Object)
-    glGenVertexArrays(1, &vao_SAG);
-    glBindVertexArray(vao_SAG);
+    glGenVertexArrays(1, &vao_AMC);
+    glBindVertexArray(vao_AMC);
 
     // VBO (Vertex Buffer Object) For Position
-    glGenBuffers(1, &vbo_position_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_position_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(square_position_SAG), square_position_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_position_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_position_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(square_position_AMC), square_position_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_POSITION,
         3,
@@ -479,9 +479,9 @@ enum
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // VBO (Vertex Buffer Object) For TexCoord
-    glGenBuffers(1, &vbo_texcoord_SAG);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(square_texcoord_SAG), square_texcoord_SAG, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo_texcoord_AMC);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(square_texcoord_AMC), square_texcoord_AMC, GL_STATIC_DRAW);
     glVertexAttribPointer(
         AMC_ATTRIBUTE_TEXCOORD,
         2,
@@ -496,7 +496,7 @@ enum
     glBindVertexArray(0);
     
     // Loading Images/ Create Texture
-    smiley_texture_SAG = [self loadTextureFromImage:@"Smiley" :@"bmp"];
+    smiley_texture_AMC = [self loadTextureFromImage:@"Smiley" :@"bmp"];
 
     // Tell OpenGL to Enable Texture
     glEnable(GL_TEXTURE_2D);
@@ -510,7 +510,7 @@ enum
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     // initialize ortho mat
-    perspectiveProjectionMatrix_SAG = vmath::mat4::identity();
+    perspectiveProjectionMatrix_AMC = vmath::mat4::identity();
 
     [self resize:WIN_WIDTH :WIN_HEIGHT];
     
@@ -574,8 +574,8 @@ enum
 -(void)printGLInfo
 {
     // Variable Declarations
-    GLint i_SAG;
-    GLint numExtensions_SAG;
+    GLint i_AMC;
+    GLint numExtensions_AMC;
 
     // Code
     printf(":::::::::::::::::::::::::::::::::::::::::::::::\n");
@@ -586,29 +586,29 @@ enum
     printf("OpenGL Version     : %s\n",        glGetString(GL_VERSION));
     printf("GLSL Version       : %s\n",        glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions_SAG);
-    for (i_SAG = 0; i_SAG < numExtensions_SAG; i_SAG++)
+    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions_AMC);
+    for (i_AMC = 0; i_AMC < numExtensions_AMC; i_AMC++)
     {
-        printf("%s\n", glGetStringi(GL_EXTENSIONS, i_SAG));
+        printf("%s\n", glGetStringi(GL_EXTENSIONS, i_AMC));
     }
  
     printf(":::::::::::::::::::::::::::::::::::::::::::::::\n");
 }
 
--(void)resize:(int)width_SAG :(int)height_SAG
+-(void)resize:(int)width_AMC :(int)height_AMC
 {
     // Code
-    if(height_SAG <= 0)
+    if(height_AMC <= 0)
     {
-        height_SAG = 1;
+        height_AMC = 1;
     }
     
-    glViewport(0, 0, (GLsizei)width_SAG, (GLsizei)height_SAG);
+    glViewport(0, 0, (GLsizei)width_AMC, (GLsizei)height_AMC);
     
     // Set perspective projection matrix
-    perspectiveProjectionMatrix_SAG = vmath::perspective(   // glFrustum()
+    perspectiveProjectionMatrix_AMC = vmath::perspective(   // glFrustum()
         45.0f,                                              // Field Of View (fovy) Radian considered
-        (GLfloat)width_SAG / (GLfloat)height_SAG,           // Aspect Ratio
+        (GLfloat)width_AMC / (GLfloat)height_AMC,           // Aspect Ratio
         0.1f,                                               // Near standered Value
         100.0f                                              // Far Standered Value
     );
@@ -617,91 +617,91 @@ enum
 -(void)display
 {
     // -------------------------------------------- VARIABLE DECLARATIONS ----------------------------------------------------------------
-    GLfloat square_texcoord_SAG[8];
+    GLfloat square_texcoord_AMC[8];
     
     // Code
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                                     // Step-3 Depth
     
-    glUseProgram(shaderProgramObject_SAG);
+    glUseProgram(shaderProgramObject_AMC);
 
     // =============================== SQUARE ===================================
-    mat4 modelViewMatrix_SAG = mat4::identity();
+    mat4 modelViewMatrix_AMC = mat4::identity();
 
     // Translate
-    modelViewMatrix_SAG = vmath::translate(0.0f, 0.0f, -4.0f);
-    mat4 modelViewProjectionMatrix_SAG = perspectiveProjectionMatrix_SAG * modelViewMatrix_SAG; // here order of mult is VVIMP.
+    modelViewMatrix_AMC = vmath::translate(0.0f, 0.0f, -4.0f);
+    mat4 modelViewProjectionMatrix_AMC = perspectiveProjectionMatrix_AMC * modelViewMatrix_AMC; // here order of mult is VVIMP.
 
     // Push above MVP into vertex shhadr's MVP uniform
-    glUniformMatrix4fv(mvpMatrixUniform_SAG, 1, GL_FALSE, modelViewProjectionMatrix_SAG);
+    glUniformMatrix4fv(mvpMatrixUniform_AMC, 1, GL_FALSE, modelViewProjectionMatrix_AMC);
 
     // For Texture
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, smiley_texture_SAG);
-    glUniform1i(textureSamplerUniform_SAG, 0); // Tell uniformSampler in fragment shader which numbered texture
+    glBindTexture(GL_TEXTURE_2D, smiley_texture_AMC);
+    glUniform1i(textureSamplerUniform_AMC, 0); // Tell uniformSampler in fragment shader which numbered texture
 
-    glBindVertexArray(vao_SAG);
+    glBindVertexArray(vao_AMC);
 
     // Texture Coordinates
 
-    if (singleTap_SAG == 1)
+    if (singleTap_AMC == 1)
     {
-        square_texcoord_SAG[0] = 1.0f;
-        square_texcoord_SAG[1] = 1.0f;
-        square_texcoord_SAG[2] = 0.0f;
-        square_texcoord_SAG[3] = 1.0f;
-        square_texcoord_SAG[4] = 0.0f;
-        square_texcoord_SAG[5] = 0.0f;
-        square_texcoord_SAG[6] = 1.0f;
-        square_texcoord_SAG[7] = 0.0f;
+        square_texcoord_AMC[0] = 1.0f;
+        square_texcoord_AMC[1] = 1.0f;
+        square_texcoord_AMC[2] = 0.0f;
+        square_texcoord_AMC[3] = 1.0f;
+        square_texcoord_AMC[4] = 0.0f;
+        square_texcoord_AMC[5] = 0.0f;
+        square_texcoord_AMC[6] = 1.0f;
+        square_texcoord_AMC[7] = 0.0f;
 
-        glUniform1i(keyPressedUniform_SAG, 1);
+        glUniform1i(keyPressedUniform_AMC, 1);
     }
-    else if (singleTap_SAG == 2)
+    else if (singleTap_AMC == 2)
     {
-        square_texcoord_SAG[0] = 0.5f;
-        square_texcoord_SAG[1] = 0.5f;
-        square_texcoord_SAG[2] = 0.0f;
-        square_texcoord_SAG[3] = 0.5f;
-        square_texcoord_SAG[4] = 0.0f;
-        square_texcoord_SAG[5] = 0.0f;
-        square_texcoord_SAG[6] = 0.5f;
-        square_texcoord_SAG[7] = 0.0f;
+        square_texcoord_AMC[0] = 0.5f;
+        square_texcoord_AMC[1] = 0.5f;
+        square_texcoord_AMC[2] = 0.0f;
+        square_texcoord_AMC[3] = 0.5f;
+        square_texcoord_AMC[4] = 0.0f;
+        square_texcoord_AMC[5] = 0.0f;
+        square_texcoord_AMC[6] = 0.5f;
+        square_texcoord_AMC[7] = 0.0f;
 
-        glUniform1i(keyPressedUniform_SAG, 1);
+        glUniform1i(keyPressedUniform_AMC, 1);
     }
-    else if (singleTap_SAG == 3)
+    else if (singleTap_AMC == 3)
     {
-        square_texcoord_SAG[0] = 2.0f;
-        square_texcoord_SAG[1] = 2.0f;
-        square_texcoord_SAG[2] = 0.0f;
-        square_texcoord_SAG[3] = 2.0f;
-        square_texcoord_SAG[4] = 0.0f;
-        square_texcoord_SAG[5] = 0.0f;
-        square_texcoord_SAG[6] = 2.0f;
-        square_texcoord_SAG[7] = 0.0f;
+        square_texcoord_AMC[0] = 2.0f;
+        square_texcoord_AMC[1] = 2.0f;
+        square_texcoord_AMC[2] = 0.0f;
+        square_texcoord_AMC[3] = 2.0f;
+        square_texcoord_AMC[4] = 0.0f;
+        square_texcoord_AMC[5] = 0.0f;
+        square_texcoord_AMC[6] = 2.0f;
+        square_texcoord_AMC[7] = 0.0f;
 
-        glUniform1i(keyPressedUniform_SAG, 1);
+        glUniform1i(keyPressedUniform_AMC, 1);
     }
-    else if (singleTap_SAG == 4)
+    else if (singleTap_AMC == 4)
     {
-        square_texcoord_SAG[0] = 0.5f;
-        square_texcoord_SAG[1] = 0.5f;
-        square_texcoord_SAG[2] = 0.5f;
-        square_texcoord_SAG[3] = 0.5f;
-        square_texcoord_SAG[4] = 0.5f;
-        square_texcoord_SAG[5] = 0.5f;
-        square_texcoord_SAG[6] = 0.5f;
-        square_texcoord_SAG[7] = 0.5f;
+        square_texcoord_AMC[0] = 0.5f;
+        square_texcoord_AMC[1] = 0.5f;
+        square_texcoord_AMC[2] = 0.5f;
+        square_texcoord_AMC[3] = 0.5f;
+        square_texcoord_AMC[4] = 0.5f;
+        square_texcoord_AMC[5] = 0.5f;
+        square_texcoord_AMC[6] = 0.5f;
+        square_texcoord_AMC[7] = 0.5f;
 
-        glUniform1i(keyPressedUniform_SAG, 1);
+        glUniform1i(keyPressedUniform_AMC, 1);
     }
     else
     {
-        glUniform1i(keyPressedUniform_SAG, 0);
+        glUniform1i(keyPressedUniform_AMC, 0);
     }
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord_SAG);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(square_texcoord_SAG), square_texcoord_SAG, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_texcoord_AMC);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(square_texcoord_AMC), square_texcoord_AMC, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -720,54 +720,54 @@ enum
 {
     // Code
     
-    if (shaderProgramObject_SAG)
+    if (shaderProgramObject_AMC)
     {
-        glUseProgram(shaderProgramObject_SAG);
+        glUseProgram(shaderProgramObject_AMC);
 
-        GLint numShaders_SAG = 0;
-        glGetProgramiv(shaderProgramObject_SAG, GL_ATTACHED_SHADERS, &numShaders_SAG);
+        GLint numShaders_AMC = 0;
+        glGetProgramiv(shaderProgramObject_AMC, GL_ATTACHED_SHADERS, &numShaders_AMC);
 
-        if (numShaders_SAG > 0)
+        if (numShaders_AMC > 0)
         {
-            GLuint* pShaders_SAG = (GLuint*)malloc(numShaders_SAG * sizeof(GLuint));
-            if (pShaders_SAG != NULL)
+            GLuint* pShaders_AMC = (GLuint*)malloc(numShaders_AMC * sizeof(GLuint));
+            if (pShaders_AMC != NULL)
             {
-                glGetAttachedShaders(shaderProgramObject_SAG, numShaders_SAG, NULL, pShaders_SAG);
-                for (GLint i = 0; i < numShaders_SAG; i++)
+                glGetAttachedShaders(shaderProgramObject_AMC, numShaders_AMC, NULL, pShaders_AMC);
+                for (GLint i = 0; i < numShaders_AMC; i++)
                 {
-                    glDetachShader(shaderProgramObject_SAG, pShaders_SAG[i]);
-                    glDeleteShader(pShaders_SAG[i]);
-                    pShaders_SAG[i] = 0;
+                    glDetachShader(shaderProgramObject_AMC, pShaders_AMC[i]);
+                    glDeleteShader(pShaders_AMC[i]);
+                    pShaders_AMC[i] = 0;
                 }
-                free(pShaders_SAG);
-                pShaders_SAG = NULL;
+                free(pShaders_AMC);
+                pShaders_AMC = NULL;
             }
         }
 
         glUseProgram(0);
-        glDeleteProgram(shaderProgramObject_SAG);
-        shaderProgramObject_SAG = 0;
+        glDeleteProgram(shaderProgramObject_AMC);
+        shaderProgramObject_AMC = 0;
     }
     
     // Delete VBO (Vertex Buffer Object) for texture
-    if (vbo_texcoord_SAG)
+    if (vbo_texcoord_AMC)
     {
-        glDeleteBuffers(1, &vbo_texcoord_SAG);
-        vbo_texcoord_SAG = 0;
+        glDeleteBuffers(1, &vbo_texcoord_AMC);
+        vbo_texcoord_AMC = 0;
     }
 
     // Delete VBO (Vertex Buffer Object) for position
-    if (vbo_position_SAG)
+    if (vbo_position_AMC)
     {
-        glDeleteBuffers(1, &vbo_position_SAG);
-        vbo_position_SAG = 0;
+        glDeleteBuffers(1, &vbo_position_AMC);
+        vbo_position_AMC = 0;
     }
 
     // Delete VAO (Vertex Array Object)
-    if (vao_SAG)
+    if (vao_AMC)
     {
-        glDeleteVertexArrays(1, &vao_SAG);
-        vao_SAG = 0;
+        glDeleteVertexArrays(1, &vao_AMC);
+        vao_AMC = 0;
     }
     
     // Delete Depth Render Buffer
@@ -815,11 +815,11 @@ enum
 {
     // Code
     
-    singleTap_SAG++;
+    singleTap_AMC++;
 
-    if(singleTap_SAG > 4)
+    if(singleTap_AMC > 4)
     {
-        singleTap_SAG = 0;      // Reset
+        singleTap_AMC = 0;      // Reset
     }
 }
 

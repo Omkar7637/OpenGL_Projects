@@ -275,8 +275,8 @@
 -(void)printGLInfo
 {
     // Variable Declarations
-    GLint i_SAG;
-    GLint numExtensions_SAG;
+    GLint i_AMC;
+    GLint numExtensions_AMC;
 
     //  CODE 
     printf(":::::::::::::::::::::::::::::::::::::::::::::::\n");
@@ -287,10 +287,10 @@
     printf("OpenGL Version     : %s\n",        glGetString(GL_VERSION));
     printf("GLSL Version       : %s\n",        glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions_SAG);
-    for (i_SAG = 0; i_SAG < numExtensions_SAG; i_SAG++)
+    glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions_AMC);
+    for (i_AMC = 0; i_AMC < numExtensions_AMC; i_AMC++)
     {
-        printf("%s\n", glGetStringi(GL_EXTENSIONS, i_SAG));
+        printf("%s\n", glGetStringi(GL_EXTENSIONS, i_AMC));
     }
  
     printf(":::::::::::::::::::::::::::::::::::::::::::::::\n");
