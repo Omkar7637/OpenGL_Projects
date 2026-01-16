@@ -162,11 +162,10 @@ function initialize()
     var fragmentShaderSourceCode =
     "#version 300 es\n" +
     "precision mediump float;\n" +
-    "uniform vec3 uColor;\n" +     // NEW
     "out vec4 fragColor;\n" +
     "void main(void)\n" +
     "{\n" +
-    "    fragColor = vec4(uColor, 1.0);\n" +
+    "    fragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n" +
     "}\n";
 
 
