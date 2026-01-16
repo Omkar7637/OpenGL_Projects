@@ -133,10 +133,13 @@ function initialize()
     "#version 300 es\n" +
     "precision mediump float;\n" +
     "in vec4 aPosition;\n" +
+    "in vec4 aColor;" +
+    "out vec4 oColor;"+
     "uniform mat4 uMVPMatrix;\n" +
     "void main(void)\n" +
     "{\n" +
     "    gl_Position = uMVPMatrix * aPosition;\n" +
+    "oColor = aColor;"+
     "}\n";
 
 
