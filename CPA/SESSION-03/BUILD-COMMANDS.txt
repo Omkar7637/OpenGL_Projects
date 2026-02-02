@@ -1,0 +1,37 @@
+Windows : VISUAL STUDIO CODE : 
+1) Open VS x86-64 command prompt 
+2) Change directory where you have saved your source file. 
+3)
+> cl /EHsc /Fe:app.exe 01-compute-gravitational-force.c 
+> app.exe 
+
+#---------------------------------------------------------------------
+# Linux: 
+1) Open Terminal 
+2) Change directory where you have saved your source file.
+3) 
+#gcc -o app 01-compute-gravitational-force.c 
+#./app 
+#----------------------------------------------------------------------
+MAC OS X 
+1) Open Terminal 
+2) Change directory where you have saved your source file.
+3) 
+#clang -o app 01-compute-gravitational-force.c 
+#./app
+#----------------------------------------------------------------------
+Changes in Linux and MAC OS X command for C++ code 
+# Linux: 
+1) Open Terminal 
+2) Change directory where you have saved your source file.
+3) 
+#g++ -o app 01-compute-gravitational-force.cpp 
+#./app 
+#----------------------------------------------------------------------
+MAC OS X 
+1) Open Terminal 
+2) Change directory where you have saved your source file.
+3) 
+#clang++ -o app 01-compute-gravitational-force.cpp
+#./app
+#----------------------------------------------------------------------

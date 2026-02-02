@@ -1,0 +1,62 @@
+PROCEDURAL PROGRAMMING: 
+    FORMAL PARAMETERS -> CODE REUSABILITY 
+        WHY? 
+            BECAUSE THEY DE-COUPLE DATA FROM FUNCTION 
+
+void find_max(void)
+{
+    int arr[10] = {data}; 
+    int max; 
+    int i; 
+
+    max = arr[0]; 
+    for(i = 1; i < 10; ++i)
+        if(arr[i] > max)
+            max = arr[i]; 
+    printf(max); 
+
+    int A[10] = {data};
+    max = A[0]; 
+    for(i = 1; i < 10; ++i)
+        if(A[i] > max)
+            max = A[i]; 
+    printf(max);  
+
+
+    int B[15] = {data}; 
+    max = B[0]; 
+    for(i = 1; i < 10; ++i)
+        if(B[i] > max)
+            max = B[i]; 
+    printf(max); 
+}
+
+int find_max(int* pA, size_t N)
+{
+    assert(N > 0); 
+    int max = pA[0]; 
+    for(size_t i = 1; i < N; ++i)
+        if(pA[i] > max)
+            max  = pA[i]; 
+    return (max); 
+}
+
+void test() 
+{
+    int *pA; 
+    size_t N; 
+
+    
+
+}
+
+/* 
+
+Just wanted to share, I was searching on Google for the Swift programming language written in. I got to know that the compiler is written in C++.
+https://github.com/swiftlang/swift
+One of the members who contributed to Swift programming and its compiler is a member of the ISO C++ committee and currently works for Apple.
+https://www.douggregor.net/about/
+Swift and C++
+https://www.douggregor.net/
+
+*/ 

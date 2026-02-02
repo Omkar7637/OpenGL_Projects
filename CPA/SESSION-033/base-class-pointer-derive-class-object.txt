@@ -1,0 +1,25 @@
+Why?? 
+
+Derived is a Base. 
+
+Base* p = &D; 
+
+/////////////////////////////////////////////////////////////////
+
+C++ NECESSITY -> TO ALLOW DERIVED OBJECT ON BASE POINTER 
+
+DerviedObject.BaseClassMemberFunction(Parameters); 
+
+== 
+
+BaseClass::BaseClassMemberFunction(&DerviedObject, Parameters); 
+
+
+type(this pointer)      ==  Base* 
+type(actual Parameter)  ==  Derived* 
+
+
+Base* ptr = new Derived; 
+
+/////////////////////////////////////////////////////////////////
+

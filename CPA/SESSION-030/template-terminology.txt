@@ -1,0 +1,195 @@
+1) Template Parameter List 
+template <P1, P2, P3, ..., Pn>
+
+At the template definition site: 
+
+template keyword 
+
+followed by <> 
+
+containing one or more comma separate list of parameters 
+
+is called as template parameter list. 
+
+Template parameter list if followed by function definition -> function template 
+-----------||------------------------- class definition -> class template 
+
+2)  Template Parameter: Each parameter in the template parameter list is called as 
+template parameter. (ALWAYS CALL THIS AS TEMPLATE PARAMTER AND NOT TEMPLATE ARGUMENT)
+
+
+3)  Template Argument: 
+    At template instantiation site: 
+
+    while converting function template into a function 
+    or a class template into a class 
+
+    one must write a function/class template name 
+
+    followed by angular brackets <> 
+
+    and within those angular brakcets one must write 'Parameter' 
+    corrossponding to EVERY TEMPLATE PARAMETER IN TEMPLATE PARAMETER LIST. 
+
+    This 'Parameter' must not be called as parameter. 
+    It must be called as template argument. 
+
+    Now rephrasing 
+
+    for instantiation of any function / class template 
+
+    write function / class template name 
+
+    followed by angular brackets <> 
+
+    and within those angular brackets 
+
+    one must write a TEMPLATE ARGUMENT FOR EVERY TEMPLATE PARAMETER 
+    OF THE TEMPLATE PARAMETER LIST OF THE FUNCTION/CLASS TEMPLATE 
+    BEING INSTANTIATED. 
+
+
+Example: 
+
+//  Template definition site 
+
+template <typename T>   //  Template parameter list 
+                        //  typename T is a template parameter 
+T max(T const& n1, T const& n2)
+{
+    if(n1 > n2)
+        return (n1); 
+    return (n2); 
+}
+
+
+//  Template instantiation site: 
+
+void test(void)
+{
+    max<int>(20, 30);   //  <int> following template name max is called as 
+                        //  template ARGUMENT LIST and int is a template argument 
+}
+
+//  max function template name followed by angular bracket and within angular bracket 
+//  writing 'int' as a template argument corrossponding to template parameter typename T 
+//  TRIGGERS the function template instantiation for type 'int' 
+//  this compels compiler to CREATE A CALLABLE ENTITY (FUNCTION) from FUNCTION TEMPLATE 
+
+//  After instantiating function template max with template argument 'int' we get a 
+//  function and actual parameters used to call that functions (20 and 30 in above Example)
+//  are called as CALL PARAMETERS 
+
+//  template parameter - template argument - call parameter 
+
+CLASSFICATION OF TEMPLATE PARAMETERS: 
+
+    Whether one is writing a function template or class template, 
+    every template parameter in the template parameter list can be 
+    classified in one of the following types: 
+
+1)  NON-TYPE PARAMETER: 
+        One of the integer types, string type. 
+        Float type or any other user defined data type (implemented using class statement)
+        is not allowed 
+
+        eg. 
+        template <typename T, size_t N> 
+
+        In above template parameter list template parameter 'N' is a NON-TYPE template 
+        parameter 
+
+        and TEMPLATE ARGUMENT corrossponding to NON-TYPE PARAMETER must be 
+        a STATICALLY EVALUABLE INTEGER EXPRESSION OR A STATICALLY EVALUABLE STRING 
+        EXPRESSION (depending on the non-type parameter is int type or string type)
+
+        template <int N>    //  This template parameter list contains a template parameter 
+                            //  named 'N' of the type int 
+        int testFunc(int x)
+        {
+            return x * N; 
+        }
+
+        const int P = 20; 
+
+        int R = 40; 
+
+        void test(void)
+        {
+            testFunc<10>(100);  //  10 is a valid template argument for template parameter N 
+                                //  Why? Because N is a non-type parameter of data-type int. 
+
+            testFunc<P>(200);   //  P is a global const variable which by most compilers is 
+                                //  statically evaluated and treated as symbolic constant 
+                                //  hence can be used to instantiation 
+
+            const int Q = rand(); 
+            testFunc<Q>(300);   //  Error, Q is not a staitcally evaluable integer expression 
+                                //  even with const qualifier (because initializer of local const
+                                //  need not be statically evaluable but initializer of global const 
+                                //  MUST BE statically evaluable) 
+                                //  But had initializer Q been a statically evaluable expression 
+                                //  then compiler would have allowed Q. 
+                                //  such as const int Q = 30;   //  will work 
+
+            int S = 50; 
+
+            testFunc<R>(400);   //  Error, global non-const int is not statically evaluable 
+            testFunc<S>(500);   //  Error, local  non-const is not statically evaluable
+        }
+
+        template <const char* str> 
+        void testFunc(void) 
+        {
+            std::cout << "Call parameter of testFunc():" << str << std::endl; 
+        }
+
+        void test(void)
+        {
+            testeFunc<"Yogeshwar">(); 
+            testeFunc<"CPA">(); 
+        }
+
+        //  Use case: In our array example: 
+        //  we are forcing client to specify the length of array as 
+        //  a part of template instantiation and towards that end 
+        //  we are using a non-type parmaeter in template parameter list 
+
+        template <typename T, size_t ArrayLen> 
+        class array 
+        {
+
+        }
+
+        void test(void) 
+        {
+            array<int, 10> A;   // Allocate Array A of integers having lenght 10 
+        }
+        
+
+2)  TYPE PARAMETER: 
+        In template parmaeter list a type parameter can be created using 
+        keyword 'typename' as its type annotation. 
+
+        We can use this as a definition point: 
+        If type annotation of a template parameter is a keyword 'typename' then 
+        that template parameter is a type-parameter. 
+
+        TEMPLATE ARGUMENT corrossponding to type parameter MUST BE ANY CONCRETE DATA TYPE 
+        BUILT-IN OR USER DEFINED. 
+
+        Use case: If we do not want to commit to type of certain variables or type
+        of return values of certain functions or type of certain formal parameters 
+        (or we do not want to commit to a real data type at a place where type annotation is must)
+        while defining a function or a class then we must craete a DUMMY TYPE. Why? Because, though 
+        we do not want to commit to real data type at certain places, the type annotation part cannot 
+        be left empty to respect syntax of language. Therefore, writing a dummy type satisfies both constraints 
+        for compiler: the type annotation part is not empty, hence syntax is correct 
+        for client: despite giving type annotation using dummy type, THEY HAVE NOT COMMITTED TO ANY REAL DATA 
+        TYPE. (SPECIFICATION OF REAL DATA TYPE CAN BE DELAYED / DEFERRED UNTIL THE TIME OF TEMPLATE instantiation)
+
+        THIS DEFERRED SPECIFICATION OF DATA TYPE IS THE VERY POINT WHICH ENABLES TYPE GENERIC PROGRAMMING. 
+
+
+3)  TEMPLATE-TEMPLATE PARAMETER 
+

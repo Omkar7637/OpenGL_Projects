@@ -1,0 +1,88 @@
+Two classes may have one of the following relationship amongst them: 
+
+1) depends on relationship 
+    We say that class C2 depends on class C1 if 
+    one of member functions C2 (static/non-static) uses 
+    object C1 as its local variable (to implement its own definition)
+
+    class C1 
+    {
+        //  data + functions 
+        public: 
+            void f1() 
+            {
+
+            }
+
+            void f2()
+            {
+
+            }
+    }; 
+
+
+    class C2 
+    {
+        public: 
+            void non-static-member-function()
+            {
+                C2* pC1 = new C1; 
+
+                pC1->f1(); 
+                pC1->f2(); 
+
+                delete pC1; 
+            }
+
+            void static-member-function() 
+            {
+                C1 Obj1; 
+
+                Obj1.f1(); 
+                Obj1.f2() 
+            }
+    }
+
+2) has-a relationship 
+    We say that class C2 has-a a class C1 if 
+    one of the non-static data members of class C2 
+    is an instance, pointer or reference to C1 
+
+    class Date  //  Date == C1 
+    {
+
+    }; 
+
+    class DebitCard //  DebitCard == C2 
+    {
+        Date expiryDate;        //  DebitCard has-a Date
+        Date validThroughDate;  //  C2 has-a C1 
+    }; 
+
+    //  Pointer example for has-a relationship 
+
+    class node 
+    {
+        friend class list; 
+        int data; 
+        node* prev; 
+        node* next; 
+        node(int _data = 0) : data(_data), prev(0), next(0)
+        {
+
+        }
+    }; 
+
+    class list 
+    {
+        private: 
+            node* head_node; 
+    }; 
+
+    list has-a node (holds true.)
+
+
+3) is-a relationship (implementation inheritance)
+
+#-------------------------------------------------------
+4) implements relationship (interface interitance)
