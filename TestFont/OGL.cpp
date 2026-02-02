@@ -554,28 +554,18 @@ int initialized(void)
 
 	// POSITION
 	glGenBuffers(1, &vbo_position); // vertex Buffer Object
-
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_position);
-
 	glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_position), triangle_position, GL_STATIC_DRAW);
-
 	glVertexAttribPointer(AMC_ATTRIBUTE_POSITION, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
 	glEnableVertexAttribArray(AMC_ATTRIBUTE_POSITION);
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// COLOR
 	glGenBuffers(1, &vbo_color); // vertex Buffer Object
-
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_color);
-
 	glBufferData(GL_ARRAY_BUFFER, sizeof(triangle_color), triangle_color, GL_STATIC_DRAW);
-
 	glVertexAttribPointer(AMC_ATTRIBUTE_COLOR, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
 	glEnableVertexAttribArray(AMC_ATTRIBUTE_COLOR);
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0); // vao unbind
