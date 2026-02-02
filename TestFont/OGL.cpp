@@ -59,6 +59,8 @@ GLuint vbo_color = 0;
 GLuint mvpMatrixUniform = 0; // model view projection
 
 mat4 presepectiveProjectionMatrix; // matrix 4x4
+GLuint progressUniform = 0;
+float gProgress = 0.0f;
 
 
 // Entry point function
@@ -388,17 +390,20 @@ int initialized(void)
 	// 5] Do shader compiliation error checking
 
 	// ========VERTEX SHADER=======
-	const char* vertexShaderSourceCode = 
-	"#version 460 core\n" \
-	"in vec4 aPosition;\n" \
-	"in vec4 aColor;\n" \
-	"out vec4 out_color;\n" \
-	"uniform mat4 uMVPMatrix;\n" \
-	"void main(void)\n" \
-	"{\n" \
-	"gl_Position = uMVPMatrix * aPosition;\n" \
-	"out_color = aColor;\n" \
+	const char* vertexShaderSourceCode =
+	"#version 460 core\n"
+	"in vec4 aPosition;\n"
+	"in vec4 aColor;\n"
+	"out vec4 out_color;\n"
+	"out float out_x;\n"
+	"uniform mat4 uMVPMatrix;\n"
+	"void main(void)\n"
+	"{\n"
+	"   gl_Position = uMVPMatrix * aPosition;\n"
+	"   out_color = aColor;\n"
+	"   out_x = gl_Position.x / gl_Position.w; \n"
 	"}\n";
+
 	// 2nd
 	GLuint vertexShaderObject = glCreateShader(GL_VERTEX_SHADER);
 	// 3rd
@@ -432,14 +437,23 @@ int initialized(void)
 	}
 
 	// ===============FRAGMENT SHADER===============
-	const GLchar* fragmentShaderSourceCode = 
-	"#version 460 core\n" \
-	"in vec4 out_color;\n" \
-	"out vec4 FragColor;\n" \
-	"void main(void)\n" \
-	"{\n" \
-	"FragColor = out_color;\n" \
+	const GLchar* fragmentShaderSourceCode =
+	"#version 460 core\n"
+	"in vec4 out_color;\n"
+	"in float out_x;\n"
+	"uniform float uProgress;\n"
+	"out vec4 FragColor;\n"
+	"void main(void)\n"
+	"{\n"
+	"   float normalizedX = (out_x + 1.0) * 0.5; // map -1..1 → 0..1\n"
+	"\n"
+	"   if(normalizedX > uProgress)\n"
+	"       discard; // hide pixel\n"
+	"\n"
+	"   float edge = smoothstep(uProgress - 0.02, uProgress, normalizedX);\n"
+	"   FragColor = vec4(out_color.rgb * edge, 1.0);\n"
 	"}\n";
+
 
 	GLuint fragmentShaderObject = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -514,6 +528,10 @@ int initialized(void)
 		uninitialized();
 	}
 
+	mvpMatrixUniform = glGetUniformLocation(shaderProgramObject, "uMVPMatrix");
+	progressUniform  = glGetUniformLocation(shaderProgramObject, "uProgress");
+
+
 	// Provide vartex position, color, normal, texcod, etc,.
 	const GLfloat triangle_position[] = 
 	{
@@ -575,6 +593,8 @@ int initialized(void)
 
 	// Warmup resize
 	resize(WIN_WIDTH, WIN_HEIGHT);
+	glUniform1f(progressUniform, gProgress);
+
 	
 	return(0);
 }
@@ -623,47 +643,47 @@ void resize(int width, int height)
 
 void display(void)
 {
-	//code
-	// clear OpenGL buffers
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);   // Clear the screen by setting the color iwth glclearclor() and glCleardepth call
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Use Shader Program Object
-	glUseProgram(shaderProgramObject);
+    glUseProgram(shaderProgramObject);
 
+    // 🔑 SET UNIFORMS AFTER USING PROGRAM
+    glUniform1f(progressUniform, gProgress);
 
-	// transformations
-	mat4 modelViewMatrix = mat4::identity(); // this is anloags to glloadidenty in display for modelview matrix
-	
-	// Translation like gltranslate
-	mat4 translationMatrix = mat4::identity();
-	translationMatrix = vmath::translate(0.0f, 0.0f, -5.0f);
-	modelViewMatrix = translationMatrix;
+    mat4 modelViewMatrix = mat4::identity();
+    mat4 translationMatrix = vmath::translate(0.0f, 0.0f, -5.0f);
+    modelViewMatrix = translationMatrix;
 
-	mat4 modelViewProjectionMatrix = mat4::identity();
-	modelViewProjectionMatrix = presepectiveProjectionMatrix * modelViewMatrix; // Order is important
+    mat4 modelViewProjectionMatrix =
+        presepectiveProjectionMatrix * modelViewMatrix;
 
-	// Send this matrix to the vertex shader in uniform
-	glUniformMatrix4fv(mvpMatrixUniform, 1, GL_FALSE, modelViewProjectionMatrix); 
+    glUniformMatrix4fv(
+        mvpMatrixUniform,
+        1,
+        GL_FALSE,
+        modelViewProjectionMatrix
+    );
 
-	// bind with vao
-	glBindVertexArray(vao);
+    glBindVertexArray(vao);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glBindVertexArray(0);
 
-	// Draw the vertex arrays
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+    glUseProgram(0);
 
-	glBindVertexArray(0);
-
-	// Unused shader program object
-	glUseProgram(0);
-
-	// Swap the buffers
-	SwapBuffers(ghdc);
-
+    SwapBuffers(ghdc);
 }
+
 
 void update(void)
 {
 	// code
+
+	gProgress += 0.005f;
+
+	if(gProgress > 1.0f)
+		gProgress = 0.0f; // loop animation
+
+
 
 }
 
