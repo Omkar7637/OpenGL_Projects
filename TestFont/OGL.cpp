@@ -454,7 +454,6 @@ int initialized(void)
 	"   FragColor = vec4(out_color.rgb * edge, 1.0);\n"
 	"}\n";
 
-
 	GLuint fragmentShaderObject = glCreateShader(GL_FRAGMENT_SHADER);
 
 	glShaderSource(fragmentShaderObject, 1, (const GLchar**)&fragmentShaderSourceCode, NULL);
