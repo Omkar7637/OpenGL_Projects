@@ -45,8 +45,11 @@ int main()
         printf("%d + %d = %d\n", h_A[i], h_B[i], h_C[i]);
     }
 
-    // 5
+    // 5) free GPU memory
+    cudaFree(d_A);
+    cudaFree(d_B);
+    cudaFree(d_C);
 
-    
+    return 0;   
 
 }
