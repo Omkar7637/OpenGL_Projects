@@ -28,8 +28,24 @@ int main()
     cudaMalloc((void**)&d_B, N*sizeof(int));
     cudaMalloc((void**)&d_C, N*sizeof(int));
 
-    //2) cpoy CPU -> GPU
-    cudaMemcpy(d_A, h_A, )
+    // 2) cpoy CPU -> GPU
+    cudaMemcpy(d_A, h_A, N*sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, h_B, N*sizeof(int), cudaMemcpyHostToDevice);
+
+    // 3) lunch kernal
+    vectorAdd<<<1, N>>>(d_A, d_B, d_C);
+
+    // 4) copy GPU -> CPU
+    cudaMemcpy(h_C, d_C, N*sizeof(int), cudaMemcpyHostToDevice);
+
+    // Print result
+    printf("Result: \n");
+    for(int i = 0; i < N ; i++)
+    {
+        printf("%d + %d = %d\n", h_A[i], h_B[i], h_C[i]);
+    }
+
+    // 5
 
     
 
