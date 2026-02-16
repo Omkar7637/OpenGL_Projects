@@ -34,6 +34,10 @@ int main()
     // 3) launch kernel
     vectorAdd<<<1, N>>>(d_A, d_B, d_C);
 
+    
+    // ADD THIS
+    cudaDeviceSynchronize();
+
     // 4) copy GPU -> CPU
     cudaMemcpy(h_C, d_C, N*sizeof(int), cudaMemcpyDeviceToHost);
 
