@@ -31,12 +31,13 @@ int main()
     cudaMemcpy(d_A, h_A, N*sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(d_B, h_B, N*sizeof(int), cudaMemcpyHostToDevice);
 
-    // 3) launch kernel
     vectorAdd<<<1, N>>>(d_A, d_B, d_C);
 
-    
-    // ADD THIS
+    cudaError_t err = cudaGetLastError();
+    printf("CUDA error: %s\n", cudaGetErrorString(err));
+
     cudaDeviceSynchronize();
+
 
     // 4) copy GPU -> CPU
     cudaMemcpy(h_C, d_C, N*sizeof(int), cudaMemcpyDeviceToHost);
