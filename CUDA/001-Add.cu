@@ -1,55 +1,51 @@
-#include<stdio.h>
-#include<cuda_runtime.h>
+#include <stdio.h>
+#include <cuda_runtime.h>
 
 #define N 10
 
-// GPU Kernal (runs on GPU)
+// GPU Kernel (runs on GPU)
 __global__ void vectorAdd(int *A, int *B, int *C)
 {
-    int i = threadIdx.x; // thread ID
+    int i = threadIdx.x;   // thread ID
     C[i] = A[i] + B[i];
 }
 
 int main()
 {
-    int h_A[N], h_B[N], h_C[N]; // Host (CPU) arrays
+    int h_A[N], h_B[N], h_C[N];  // Host (CPU) arrays
 
-    // intialize arrya
-    for(int i = 0; i < N; i++)
-    {
+    // initialize arrays
+    for(int i=0;i<N;i++){
         h_A[i] = i;
-        h_B[i] = i * 10;
+        h_B[i] = i*10;
     }
 
-    int *d_A, *d_B, *d_C; // Device (GPU) pointers
+    int *d_A, *d_B, *d_C;   // Device (GPU) pointers
 
     // 1) allocate GPU memory
     cudaMalloc((void**)&d_A, N*sizeof(int));
     cudaMalloc((void**)&d_B, N*sizeof(int));
     cudaMalloc((void**)&d_C, N*sizeof(int));
 
-    // 2) cpoy CPU -> GPU
+    // 2) copy CPU -> GPU
     cudaMemcpy(d_A, h_A, N*sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(d_B, h_B, N*sizeof(int), cudaMemcpyHostToDevice);
 
-    // 3) lunch kernal
+    // 3) launch kernel
     vectorAdd<<<1, N>>>(d_A, d_B, d_C);
 
     // 4) copy GPU -> CPU
-    cudaMemcpy(h_C, d_C, N*sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemcpy(h_C, d_C, N*sizeof(int), cudaMemcpyDeviceToHost);
 
-    // Print result
-    printf("Result: \n");
-    for(int i = 0; i < N ; i++)
-    {
+    // print result
+    printf("Result:\n");
+    for(int i=0;i<N;i++)
         printf("%d + %d = %d\n", h_A[i], h_B[i], h_C[i]);
-    }
 
     // 5) free GPU memory
     cudaFree(d_A);
     cudaFree(d_B);
     cudaFree(d_C);
 
-    return 0;   
-
+    return 0;
 }
