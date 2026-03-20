@@ -10,30 +10,28 @@ void calculate_the_maximum(int n, int k) {
   int and_max = 0;
   int or_max = 0;
   int xor_max = 0;
+  int prev_and_max = 0;
+  int prev_or_max = 0;
+  int prev_xor_max = 0;
+  int flag = 1;
 
     for(int a = 0; a < k; a++)
     {
         for (int b = a + 1; b < n; b++) 
         {
-            printf("%d & %d = %d\n", a, b, a & b);
-            if((a & b) < k)
+            // printf("%d & %d = %d\n", a, b, a & b);
+            if(and_max < (a & b))
             {
-                and_max = a & b;
+                and_max
             }
-            if((a | b) < k)
-            {
-                or_max = a & b;
-            }
-            if((a ^ b) < k)
-            {
-                xor_max = a & b;
-            }
+
+
         }
     }
 
-    printf("%d\n", and_max);
-    printf("%d\n", or_max);
-    printf("%d\n", xor_max);
+    printf("and_max %d\n", and_max);
+    printf("or_max %d\n", or_max);
+    printf("xor_max %d\n", xor_max);
 }
 
 int main() {
