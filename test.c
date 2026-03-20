@@ -13,7 +13,7 @@ void calculate_the_maximum(int n, int k) {
 
     for(int i = k; k < n; i++)
     {
-        printf("%d\n", i & j);
+        printf("%d\n", i & i+1);
     }
   
 }
