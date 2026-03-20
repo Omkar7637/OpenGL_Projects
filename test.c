@@ -16,11 +16,24 @@ void calculate_the_maximum(int n, int k) {
         for (int b = a + 1; b < n; b++) 
         {
             printf("%d & %d = %d\n", a, b, a & b);
-            and_max = a & b;
+            if((a & b) < k)
+            {
+                and_max = a & b;
+            }
+            if((a | b) < k)
+            {
+                or_max = a & b;
+            }
+            if((a ^ b) < k)
+            {
+                xor_max = a & b;
+            }
         }
-
     }
-  
+
+    printf("%d\n", and_max);
+    printf("%d\n", or_max);
+    printf("%d\n", xor_max);
 }
 
 int main() {
