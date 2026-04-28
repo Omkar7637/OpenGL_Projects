@@ -1,0 +1,11 @@
+program started sucessfully
+OPENGL INFORMATION
+---------x--------
+openGL vendor : Intel
+OpenGL Renderer : Intel(R) Iris(R) Xe Graphics
+openGL version : 4.6.0 - Build 32.0.101.7080
+GLSL Version = 4.60 - Build 32.0.101.7080
+Extention Countes : 248
+---------x--------
+Loaded model: assets\scene.gltf
+initilized() Complited SucessfullyProgram terminated sucessfully

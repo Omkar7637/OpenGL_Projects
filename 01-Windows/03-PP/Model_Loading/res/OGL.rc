@@ -1,0 +1,6 @@
+#include "OGL.h"
+
+STRINGTABLE
+BEGIN
+	1 "Model_Loading"
+END
